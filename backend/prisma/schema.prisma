@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String   @unique
+  passwordHash String?  @map("password_hash")
+  role         UserRole @default(USER)
+  fullName     String?  @map("full_name")
+  avatarUrl    String?  @map("avatar_url")
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  createdSpecies Species[] @relation("CreatedBy")
+  updatedSpecies Species[] @relation("UpdatedBy")
+
+  @@map("users")
+}
+
+model Phylum {
+  id             Int      @id @default(autoincrement())
+  code           String   @unique
+  vietnameseName String?  @map("vietnamese_name")
+  scientificName String?  @map("scientific_name")
+  families       Family[]
+
+  @@map("phyla")
+}
+
+model Family {
+  id             Int     @id @default(autoincrement())
+  phylumId       Int?    @map("phylum_id")
+  scientificName String  @unique @map("scientific_name")
+  vietnameseName String? @map("vietnamese_name")
+  orderName      String? @map("order_name")
+  className      String? @map("class_name")
+
+  phylum Phylum? @relation(fields: [phylumId], references: [id])
+  genera Genus[]
+
+  @@map("families")
+}
+
+model Genus {
+  id             Int    @id @default(autoincrement())
+  familyId       Int?   @map("family_id")
+  scientificName String @unique @map("scientific_name")
+
+  family  Family?   @relation(fields: [familyId], references: [id])
+  species Species[]
+
+  @@map("genera")
+}
+
+model Species {
+  id      Int  @id @default(autoincrement())
+  genusId Int? @map("genus_id")
+
+  scientificName     String   @unique @map("scientific_name")
+  scientificSynonyms String[] @map("scientific_synonyms")
+  vietnameseNames    String[] @map("vietnamese_names")
+
+  fullDescription     String? @map("full_description") @db.Text
+  originalDescription String? @map("original_description") @db.Text
+
+  // Triển khai sau
+  // embedding  Unsupported("vector(1536)")?
+  
+  morphology Json? 
+  images     Json? 
+
+  // Quan hệ Many-to-Many với Location
+  locations Location[]
+
+  sourceUrl String? @map("source_url")
+
+  createdBy String? @map("created_by") @db.Uuid
+  updatedBy String? @map("updated_by") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  genus   Genus? @relation(fields: [genusId], references: [id])
+  creator User?  @relation("CreatedBy", fields: [createdBy], references: [id])
+  editor  User?  @relation("UpdatedBy", fields: [updatedBy], references: [id])
+
+  @@index([vietnameseNames], type: Gin)
+  @@index([morphology], type: Gin)
+
+  @@map("species")
+}
+
+model Location {
+  code        String  @id 
+  nameDisplay String? @map("name_display")
+  region      String?
+
+  modernMapping Json? @map("modern_mapping")
+  coordinates   Unsupported("point")?
+
+  species Species[]
+
+  @@map("locations")
+}
