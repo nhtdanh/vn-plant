@@ -8,6 +8,7 @@ generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
   previewFeatures = ["postgresqlExtensions"]
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -114,7 +115,7 @@ model Location {
   region      String?
 
   modernMapping Json? @map("modern_mapping")
-  coordinates   Unsupported("point")?
+  // coordinates   Unsupported("point")?
 
   species Species[]
 
