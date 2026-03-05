@@ -1,14 +1,209 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
+  extensions = [ltree, pg_trgm]
+}
+
+//enum
+
+enum TaxonomyRank {
+  kingdom
+  phylum
+  class_
+  order
+  family
+  genus
+  species
+
+  @@map("taxonomy_rank")
+}
+
+enum NomenclatureStatus {
+  accepted
+  synonym
+
+  @@map("nomenclature_status")
+}
+
+enum RegionType {
+  continent
+  country
+  region
+  province
+  locality
+
+  @@map("region_type")
+}
+
+enum UserRole {
+  admin
+  editor
+  user
+
+  @@map("user_role")
+}
+
+enum ContributionType {
+  suggest_edit
+  add_image
+  add_plant
+  report_error
+
+  @@map("contribution_type")
+}
+
+enum ContributionStatus {
+  pending
+  approved
+  rejected
+
+  @@map("contribution_status")
+}
+
+
+model Taxon {
+  id                  Int                @id @default(autoincrement())
+  canonicalName       String             @map("canonical_name") @db.VarChar(255)
+  author              String?            @db.VarChar(255)
+  vietnameseName      String?            @map("vietnamese_name") @db.VarChar(255)
+  rank                TaxonomyRank
+  path                Unsupported("ltree")?
+  nomenclatureStatus  NomenclatureStatus @default(accepted) @map("nomenclature_status")
+  description         String?            @db.Text
+  morphology          Json?
+  ecology             Json?
+  phenology           Json?
+  usages              String[]           @default([])
+  conservationStatus  String?            @map("conservation_status") @db.VarChar(20)
+  thumbnailUrl        String?            @map("thumbnail_url") @db.VarChar(500)
+  note                String?            @db.Text
+  searchVector        Unsupported("tsvector")? @map("search_vector")
+  createdAt           DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt           DateTime           @updatedAt @map("updated_at") @db.Timestamptz()
+
+  //self-reference
+  acceptedTaxonId     Int?               @map("accepted_taxon_id")
+  acceptedTaxon       Taxon?             @relation("TaxonSynonym", fields: [acceptedTaxonId], references: [id])
+  synonyms            Taxon[]            @relation("TaxonSynonym")
+
+  //relations
+  commonNames         CommonName[]
+  images              TaxonImage[]
+  distributions       TaxonDistribution[]
+  bookmarks           Bookmark[]
+  contributions       Contribution[]
+
+  @@unique([canonicalName, author])
+  @@map("taxon")
+}
+
+model CommonName {
+  id        String @id @default(uuid()) @db.Uuid
+  taxonId   Int    @map("taxon_id")
+  name      String @db.VarChar(255)
+  language  String @db.VarChar(10)
+
+  taxon     Taxon  @relation(fields: [taxonId], references: [id], onDelete: Cascade)
+
+  @@map("common_name")
+}
+
+model TaxonImage {
+  id        String   @id @default(uuid()) @db.Uuid
+  taxonId   Int      @map("taxon_id")
+  url       String   @db.VarChar(500)
+  caption   String?  @db.VarChar(255)
+  source    String?  @db.VarChar(255)
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  taxon     Taxon    @relation(fields: [taxonId], references: [id], onDelete: Cascade)
+
+  @@map("taxon_image")
+}
+
+model Region {
+  id        String     @id @default(uuid()) @db.Uuid
+  name      String     @db.VarChar(255)
+  type      RegionType
+  latitude  Decimal?   @db.Decimal(10, 8)
+  longitude Decimal?   @db.Decimal(11, 8)
+  parentId  String?    @map("parent_id") @db.Uuid
+  parent    Region?    @relation("RegionHierarchy", fields: [parentId], references: [id])
+  children  Region[]   @relation("RegionHierarchy")
+
+  //relation
+  distributions TaxonDistribution[]
+
+  @@map("region")
+}
+
+// composie pk
+model TaxonDistribution {
+  taxonId  Int     @map("taxon_id")
+  regionId String  @map("region_id") @db.Uuid
+  isNative Boolean @default(true) @map("is_native")
+  note     String? @db.Text
+
+  taxon    Taxon   @relation(fields: [taxonId], references: [id], onDelete: Cascade)
+  region   Region  @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  @@id([taxonId, regionId])
+  @@map("taxon_distribution")
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique @db.VarChar(255)
+  passwordHash    String    @map("password_hash") @db.VarChar(255)
+  displayName     String?   @map("display_name") @db.VarChar(100)
+  avatarUrl       String?   @map("avatar_url") @db.VarChar(500)
+  role            UserRole  @default(user)
+  refreshToken    String?   @map("refresh_token") @db.VarChar(500)
+  refreshTokenExp DateTime? @map("refresh_token_exp") @db.Timestamptz()
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  // relations
+  bookmarks       Bookmark[]
+  contributions   Contribution[]    @relation("UserContributions")
+  reviews         Contribution[]    @relation("UserReviews")
+
+  @@map("user")
+}
+
+model Bookmark {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  taxonId   Int      @map("taxon_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taxon     Taxon    @relation(fields: [taxonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taxonId])
+  @@map("bookmark")
+}
+
+
+model Contribution {
+  id         String             @id @default(uuid()) @db.Uuid
+  userId     String             @map("user_id") @db.Uuid
+  taxonId    Int                @map("taxon_id")
+  type       ContributionType
+  content    String             @db.Text
+  status     ContributionStatus @default(pending)
+  reviewedBy String?            @map("reviewed_by") @db.Uuid
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+  reviewedAt DateTime?          @map("reviewed_at") @db.Timestamptz()
+
+  user       User               @relation("UserContributions", fields: [userId], references: [id], onDelete: Cascade)
+  reviewer   User?              @relation("UserReviews", fields: [reviewedBy], references: [id])
+  taxon      Taxon              @relation(fields: [taxonId], references: [id], onDelete: Cascade)
+
+  @@map("contribution")
 }
