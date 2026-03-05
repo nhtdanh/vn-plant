@@ -67,7 +67,7 @@ enum ContributionStatus {
 
 
 model Taxon {
-  id                  Int                @id @default(autoincrement())
+  id                  Int                @id
   canonicalName       String             @map("canonical_name") @db.VarChar(255)
   author              String?            @db.VarChar(255)
   vietnameseName      String?            @map("vietnamese_name") @db.VarChar(255)
