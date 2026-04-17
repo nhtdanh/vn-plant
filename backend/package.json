@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "npx rimraf dist && tsc && npx tsc-alias",
-    "start": "node dist/server.js",
+    "start": "ls -R dist && node ./dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
