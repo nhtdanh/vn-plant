@@ -1,0 +1,1125 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace";
+/**
+ * Model TraitGroup
+ *
+ */
+export type TraitGroupModel = runtime.Types.Result.DefaultSelection<Prisma.$TraitGroupPayload>;
+export type AggregateTraitGroup = {
+    _count: TraitGroupCountAggregateOutputType | null;
+    _avg: TraitGroupAvgAggregateOutputType | null;
+    _sum: TraitGroupSumAggregateOutputType | null;
+    _min: TraitGroupMinAggregateOutputType | null;
+    _max: TraitGroupMaxAggregateOutputType | null;
+};
+export type TraitGroupAvgAggregateOutputType = {
+    id: number | null;
+};
+export type TraitGroupSumAggregateOutputType = {
+    id: number | null;
+};
+export type TraitGroupMinAggregateOutputType = {
+    id: number | null;
+    code: string | null;
+    label: string | null;
+};
+export type TraitGroupMaxAggregateOutputType = {
+    id: number | null;
+    code: string | null;
+    label: string | null;
+};
+export type TraitGroupCountAggregateOutputType = {
+    id: number;
+    code: number;
+    label: number;
+    _all: number;
+};
+export type TraitGroupAvgAggregateInputType = {
+    id?: true;
+};
+export type TraitGroupSumAggregateInputType = {
+    id?: true;
+};
+export type TraitGroupMinAggregateInputType = {
+    id?: true;
+    code?: true;
+    label?: true;
+};
+export type TraitGroupMaxAggregateInputType = {
+    id?: true;
+    code?: true;
+    label?: true;
+};
+export type TraitGroupCountAggregateInputType = {
+    id?: true;
+    code?: true;
+    label?: true;
+    _all?: true;
+};
+export type TraitGroupAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which TraitGroup to aggregate.
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TraitGroups to fetch.
+     */
+    orderBy?: Prisma.TraitGroupOrderByWithRelationInput | Prisma.TraitGroupOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.TraitGroupWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TraitGroups from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TraitGroups.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned TraitGroups
+    **/
+    _count?: true | TraitGroupCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: TraitGroupAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: TraitGroupSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: TraitGroupMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: TraitGroupMaxAggregateInputType;
+};
+export type GetTraitGroupAggregateType<T extends TraitGroupAggregateArgs> = {
+    [P in keyof T & keyof AggregateTraitGroup]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateTraitGroup[P]> : Prisma.GetScalarType<T[P], AggregateTraitGroup[P]>;
+};
+export type TraitGroupGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.TraitGroupWhereInput;
+    orderBy?: Prisma.TraitGroupOrderByWithAggregationInput | Prisma.TraitGroupOrderByWithAggregationInput[];
+    by: Prisma.TraitGroupScalarFieldEnum[] | Prisma.TraitGroupScalarFieldEnum;
+    having?: Prisma.TraitGroupScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: TraitGroupCountAggregateInputType | true;
+    _avg?: TraitGroupAvgAggregateInputType;
+    _sum?: TraitGroupSumAggregateInputType;
+    _min?: TraitGroupMinAggregateInputType;
+    _max?: TraitGroupMaxAggregateInputType;
+};
+export type TraitGroupGroupByOutputType = {
+    id: number;
+    code: string;
+    label: string;
+    _count: TraitGroupCountAggregateOutputType | null;
+    _avg: TraitGroupAvgAggregateOutputType | null;
+    _sum: TraitGroupSumAggregateOutputType | null;
+    _min: TraitGroupMinAggregateOutputType | null;
+    _max: TraitGroupMaxAggregateOutputType | null;
+};
+type GetTraitGroupGroupByPayload<T extends TraitGroupGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<TraitGroupGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof TraitGroupGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], TraitGroupGroupByOutputType[P]> : Prisma.GetScalarType<T[P], TraitGroupGroupByOutputType[P]>;
+}>>;
+export type TraitGroupWhereInput = {
+    AND?: Prisma.TraitGroupWhereInput | Prisma.TraitGroupWhereInput[];
+    OR?: Prisma.TraitGroupWhereInput[];
+    NOT?: Prisma.TraitGroupWhereInput | Prisma.TraitGroupWhereInput[];
+    id?: Prisma.IntFilter<"TraitGroup"> | number;
+    code?: Prisma.StringFilter<"TraitGroup"> | string;
+    label?: Prisma.StringFilter<"TraitGroup"> | string;
+    traits?: Prisma.TraitListRelationFilter;
+};
+export type TraitGroupOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    code?: Prisma.SortOrder;
+    label?: Prisma.SortOrder;
+    traits?: Prisma.TraitOrderByRelationAggregateInput;
+};
+export type TraitGroupWhereUniqueInput = Prisma.AtLeast<{
+    id?: number;
+    code?: string;
+    AND?: Prisma.TraitGroupWhereInput | Prisma.TraitGroupWhereInput[];
+    OR?: Prisma.TraitGroupWhereInput[];
+    NOT?: Prisma.TraitGroupWhereInput | Prisma.TraitGroupWhereInput[];
+    label?: Prisma.StringFilter<"TraitGroup"> | string;
+    traits?: Prisma.TraitListRelationFilter;
+}, "id" | "code">;
+export type TraitGroupOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    code?: Prisma.SortOrder;
+    label?: Prisma.SortOrder;
+    _count?: Prisma.TraitGroupCountOrderByAggregateInput;
+    _avg?: Prisma.TraitGroupAvgOrderByAggregateInput;
+    _max?: Prisma.TraitGroupMaxOrderByAggregateInput;
+    _min?: Prisma.TraitGroupMinOrderByAggregateInput;
+    _sum?: Prisma.TraitGroupSumOrderByAggregateInput;
+};
+export type TraitGroupScalarWhereWithAggregatesInput = {
+    AND?: Prisma.TraitGroupScalarWhereWithAggregatesInput | Prisma.TraitGroupScalarWhereWithAggregatesInput[];
+    OR?: Prisma.TraitGroupScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.TraitGroupScalarWhereWithAggregatesInput | Prisma.TraitGroupScalarWhereWithAggregatesInput[];
+    id?: Prisma.IntWithAggregatesFilter<"TraitGroup"> | number;
+    code?: Prisma.StringWithAggregatesFilter<"TraitGroup"> | string;
+    label?: Prisma.StringWithAggregatesFilter<"TraitGroup"> | string;
+};
+export type TraitGroupCreateInput = {
+    code: string;
+    label: string;
+    traits?: Prisma.TraitCreateNestedManyWithoutGroupInput;
+};
+export type TraitGroupUncheckedCreateInput = {
+    id?: number;
+    code: string;
+    label: string;
+    traits?: Prisma.TraitUncheckedCreateNestedManyWithoutGroupInput;
+};
+export type TraitGroupUpdateInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.StringFieldUpdateOperationsInput | string;
+    traits?: Prisma.TraitUpdateManyWithoutGroupNestedInput;
+};
+export type TraitGroupUncheckedUpdateInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.StringFieldUpdateOperationsInput | string;
+    traits?: Prisma.TraitUncheckedUpdateManyWithoutGroupNestedInput;
+};
+export type TraitGroupCreateManyInput = {
+    id?: number;
+    code: string;
+    label: string;
+};
+export type TraitGroupUpdateManyMutationInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+export type TraitGroupUncheckedUpdateManyInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+export type TraitGroupCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    code?: Prisma.SortOrder;
+    label?: Prisma.SortOrder;
+};
+export type TraitGroupAvgOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+};
+export type TraitGroupMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    code?: Prisma.SortOrder;
+    label?: Prisma.SortOrder;
+};
+export type TraitGroupMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    code?: Prisma.SortOrder;
+    label?: Prisma.SortOrder;
+};
+export type TraitGroupSumOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+};
+export type TraitGroupScalarRelationFilter = {
+    is?: Prisma.TraitGroupWhereInput;
+    isNot?: Prisma.TraitGroupWhereInput;
+};
+export type TraitGroupCreateNestedOneWithoutTraitsInput = {
+    create?: Prisma.XOR<Prisma.TraitGroupCreateWithoutTraitsInput, Prisma.TraitGroupUncheckedCreateWithoutTraitsInput>;
+    connectOrCreate?: Prisma.TraitGroupCreateOrConnectWithoutTraitsInput;
+    connect?: Prisma.TraitGroupWhereUniqueInput;
+};
+export type TraitGroupUpdateOneRequiredWithoutTraitsNestedInput = {
+    create?: Prisma.XOR<Prisma.TraitGroupCreateWithoutTraitsInput, Prisma.TraitGroupUncheckedCreateWithoutTraitsInput>;
+    connectOrCreate?: Prisma.TraitGroupCreateOrConnectWithoutTraitsInput;
+    upsert?: Prisma.TraitGroupUpsertWithoutTraitsInput;
+    connect?: Prisma.TraitGroupWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.TraitGroupUpdateToOneWithWhereWithoutTraitsInput, Prisma.TraitGroupUpdateWithoutTraitsInput>, Prisma.TraitGroupUncheckedUpdateWithoutTraitsInput>;
+};
+export type TraitGroupCreateWithoutTraitsInput = {
+    code: string;
+    label: string;
+};
+export type TraitGroupUncheckedCreateWithoutTraitsInput = {
+    id?: number;
+    code: string;
+    label: string;
+};
+export type TraitGroupCreateOrConnectWithoutTraitsInput = {
+    where: Prisma.TraitGroupWhereUniqueInput;
+    create: Prisma.XOR<Prisma.TraitGroupCreateWithoutTraitsInput, Prisma.TraitGroupUncheckedCreateWithoutTraitsInput>;
+};
+export type TraitGroupUpsertWithoutTraitsInput = {
+    update: Prisma.XOR<Prisma.TraitGroupUpdateWithoutTraitsInput, Prisma.TraitGroupUncheckedUpdateWithoutTraitsInput>;
+    create: Prisma.XOR<Prisma.TraitGroupCreateWithoutTraitsInput, Prisma.TraitGroupUncheckedCreateWithoutTraitsInput>;
+    where?: Prisma.TraitGroupWhereInput;
+};
+export type TraitGroupUpdateToOneWithWhereWithoutTraitsInput = {
+    where?: Prisma.TraitGroupWhereInput;
+    data: Prisma.XOR<Prisma.TraitGroupUpdateWithoutTraitsInput, Prisma.TraitGroupUncheckedUpdateWithoutTraitsInput>;
+};
+export type TraitGroupUpdateWithoutTraitsInput = {
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+export type TraitGroupUncheckedUpdateWithoutTraitsInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    code?: Prisma.StringFieldUpdateOperationsInput | string;
+    label?: Prisma.StringFieldUpdateOperationsInput | string;
+};
+/**
+ * Count Type TraitGroupCountOutputType
+ */
+export type TraitGroupCountOutputType = {
+    traits: number;
+};
+export type TraitGroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    traits?: boolean | TraitGroupCountOutputTypeCountTraitsArgs;
+};
+/**
+ * TraitGroupCountOutputType without action
+ */
+export type TraitGroupCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroupCountOutputType
+     */
+    select?: Prisma.TraitGroupCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * TraitGroupCountOutputType without action
+ */
+export type TraitGroupCountOutputTypeCountTraitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.TraitWhereInput;
+};
+export type TraitGroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    code?: boolean;
+    label?: boolean;
+    traits?: boolean | Prisma.TraitGroup$traitsArgs<ExtArgs>;
+    _count?: boolean | Prisma.TraitGroupCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["traitGroup"]>;
+export type TraitGroupSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    code?: boolean;
+    label?: boolean;
+}, ExtArgs["result"]["traitGroup"]>;
+export type TraitGroupSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    code?: boolean;
+    label?: boolean;
+}, ExtArgs["result"]["traitGroup"]>;
+export type TraitGroupSelectScalar = {
+    id?: boolean;
+    code?: boolean;
+    label?: boolean;
+};
+export type TraitGroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "label", ExtArgs["result"]["traitGroup"]>;
+export type TraitGroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    traits?: boolean | Prisma.TraitGroup$traitsArgs<ExtArgs>;
+    _count?: boolean | Prisma.TraitGroupCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type TraitGroupIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type TraitGroupIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type $TraitGroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "TraitGroup";
+    objects: {
+        traits: Prisma.$TraitPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: number;
+        code: string;
+        label: string;
+    }, ExtArgs["result"]["traitGroup"]>;
+    composites: {};
+};
+export type TraitGroupGetPayload<S extends boolean | null | undefined | TraitGroupDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload, S>;
+export type TraitGroupCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<TraitGroupFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: TraitGroupCountAggregateInputType | true;
+};
+export interface TraitGroupDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['TraitGroup'];
+        meta: {
+            name: 'TraitGroup';
+        };
+    };
+    /**
+     * Find zero or one TraitGroup that matches the filter.
+     * @param {TraitGroupFindUniqueArgs} args - Arguments to find a TraitGroup
+     * @example
+     * // Get one TraitGroup
+     * const traitGroup = await prisma.traitGroup.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TraitGroupFindUniqueArgs>(args: Prisma.SelectSubset<T, TraitGroupFindUniqueArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one TraitGroup that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TraitGroupFindUniqueOrThrowArgs} args - Arguments to find a TraitGroup
+     * @example
+     * // Get one TraitGroup
+     * const traitGroup = await prisma.traitGroup.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TraitGroupFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, TraitGroupFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first TraitGroup that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupFindFirstArgs} args - Arguments to find a TraitGroup
+     * @example
+     * // Get one TraitGroup
+     * const traitGroup = await prisma.traitGroup.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TraitGroupFindFirstArgs>(args?: Prisma.SelectSubset<T, TraitGroupFindFirstArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first TraitGroup that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupFindFirstOrThrowArgs} args - Arguments to find a TraitGroup
+     * @example
+     * // Get one TraitGroup
+     * const traitGroup = await prisma.traitGroup.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TraitGroupFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, TraitGroupFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more TraitGroups that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TraitGroups
+     * const traitGroups = await prisma.traitGroup.findMany()
+     *
+     * // Get first 10 TraitGroups
+     * const traitGroups = await prisma.traitGroup.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const traitGroupWithIdOnly = await prisma.traitGroup.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends TraitGroupFindManyArgs>(args?: Prisma.SelectSubset<T, TraitGroupFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a TraitGroup.
+     * @param {TraitGroupCreateArgs} args - Arguments to create a TraitGroup.
+     * @example
+     * // Create one TraitGroup
+     * const TraitGroup = await prisma.traitGroup.create({
+     *   data: {
+     *     // ... data to create a TraitGroup
+     *   }
+     * })
+     *
+     */
+    create<T extends TraitGroupCreateArgs>(args: Prisma.SelectSubset<T, TraitGroupCreateArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many TraitGroups.
+     * @param {TraitGroupCreateManyArgs} args - Arguments to create many TraitGroups.
+     * @example
+     * // Create many TraitGroups
+     * const traitGroup = await prisma.traitGroup.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends TraitGroupCreateManyArgs>(args?: Prisma.SelectSubset<T, TraitGroupCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many TraitGroups and returns the data saved in the database.
+     * @param {TraitGroupCreateManyAndReturnArgs} args - Arguments to create many TraitGroups.
+     * @example
+     * // Create many TraitGroups
+     * const traitGroup = await prisma.traitGroup.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many TraitGroups and only return the `id`
+     * const traitGroupWithIdOnly = await prisma.traitGroup.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends TraitGroupCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, TraitGroupCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a TraitGroup.
+     * @param {TraitGroupDeleteArgs} args - Arguments to delete one TraitGroup.
+     * @example
+     * // Delete one TraitGroup
+     * const TraitGroup = await prisma.traitGroup.delete({
+     *   where: {
+     *     // ... filter to delete one TraitGroup
+     *   }
+     * })
+     *
+     */
+    delete<T extends TraitGroupDeleteArgs>(args: Prisma.SelectSubset<T, TraitGroupDeleteArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one TraitGroup.
+     * @param {TraitGroupUpdateArgs} args - Arguments to update one TraitGroup.
+     * @example
+     * // Update one TraitGroup
+     * const traitGroup = await prisma.traitGroup.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends TraitGroupUpdateArgs>(args: Prisma.SelectSubset<T, TraitGroupUpdateArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more TraitGroups.
+     * @param {TraitGroupDeleteManyArgs} args - Arguments to filter TraitGroups to delete.
+     * @example
+     * // Delete a few TraitGroups
+     * const { count } = await prisma.traitGroup.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends TraitGroupDeleteManyArgs>(args?: Prisma.SelectSubset<T, TraitGroupDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more TraitGroups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TraitGroups
+     * const traitGroup = await prisma.traitGroup.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends TraitGroupUpdateManyArgs>(args: Prisma.SelectSubset<T, TraitGroupUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more TraitGroups and returns the data updated in the database.
+     * @param {TraitGroupUpdateManyAndReturnArgs} args - Arguments to update many TraitGroups.
+     * @example
+     * // Update many TraitGroups
+     * const traitGroup = await prisma.traitGroup.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more TraitGroups and only return the `id`
+     * const traitGroupWithIdOnly = await prisma.traitGroup.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends TraitGroupUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, TraitGroupUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one TraitGroup.
+     * @param {TraitGroupUpsertArgs} args - Arguments to update or create a TraitGroup.
+     * @example
+     * // Update or create a TraitGroup
+     * const traitGroup = await prisma.traitGroup.upsert({
+     *   create: {
+     *     // ... data to create a TraitGroup
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TraitGroup we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TraitGroupUpsertArgs>(args: Prisma.SelectSubset<T, TraitGroupUpsertArgs<ExtArgs>>): Prisma.Prisma__TraitGroupClient<runtime.Types.Result.GetResult<Prisma.$TraitGroupPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of TraitGroups.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupCountArgs} args - Arguments to filter TraitGroups to count.
+     * @example
+     * // Count the number of TraitGroups
+     * const count = await prisma.traitGroup.count({
+     *   where: {
+     *     // ... the filter for the TraitGroups we want to count
+     *   }
+     * })
+    **/
+    count<T extends TraitGroupCountArgs>(args?: Prisma.Subset<T, TraitGroupCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], TraitGroupCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a TraitGroup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TraitGroupAggregateArgs>(args: Prisma.Subset<T, TraitGroupAggregateArgs>): Prisma.PrismaPromise<GetTraitGroupAggregateType<T>>;
+    /**
+     * Group by TraitGroup.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TraitGroupGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends TraitGroupGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: TraitGroupGroupByArgs['orderBy'];
+    } : {
+        orderBy?: TraitGroupGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, TraitGroupGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTraitGroupGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the TraitGroup model
+     */
+    readonly fields: TraitGroupFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for TraitGroup.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__TraitGroupClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    traits<T extends Prisma.TraitGroup$traitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TraitGroup$traitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TraitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the TraitGroup model
+ */
+export interface TraitGroupFieldRefs {
+    readonly id: Prisma.FieldRef<"TraitGroup", 'Int'>;
+    readonly code: Prisma.FieldRef<"TraitGroup", 'String'>;
+    readonly label: Prisma.FieldRef<"TraitGroup", 'String'>;
+}
+/**
+ * TraitGroup findUnique
+ */
+export type TraitGroupFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * Filter, which TraitGroup to fetch.
+     */
+    where: Prisma.TraitGroupWhereUniqueInput;
+};
+/**
+ * TraitGroup findUniqueOrThrow
+ */
+export type TraitGroupFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * Filter, which TraitGroup to fetch.
+     */
+    where: Prisma.TraitGroupWhereUniqueInput;
+};
+/**
+ * TraitGroup findFirst
+ */
+export type TraitGroupFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * Filter, which TraitGroup to fetch.
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TraitGroups to fetch.
+     */
+    orderBy?: Prisma.TraitGroupOrderByWithRelationInput | Prisma.TraitGroupOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for TraitGroups.
+     */
+    cursor?: Prisma.TraitGroupWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TraitGroups from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TraitGroups.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of TraitGroups.
+     */
+    distinct?: Prisma.TraitGroupScalarFieldEnum | Prisma.TraitGroupScalarFieldEnum[];
+};
+/**
+ * TraitGroup findFirstOrThrow
+ */
+export type TraitGroupFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * Filter, which TraitGroup to fetch.
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TraitGroups to fetch.
+     */
+    orderBy?: Prisma.TraitGroupOrderByWithRelationInput | Prisma.TraitGroupOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for TraitGroups.
+     */
+    cursor?: Prisma.TraitGroupWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TraitGroups from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TraitGroups.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of TraitGroups.
+     */
+    distinct?: Prisma.TraitGroupScalarFieldEnum | Prisma.TraitGroupScalarFieldEnum[];
+};
+/**
+ * TraitGroup findMany
+ */
+export type TraitGroupFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * Filter, which TraitGroups to fetch.
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TraitGroups to fetch.
+     */
+    orderBy?: Prisma.TraitGroupOrderByWithRelationInput | Prisma.TraitGroupOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing TraitGroups.
+     */
+    cursor?: Prisma.TraitGroupWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TraitGroups from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TraitGroups.
+     */
+    skip?: number;
+    distinct?: Prisma.TraitGroupScalarFieldEnum | Prisma.TraitGroupScalarFieldEnum[];
+};
+/**
+ * TraitGroup create
+ */
+export type TraitGroupCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a TraitGroup.
+     */
+    data: Prisma.XOR<Prisma.TraitGroupCreateInput, Prisma.TraitGroupUncheckedCreateInput>;
+};
+/**
+ * TraitGroup createMany
+ */
+export type TraitGroupCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TraitGroups.
+     */
+    data: Prisma.TraitGroupCreateManyInput | Prisma.TraitGroupCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * TraitGroup createManyAndReturn
+ */
+export type TraitGroupCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * The data used to create many TraitGroups.
+     */
+    data: Prisma.TraitGroupCreateManyInput | Prisma.TraitGroupCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * TraitGroup update
+ */
+export type TraitGroupUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a TraitGroup.
+     */
+    data: Prisma.XOR<Prisma.TraitGroupUpdateInput, Prisma.TraitGroupUncheckedUpdateInput>;
+    /**
+     * Choose, which TraitGroup to update.
+     */
+    where: Prisma.TraitGroupWhereUniqueInput;
+};
+/**
+ * TraitGroup updateMany
+ */
+export type TraitGroupUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TraitGroups.
+     */
+    data: Prisma.XOR<Prisma.TraitGroupUpdateManyMutationInput, Prisma.TraitGroupUncheckedUpdateManyInput>;
+    /**
+     * Filter which TraitGroups to update
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * Limit how many TraitGroups to update.
+     */
+    limit?: number;
+};
+/**
+ * TraitGroup updateManyAndReturn
+ */
+export type TraitGroupUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * The data used to update TraitGroups.
+     */
+    data: Prisma.XOR<Prisma.TraitGroupUpdateManyMutationInput, Prisma.TraitGroupUncheckedUpdateManyInput>;
+    /**
+     * Filter which TraitGroups to update
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * Limit how many TraitGroups to update.
+     */
+    limit?: number;
+};
+/**
+ * TraitGroup upsert
+ */
+export type TraitGroupUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the TraitGroup to update in case it exists.
+     */
+    where: Prisma.TraitGroupWhereUniqueInput;
+    /**
+     * In case the TraitGroup found by the `where` argument doesn't exist, create a new TraitGroup with this data.
+     */
+    create: Prisma.XOR<Prisma.TraitGroupCreateInput, Prisma.TraitGroupUncheckedCreateInput>;
+    /**
+     * In case the TraitGroup was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.TraitGroupUpdateInput, Prisma.TraitGroupUncheckedUpdateInput>;
+};
+/**
+ * TraitGroup delete
+ */
+export type TraitGroupDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+    /**
+     * Filter which TraitGroup to delete.
+     */
+    where: Prisma.TraitGroupWhereUniqueInput;
+};
+/**
+ * TraitGroup deleteMany
+ */
+export type TraitGroupDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which TraitGroups to delete
+     */
+    where?: Prisma.TraitGroupWhereInput;
+    /**
+     * Limit how many TraitGroups to delete.
+     */
+    limit?: number;
+};
+/**
+ * TraitGroup.traits
+ */
+export type TraitGroup$traitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Trait
+     */
+    select?: Prisma.TraitSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Trait
+     */
+    omit?: Prisma.TraitOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitInclude<ExtArgs> | null;
+    where?: Prisma.TraitWhereInput;
+    orderBy?: Prisma.TraitOrderByWithRelationInput | Prisma.TraitOrderByWithRelationInput[];
+    cursor?: Prisma.TraitWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.TraitScalarFieldEnum | Prisma.TraitScalarFieldEnum[];
+};
+/**
+ * TraitGroup without action
+ */
+export type TraitGroupDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TraitGroup
+     */
+    select?: Prisma.TraitGroupSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TraitGroup
+     */
+    omit?: Prisma.TraitGroupOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TraitGroupInclude<ExtArgs> | null;
+};
+export {};
+//# sourceMappingURL=TraitGroup.d.ts.map

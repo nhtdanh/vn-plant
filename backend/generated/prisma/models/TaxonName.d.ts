@@ -1,0 +1,1370 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums";
+import type * as Prisma from "../internal/prismaNamespace";
+/**
+ * Model TaxonName
+ *
+ */
+export type TaxonNameModel = runtime.Types.Result.DefaultSelection<Prisma.$TaxonNamePayload>;
+export type AggregateTaxonName = {
+    _count: TaxonNameCountAggregateOutputType | null;
+    _avg: TaxonNameAvgAggregateOutputType | null;
+    _sum: TaxonNameSumAggregateOutputType | null;
+    _min: TaxonNameMinAggregateOutputType | null;
+    _max: TaxonNameMaxAggregateOutputType | null;
+};
+export type TaxonNameAvgAggregateOutputType = {
+    id: number | null;
+    taxonId: number | null;
+};
+export type TaxonNameSumAggregateOutputType = {
+    id: number | null;
+    taxonId: number | null;
+};
+export type TaxonNameMinAggregateOutputType = {
+    id: number | null;
+    name: string | null;
+    normalizedName: string | null;
+    author: string | null;
+    status: $Enums.NomenclatureStatus | null;
+    source: string | null;
+    verbatim: string | null;
+    taxonId: number | null;
+    createdAt: Date | null;
+};
+export type TaxonNameMaxAggregateOutputType = {
+    id: number | null;
+    name: string | null;
+    normalizedName: string | null;
+    author: string | null;
+    status: $Enums.NomenclatureStatus | null;
+    source: string | null;
+    verbatim: string | null;
+    taxonId: number | null;
+    createdAt: Date | null;
+};
+export type TaxonNameCountAggregateOutputType = {
+    id: number;
+    name: number;
+    normalizedName: number;
+    author: number;
+    status: number;
+    source: number;
+    verbatim: number;
+    taxonId: number;
+    createdAt: number;
+    _all: number;
+};
+export type TaxonNameAvgAggregateInputType = {
+    id?: true;
+    taxonId?: true;
+};
+export type TaxonNameSumAggregateInputType = {
+    id?: true;
+    taxonId?: true;
+};
+export type TaxonNameMinAggregateInputType = {
+    id?: true;
+    name?: true;
+    normalizedName?: true;
+    author?: true;
+    status?: true;
+    source?: true;
+    verbatim?: true;
+    taxonId?: true;
+    createdAt?: true;
+};
+export type TaxonNameMaxAggregateInputType = {
+    id?: true;
+    name?: true;
+    normalizedName?: true;
+    author?: true;
+    status?: true;
+    source?: true;
+    verbatim?: true;
+    taxonId?: true;
+    createdAt?: true;
+};
+export type TaxonNameCountAggregateInputType = {
+    id?: true;
+    name?: true;
+    normalizedName?: true;
+    author?: true;
+    status?: true;
+    source?: true;
+    verbatim?: true;
+    taxonId?: true;
+    createdAt?: true;
+    _all?: true;
+};
+export type TaxonNameAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaxonName to aggregate.
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TaxonNames to fetch.
+     */
+    orderBy?: Prisma.TaxonNameOrderByWithRelationInput | Prisma.TaxonNameOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.TaxonNameWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TaxonNames from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TaxonNames.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned TaxonNames
+    **/
+    _count?: true | TaxonNameCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: TaxonNameAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: TaxonNameSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: TaxonNameMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: TaxonNameMaxAggregateInputType;
+};
+export type GetTaxonNameAggregateType<T extends TaxonNameAggregateArgs> = {
+    [P in keyof T & keyof AggregateTaxonName]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateTaxonName[P]> : Prisma.GetScalarType<T[P], AggregateTaxonName[P]>;
+};
+export type TaxonNameGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.TaxonNameWhereInput;
+    orderBy?: Prisma.TaxonNameOrderByWithAggregationInput | Prisma.TaxonNameOrderByWithAggregationInput[];
+    by: Prisma.TaxonNameScalarFieldEnum[] | Prisma.TaxonNameScalarFieldEnum;
+    having?: Prisma.TaxonNameScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: TaxonNameCountAggregateInputType | true;
+    _avg?: TaxonNameAvgAggregateInputType;
+    _sum?: TaxonNameSumAggregateInputType;
+    _min?: TaxonNameMinAggregateInputType;
+    _max?: TaxonNameMaxAggregateInputType;
+};
+export type TaxonNameGroupByOutputType = {
+    id: number;
+    name: string;
+    normalizedName: string | null;
+    author: string | null;
+    status: $Enums.NomenclatureStatus;
+    source: string | null;
+    verbatim: string | null;
+    taxonId: number | null;
+    createdAt: Date;
+    _count: TaxonNameCountAggregateOutputType | null;
+    _avg: TaxonNameAvgAggregateOutputType | null;
+    _sum: TaxonNameSumAggregateOutputType | null;
+    _min: TaxonNameMinAggregateOutputType | null;
+    _max: TaxonNameMaxAggregateOutputType | null;
+};
+type GetTaxonNameGroupByPayload<T extends TaxonNameGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<TaxonNameGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof TaxonNameGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], TaxonNameGroupByOutputType[P]> : Prisma.GetScalarType<T[P], TaxonNameGroupByOutputType[P]>;
+}>>;
+export type TaxonNameWhereInput = {
+    AND?: Prisma.TaxonNameWhereInput | Prisma.TaxonNameWhereInput[];
+    OR?: Prisma.TaxonNameWhereInput[];
+    NOT?: Prisma.TaxonNameWhereInput | Prisma.TaxonNameWhereInput[];
+    id?: Prisma.IntFilter<"TaxonName"> | number;
+    name?: Prisma.StringFilter<"TaxonName"> | string;
+    normalizedName?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    author?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    status?: Prisma.EnumNomenclatureStatusFilter<"TaxonName"> | $Enums.NomenclatureStatus;
+    source?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    verbatim?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    taxonId?: Prisma.IntNullableFilter<"TaxonName"> | number | null;
+    createdAt?: Prisma.DateTimeFilter<"TaxonName"> | Date | string;
+    taxon?: Prisma.XOR<Prisma.TaxonNullableScalarRelationFilter, Prisma.TaxonWhereInput> | null;
+};
+export type TaxonNameOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    normalizedName?: Prisma.SortOrderInput | Prisma.SortOrder;
+    author?: Prisma.SortOrderInput | Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrderInput | Prisma.SortOrder;
+    verbatim?: Prisma.SortOrderInput | Prisma.SortOrder;
+    taxonId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    taxon?: Prisma.TaxonOrderByWithRelationInput;
+};
+export type TaxonNameWhereUniqueInput = Prisma.AtLeast<{
+    id?: number;
+    AND?: Prisma.TaxonNameWhereInput | Prisma.TaxonNameWhereInput[];
+    OR?: Prisma.TaxonNameWhereInput[];
+    NOT?: Prisma.TaxonNameWhereInput | Prisma.TaxonNameWhereInput[];
+    name?: Prisma.StringFilter<"TaxonName"> | string;
+    normalizedName?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    author?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    status?: Prisma.EnumNomenclatureStatusFilter<"TaxonName"> | $Enums.NomenclatureStatus;
+    source?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    verbatim?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    taxonId?: Prisma.IntNullableFilter<"TaxonName"> | number | null;
+    createdAt?: Prisma.DateTimeFilter<"TaxonName"> | Date | string;
+    taxon?: Prisma.XOR<Prisma.TaxonNullableScalarRelationFilter, Prisma.TaxonWhereInput> | null;
+}, "id">;
+export type TaxonNameOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    normalizedName?: Prisma.SortOrderInput | Prisma.SortOrder;
+    author?: Prisma.SortOrderInput | Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrderInput | Prisma.SortOrder;
+    verbatim?: Prisma.SortOrderInput | Prisma.SortOrder;
+    taxonId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    _count?: Prisma.TaxonNameCountOrderByAggregateInput;
+    _avg?: Prisma.TaxonNameAvgOrderByAggregateInput;
+    _max?: Prisma.TaxonNameMaxOrderByAggregateInput;
+    _min?: Prisma.TaxonNameMinOrderByAggregateInput;
+    _sum?: Prisma.TaxonNameSumOrderByAggregateInput;
+};
+export type TaxonNameScalarWhereWithAggregatesInput = {
+    AND?: Prisma.TaxonNameScalarWhereWithAggregatesInput | Prisma.TaxonNameScalarWhereWithAggregatesInput[];
+    OR?: Prisma.TaxonNameScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.TaxonNameScalarWhereWithAggregatesInput | Prisma.TaxonNameScalarWhereWithAggregatesInput[];
+    id?: Prisma.IntWithAggregatesFilter<"TaxonName"> | number;
+    name?: Prisma.StringWithAggregatesFilter<"TaxonName"> | string;
+    normalizedName?: Prisma.StringNullableWithAggregatesFilter<"TaxonName"> | string | null;
+    author?: Prisma.StringNullableWithAggregatesFilter<"TaxonName"> | string | null;
+    status?: Prisma.EnumNomenclatureStatusWithAggregatesFilter<"TaxonName"> | $Enums.NomenclatureStatus;
+    source?: Prisma.StringNullableWithAggregatesFilter<"TaxonName"> | string | null;
+    verbatim?: Prisma.StringNullableWithAggregatesFilter<"TaxonName"> | string | null;
+    taxonId?: Prisma.IntNullableWithAggregatesFilter<"TaxonName"> | number | null;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"TaxonName"> | Date | string;
+};
+export type TaxonNameCreateInput = {
+    name: string;
+    normalizedName?: string | null;
+    author?: string | null;
+    status?: $Enums.NomenclatureStatus;
+    source?: string | null;
+    verbatim?: string | null;
+    createdAt?: Date | string;
+    taxon?: Prisma.TaxonCreateNestedOneWithoutNamesInput;
+};
+export type TaxonNameUncheckedCreateInput = {
+    id?: number;
+    name: string;
+    normalizedName?: string | null;
+    author?: string | null;
+    status?: $Enums.NomenclatureStatus;
+    source?: string | null;
+    verbatim?: string | null;
+    taxonId?: number | null;
+    createdAt?: Date | string;
+};
+export type TaxonNameUpdateInput = {
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    taxon?: Prisma.TaxonUpdateOneWithoutNamesNestedInput;
+};
+export type TaxonNameUncheckedUpdateInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    taxonId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type TaxonNameCreateManyInput = {
+    id?: number;
+    name: string;
+    normalizedName?: string | null;
+    author?: string | null;
+    status?: $Enums.NomenclatureStatus;
+    source?: string | null;
+    verbatim?: string | null;
+    taxonId?: number | null;
+    createdAt?: Date | string;
+};
+export type TaxonNameUpdateManyMutationInput = {
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type TaxonNameUncheckedUpdateManyInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    taxonId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type TaxonNameListRelationFilter = {
+    every?: Prisma.TaxonNameWhereInput;
+    some?: Prisma.TaxonNameWhereInput;
+    none?: Prisma.TaxonNameWhereInput;
+};
+export type TaxonNameOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type TaxonNameCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    normalizedName?: Prisma.SortOrder;
+    author?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verbatim?: Prisma.SortOrder;
+    taxonId?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type TaxonNameAvgOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    taxonId?: Prisma.SortOrder;
+};
+export type TaxonNameMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    normalizedName?: Prisma.SortOrder;
+    author?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verbatim?: Prisma.SortOrder;
+    taxonId?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type TaxonNameMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    normalizedName?: Prisma.SortOrder;
+    author?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verbatim?: Prisma.SortOrder;
+    taxonId?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type TaxonNameSumOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    taxonId?: Prisma.SortOrder;
+};
+export type TaxonNameCreateNestedManyWithoutTaxonInput = {
+    create?: Prisma.XOR<Prisma.TaxonNameCreateWithoutTaxonInput, Prisma.TaxonNameUncheckedCreateWithoutTaxonInput> | Prisma.TaxonNameCreateWithoutTaxonInput[] | Prisma.TaxonNameUncheckedCreateWithoutTaxonInput[];
+    connectOrCreate?: Prisma.TaxonNameCreateOrConnectWithoutTaxonInput | Prisma.TaxonNameCreateOrConnectWithoutTaxonInput[];
+    createMany?: Prisma.TaxonNameCreateManyTaxonInputEnvelope;
+    connect?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+};
+export type TaxonNameUncheckedCreateNestedManyWithoutTaxonInput = {
+    create?: Prisma.XOR<Prisma.TaxonNameCreateWithoutTaxonInput, Prisma.TaxonNameUncheckedCreateWithoutTaxonInput> | Prisma.TaxonNameCreateWithoutTaxonInput[] | Prisma.TaxonNameUncheckedCreateWithoutTaxonInput[];
+    connectOrCreate?: Prisma.TaxonNameCreateOrConnectWithoutTaxonInput | Prisma.TaxonNameCreateOrConnectWithoutTaxonInput[];
+    createMany?: Prisma.TaxonNameCreateManyTaxonInputEnvelope;
+    connect?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+};
+export type TaxonNameUpdateManyWithoutTaxonNestedInput = {
+    create?: Prisma.XOR<Prisma.TaxonNameCreateWithoutTaxonInput, Prisma.TaxonNameUncheckedCreateWithoutTaxonInput> | Prisma.TaxonNameCreateWithoutTaxonInput[] | Prisma.TaxonNameUncheckedCreateWithoutTaxonInput[];
+    connectOrCreate?: Prisma.TaxonNameCreateOrConnectWithoutTaxonInput | Prisma.TaxonNameCreateOrConnectWithoutTaxonInput[];
+    upsert?: Prisma.TaxonNameUpsertWithWhereUniqueWithoutTaxonInput | Prisma.TaxonNameUpsertWithWhereUniqueWithoutTaxonInput[];
+    createMany?: Prisma.TaxonNameCreateManyTaxonInputEnvelope;
+    set?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    disconnect?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    delete?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    connect?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    update?: Prisma.TaxonNameUpdateWithWhereUniqueWithoutTaxonInput | Prisma.TaxonNameUpdateWithWhereUniqueWithoutTaxonInput[];
+    updateMany?: Prisma.TaxonNameUpdateManyWithWhereWithoutTaxonInput | Prisma.TaxonNameUpdateManyWithWhereWithoutTaxonInput[];
+    deleteMany?: Prisma.TaxonNameScalarWhereInput | Prisma.TaxonNameScalarWhereInput[];
+};
+export type TaxonNameUncheckedUpdateManyWithoutTaxonNestedInput = {
+    create?: Prisma.XOR<Prisma.TaxonNameCreateWithoutTaxonInput, Prisma.TaxonNameUncheckedCreateWithoutTaxonInput> | Prisma.TaxonNameCreateWithoutTaxonInput[] | Prisma.TaxonNameUncheckedCreateWithoutTaxonInput[];
+    connectOrCreate?: Prisma.TaxonNameCreateOrConnectWithoutTaxonInput | Prisma.TaxonNameCreateOrConnectWithoutTaxonInput[];
+    upsert?: Prisma.TaxonNameUpsertWithWhereUniqueWithoutTaxonInput | Prisma.TaxonNameUpsertWithWhereUniqueWithoutTaxonInput[];
+    createMany?: Prisma.TaxonNameCreateManyTaxonInputEnvelope;
+    set?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    disconnect?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    delete?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    connect?: Prisma.TaxonNameWhereUniqueInput | Prisma.TaxonNameWhereUniqueInput[];
+    update?: Prisma.TaxonNameUpdateWithWhereUniqueWithoutTaxonInput | Prisma.TaxonNameUpdateWithWhereUniqueWithoutTaxonInput[];
+    updateMany?: Prisma.TaxonNameUpdateManyWithWhereWithoutTaxonInput | Prisma.TaxonNameUpdateManyWithWhereWithoutTaxonInput[];
+    deleteMany?: Prisma.TaxonNameScalarWhereInput | Prisma.TaxonNameScalarWhereInput[];
+};
+export type TaxonNameCreateWithoutTaxonInput = {
+    name: string;
+    normalizedName?: string | null;
+    author?: string | null;
+    status?: $Enums.NomenclatureStatus;
+    source?: string | null;
+    verbatim?: string | null;
+    createdAt?: Date | string;
+};
+export type TaxonNameUncheckedCreateWithoutTaxonInput = {
+    id?: number;
+    name: string;
+    normalizedName?: string | null;
+    author?: string | null;
+    status?: $Enums.NomenclatureStatus;
+    source?: string | null;
+    verbatim?: string | null;
+    createdAt?: Date | string;
+};
+export type TaxonNameCreateOrConnectWithoutTaxonInput = {
+    where: Prisma.TaxonNameWhereUniqueInput;
+    create: Prisma.XOR<Prisma.TaxonNameCreateWithoutTaxonInput, Prisma.TaxonNameUncheckedCreateWithoutTaxonInput>;
+};
+export type TaxonNameCreateManyTaxonInputEnvelope = {
+    data: Prisma.TaxonNameCreateManyTaxonInput | Prisma.TaxonNameCreateManyTaxonInput[];
+    skipDuplicates?: boolean;
+};
+export type TaxonNameUpsertWithWhereUniqueWithoutTaxonInput = {
+    where: Prisma.TaxonNameWhereUniqueInput;
+    update: Prisma.XOR<Prisma.TaxonNameUpdateWithoutTaxonInput, Prisma.TaxonNameUncheckedUpdateWithoutTaxonInput>;
+    create: Prisma.XOR<Prisma.TaxonNameCreateWithoutTaxonInput, Prisma.TaxonNameUncheckedCreateWithoutTaxonInput>;
+};
+export type TaxonNameUpdateWithWhereUniqueWithoutTaxonInput = {
+    where: Prisma.TaxonNameWhereUniqueInput;
+    data: Prisma.XOR<Prisma.TaxonNameUpdateWithoutTaxonInput, Prisma.TaxonNameUncheckedUpdateWithoutTaxonInput>;
+};
+export type TaxonNameUpdateManyWithWhereWithoutTaxonInput = {
+    where: Prisma.TaxonNameScalarWhereInput;
+    data: Prisma.XOR<Prisma.TaxonNameUpdateManyMutationInput, Prisma.TaxonNameUncheckedUpdateManyWithoutTaxonInput>;
+};
+export type TaxonNameScalarWhereInput = {
+    AND?: Prisma.TaxonNameScalarWhereInput | Prisma.TaxonNameScalarWhereInput[];
+    OR?: Prisma.TaxonNameScalarWhereInput[];
+    NOT?: Prisma.TaxonNameScalarWhereInput | Prisma.TaxonNameScalarWhereInput[];
+    id?: Prisma.IntFilter<"TaxonName"> | number;
+    name?: Prisma.StringFilter<"TaxonName"> | string;
+    normalizedName?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    author?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    status?: Prisma.EnumNomenclatureStatusFilter<"TaxonName"> | $Enums.NomenclatureStatus;
+    source?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    verbatim?: Prisma.StringNullableFilter<"TaxonName"> | string | null;
+    taxonId?: Prisma.IntNullableFilter<"TaxonName"> | number | null;
+    createdAt?: Prisma.DateTimeFilter<"TaxonName"> | Date | string;
+};
+export type TaxonNameCreateManyTaxonInput = {
+    id?: number;
+    name: string;
+    normalizedName?: string | null;
+    author?: string | null;
+    status?: $Enums.NomenclatureStatus;
+    source?: string | null;
+    verbatim?: string | null;
+    createdAt?: Date | string;
+};
+export type TaxonNameUpdateWithoutTaxonInput = {
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type TaxonNameUncheckedUpdateWithoutTaxonInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type TaxonNameUncheckedUpdateManyWithoutTaxonInput = {
+    id?: Prisma.IntFieldUpdateOperationsInput | number;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    normalizedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    author?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumNomenclatureStatusFieldUpdateOperationsInput | $Enums.NomenclatureStatus;
+    source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    verbatim?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type TaxonNameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    name?: boolean;
+    normalizedName?: boolean;
+    author?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verbatim?: boolean;
+    taxonId?: boolean;
+    createdAt?: boolean;
+    taxon?: boolean | Prisma.TaxonName$taxonArgs<ExtArgs>;
+}, ExtArgs["result"]["taxonName"]>;
+export type TaxonNameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    name?: boolean;
+    normalizedName?: boolean;
+    author?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verbatim?: boolean;
+    taxonId?: boolean;
+    createdAt?: boolean;
+    taxon?: boolean | Prisma.TaxonName$taxonArgs<ExtArgs>;
+}, ExtArgs["result"]["taxonName"]>;
+export type TaxonNameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    name?: boolean;
+    normalizedName?: boolean;
+    author?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verbatim?: boolean;
+    taxonId?: boolean;
+    createdAt?: boolean;
+    taxon?: boolean | Prisma.TaxonName$taxonArgs<ExtArgs>;
+}, ExtArgs["result"]["taxonName"]>;
+export type TaxonNameSelectScalar = {
+    id?: boolean;
+    name?: boolean;
+    normalizedName?: boolean;
+    author?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verbatim?: boolean;
+    taxonId?: boolean;
+    createdAt?: boolean;
+};
+export type TaxonNameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "normalizedName" | "author" | "status" | "source" | "verbatim" | "taxonId" | "createdAt", ExtArgs["result"]["taxonName"]>;
+export type TaxonNameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    taxon?: boolean | Prisma.TaxonName$taxonArgs<ExtArgs>;
+};
+export type TaxonNameIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    taxon?: boolean | Prisma.TaxonName$taxonArgs<ExtArgs>;
+};
+export type TaxonNameIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    taxon?: boolean | Prisma.TaxonName$taxonArgs<ExtArgs>;
+};
+export type $TaxonNamePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "TaxonName";
+    objects: {
+        taxon: Prisma.$TaxonPayload<ExtArgs> | null;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: number;
+        name: string;
+        normalizedName: string | null;
+        author: string | null;
+        status: $Enums.NomenclatureStatus;
+        source: string | null;
+        verbatim: string | null;
+        taxonId: number | null;
+        createdAt: Date;
+    }, ExtArgs["result"]["taxonName"]>;
+    composites: {};
+};
+export type TaxonNameGetPayload<S extends boolean | null | undefined | TaxonNameDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload, S>;
+export type TaxonNameCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<TaxonNameFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: TaxonNameCountAggregateInputType | true;
+};
+export interface TaxonNameDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['TaxonName'];
+        meta: {
+            name: 'TaxonName';
+        };
+    };
+    /**
+     * Find zero or one TaxonName that matches the filter.
+     * @param {TaxonNameFindUniqueArgs} args - Arguments to find a TaxonName
+     * @example
+     * // Get one TaxonName
+     * const taxonName = await prisma.taxonName.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TaxonNameFindUniqueArgs>(args: Prisma.SelectSubset<T, TaxonNameFindUniqueArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one TaxonName that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TaxonNameFindUniqueOrThrowArgs} args - Arguments to find a TaxonName
+     * @example
+     * // Get one TaxonName
+     * const taxonName = await prisma.taxonName.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TaxonNameFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, TaxonNameFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first TaxonName that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameFindFirstArgs} args - Arguments to find a TaxonName
+     * @example
+     * // Get one TaxonName
+     * const taxonName = await prisma.taxonName.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TaxonNameFindFirstArgs>(args?: Prisma.SelectSubset<T, TaxonNameFindFirstArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first TaxonName that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameFindFirstOrThrowArgs} args - Arguments to find a TaxonName
+     * @example
+     * // Get one TaxonName
+     * const taxonName = await prisma.taxonName.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TaxonNameFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, TaxonNameFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more TaxonNames that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TaxonNames
+     * const taxonNames = await prisma.taxonName.findMany()
+     *
+     * // Get first 10 TaxonNames
+     * const taxonNames = await prisma.taxonName.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const taxonNameWithIdOnly = await prisma.taxonName.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends TaxonNameFindManyArgs>(args?: Prisma.SelectSubset<T, TaxonNameFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a TaxonName.
+     * @param {TaxonNameCreateArgs} args - Arguments to create a TaxonName.
+     * @example
+     * // Create one TaxonName
+     * const TaxonName = await prisma.taxonName.create({
+     *   data: {
+     *     // ... data to create a TaxonName
+     *   }
+     * })
+     *
+     */
+    create<T extends TaxonNameCreateArgs>(args: Prisma.SelectSubset<T, TaxonNameCreateArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many TaxonNames.
+     * @param {TaxonNameCreateManyArgs} args - Arguments to create many TaxonNames.
+     * @example
+     * // Create many TaxonNames
+     * const taxonName = await prisma.taxonName.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends TaxonNameCreateManyArgs>(args?: Prisma.SelectSubset<T, TaxonNameCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many TaxonNames and returns the data saved in the database.
+     * @param {TaxonNameCreateManyAndReturnArgs} args - Arguments to create many TaxonNames.
+     * @example
+     * // Create many TaxonNames
+     * const taxonName = await prisma.taxonName.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many TaxonNames and only return the `id`
+     * const taxonNameWithIdOnly = await prisma.taxonName.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends TaxonNameCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, TaxonNameCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a TaxonName.
+     * @param {TaxonNameDeleteArgs} args - Arguments to delete one TaxonName.
+     * @example
+     * // Delete one TaxonName
+     * const TaxonName = await prisma.taxonName.delete({
+     *   where: {
+     *     // ... filter to delete one TaxonName
+     *   }
+     * })
+     *
+     */
+    delete<T extends TaxonNameDeleteArgs>(args: Prisma.SelectSubset<T, TaxonNameDeleteArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one TaxonName.
+     * @param {TaxonNameUpdateArgs} args - Arguments to update one TaxonName.
+     * @example
+     * // Update one TaxonName
+     * const taxonName = await prisma.taxonName.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends TaxonNameUpdateArgs>(args: Prisma.SelectSubset<T, TaxonNameUpdateArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more TaxonNames.
+     * @param {TaxonNameDeleteManyArgs} args - Arguments to filter TaxonNames to delete.
+     * @example
+     * // Delete a few TaxonNames
+     * const { count } = await prisma.taxonName.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends TaxonNameDeleteManyArgs>(args?: Prisma.SelectSubset<T, TaxonNameDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more TaxonNames.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TaxonNames
+     * const taxonName = await prisma.taxonName.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends TaxonNameUpdateManyArgs>(args: Prisma.SelectSubset<T, TaxonNameUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more TaxonNames and returns the data updated in the database.
+     * @param {TaxonNameUpdateManyAndReturnArgs} args - Arguments to update many TaxonNames.
+     * @example
+     * // Update many TaxonNames
+     * const taxonName = await prisma.taxonName.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more TaxonNames and only return the `id`
+     * const taxonNameWithIdOnly = await prisma.taxonName.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends TaxonNameUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, TaxonNameUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one TaxonName.
+     * @param {TaxonNameUpsertArgs} args - Arguments to update or create a TaxonName.
+     * @example
+     * // Update or create a TaxonName
+     * const taxonName = await prisma.taxonName.upsert({
+     *   create: {
+     *     // ... data to create a TaxonName
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TaxonName we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TaxonNameUpsertArgs>(args: Prisma.SelectSubset<T, TaxonNameUpsertArgs<ExtArgs>>): Prisma.Prisma__TaxonNameClient<runtime.Types.Result.GetResult<Prisma.$TaxonNamePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of TaxonNames.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameCountArgs} args - Arguments to filter TaxonNames to count.
+     * @example
+     * // Count the number of TaxonNames
+     * const count = await prisma.taxonName.count({
+     *   where: {
+     *     // ... the filter for the TaxonNames we want to count
+     *   }
+     * })
+    **/
+    count<T extends TaxonNameCountArgs>(args?: Prisma.Subset<T, TaxonNameCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], TaxonNameCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a TaxonName.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TaxonNameAggregateArgs>(args: Prisma.Subset<T, TaxonNameAggregateArgs>): Prisma.PrismaPromise<GetTaxonNameAggregateType<T>>;
+    /**
+     * Group by TaxonName.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaxonNameGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends TaxonNameGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: TaxonNameGroupByArgs['orderBy'];
+    } : {
+        orderBy?: TaxonNameGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, TaxonNameGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTaxonNameGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the TaxonName model
+     */
+    readonly fields: TaxonNameFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for TaxonName.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__TaxonNameClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    taxon<T extends Prisma.TaxonName$taxonArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TaxonName$taxonArgs<ExtArgs>>): Prisma.Prisma__TaxonClient<runtime.Types.Result.GetResult<Prisma.$TaxonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the TaxonName model
+ */
+export interface TaxonNameFieldRefs {
+    readonly id: Prisma.FieldRef<"TaxonName", 'Int'>;
+    readonly name: Prisma.FieldRef<"TaxonName", 'String'>;
+    readonly normalizedName: Prisma.FieldRef<"TaxonName", 'String'>;
+    readonly author: Prisma.FieldRef<"TaxonName", 'String'>;
+    readonly status: Prisma.FieldRef<"TaxonName", 'NomenclatureStatus'>;
+    readonly source: Prisma.FieldRef<"TaxonName", 'String'>;
+    readonly verbatim: Prisma.FieldRef<"TaxonName", 'String'>;
+    readonly taxonId: Prisma.FieldRef<"TaxonName", 'Int'>;
+    readonly createdAt: Prisma.FieldRef<"TaxonName", 'DateTime'>;
+}
+/**
+ * TaxonName findUnique
+ */
+export type TaxonNameFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * Filter, which TaxonName to fetch.
+     */
+    where: Prisma.TaxonNameWhereUniqueInput;
+};
+/**
+ * TaxonName findUniqueOrThrow
+ */
+export type TaxonNameFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * Filter, which TaxonName to fetch.
+     */
+    where: Prisma.TaxonNameWhereUniqueInput;
+};
+/**
+ * TaxonName findFirst
+ */
+export type TaxonNameFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * Filter, which TaxonName to fetch.
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TaxonNames to fetch.
+     */
+    orderBy?: Prisma.TaxonNameOrderByWithRelationInput | Prisma.TaxonNameOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for TaxonNames.
+     */
+    cursor?: Prisma.TaxonNameWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TaxonNames from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TaxonNames.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of TaxonNames.
+     */
+    distinct?: Prisma.TaxonNameScalarFieldEnum | Prisma.TaxonNameScalarFieldEnum[];
+};
+/**
+ * TaxonName findFirstOrThrow
+ */
+export type TaxonNameFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * Filter, which TaxonName to fetch.
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TaxonNames to fetch.
+     */
+    orderBy?: Prisma.TaxonNameOrderByWithRelationInput | Prisma.TaxonNameOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for TaxonNames.
+     */
+    cursor?: Prisma.TaxonNameWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TaxonNames from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TaxonNames.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of TaxonNames.
+     */
+    distinct?: Prisma.TaxonNameScalarFieldEnum | Prisma.TaxonNameScalarFieldEnum[];
+};
+/**
+ * TaxonName findMany
+ */
+export type TaxonNameFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * Filter, which TaxonNames to fetch.
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of TaxonNames to fetch.
+     */
+    orderBy?: Prisma.TaxonNameOrderByWithRelationInput | Prisma.TaxonNameOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing TaxonNames.
+     */
+    cursor?: Prisma.TaxonNameWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` TaxonNames from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` TaxonNames.
+     */
+    skip?: number;
+    distinct?: Prisma.TaxonNameScalarFieldEnum | Prisma.TaxonNameScalarFieldEnum[];
+};
+/**
+ * TaxonName create
+ */
+export type TaxonNameCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a TaxonName.
+     */
+    data: Prisma.XOR<Prisma.TaxonNameCreateInput, Prisma.TaxonNameUncheckedCreateInput>;
+};
+/**
+ * TaxonName createMany
+ */
+export type TaxonNameCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TaxonNames.
+     */
+    data: Prisma.TaxonNameCreateManyInput | Prisma.TaxonNameCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * TaxonName createManyAndReturn
+ */
+export type TaxonNameCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * The data used to create many TaxonNames.
+     */
+    data: Prisma.TaxonNameCreateManyInput | Prisma.TaxonNameCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * TaxonName update
+ */
+export type TaxonNameUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a TaxonName.
+     */
+    data: Prisma.XOR<Prisma.TaxonNameUpdateInput, Prisma.TaxonNameUncheckedUpdateInput>;
+    /**
+     * Choose, which TaxonName to update.
+     */
+    where: Prisma.TaxonNameWhereUniqueInput;
+};
+/**
+ * TaxonName updateMany
+ */
+export type TaxonNameUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TaxonNames.
+     */
+    data: Prisma.XOR<Prisma.TaxonNameUpdateManyMutationInput, Prisma.TaxonNameUncheckedUpdateManyInput>;
+    /**
+     * Filter which TaxonNames to update
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * Limit how many TaxonNames to update.
+     */
+    limit?: number;
+};
+/**
+ * TaxonName updateManyAndReturn
+ */
+export type TaxonNameUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * The data used to update TaxonNames.
+     */
+    data: Prisma.XOR<Prisma.TaxonNameUpdateManyMutationInput, Prisma.TaxonNameUncheckedUpdateManyInput>;
+    /**
+     * Filter which TaxonNames to update
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * Limit how many TaxonNames to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * TaxonName upsert
+ */
+export type TaxonNameUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the TaxonName to update in case it exists.
+     */
+    where: Prisma.TaxonNameWhereUniqueInput;
+    /**
+     * In case the TaxonName found by the `where` argument doesn't exist, create a new TaxonName with this data.
+     */
+    create: Prisma.XOR<Prisma.TaxonNameCreateInput, Prisma.TaxonNameUncheckedCreateInput>;
+    /**
+     * In case the TaxonName was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.TaxonNameUpdateInput, Prisma.TaxonNameUncheckedUpdateInput>;
+};
+/**
+ * TaxonName delete
+ */
+export type TaxonNameDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+    /**
+     * Filter which TaxonName to delete.
+     */
+    where: Prisma.TaxonNameWhereUniqueInput;
+};
+/**
+ * TaxonName deleteMany
+ */
+export type TaxonNameDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which TaxonNames to delete
+     */
+    where?: Prisma.TaxonNameWhereInput;
+    /**
+     * Limit how many TaxonNames to delete.
+     */
+    limit?: number;
+};
+/**
+ * TaxonName.taxon
+ */
+export type TaxonName$taxonArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Taxon
+     */
+    select?: Prisma.TaxonSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Taxon
+     */
+    omit?: Prisma.TaxonOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonInclude<ExtArgs> | null;
+    where?: Prisma.TaxonWhereInput;
+};
+/**
+ * TaxonName without action
+ */
+export type TaxonNameDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxonName
+     */
+    select?: Prisma.TaxonNameSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TaxonName
+     */
+    omit?: Prisma.TaxonNameOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TaxonNameInclude<ExtArgs> | null;
+};
+export {};
+//# sourceMappingURL=TaxonName.d.ts.map
