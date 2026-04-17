@@ -75,17 +75,17 @@ export function PlantDetail() {
   const getChildRankLabel = (rank: string) => {
     switch (rank) {
       case "kingdom":
-        return "Ngành trực thuộc";
+        return "Ngành cấp dưới";
       case "phylum":
-        return "Lớp trực thuộc";
+        return "Lớp cấp dưới";
       case "taxonomicClass":
-        return "Bộ trực thuộc";
+        return "Bộ cấp dưới";
       case "order":
-        return "Họ trực thuộc";
+        return "Họ cấp dưới";
       case "family":
-        return "Chi trực thuộc";
+        return "Chi cấp dưới";
       case "genus":
-        return "Loài trực thuộc";
+        return "Loài cấp dưới";
       case "species":
         return "Phân loài & Thứ";
       default:
