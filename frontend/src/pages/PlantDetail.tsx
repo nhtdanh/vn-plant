@@ -21,6 +21,7 @@ import { useLocation } from "react-router-dom";
 import type { TaxonDetail, TaxonAncestor } from "@/types";
 import { getRankDisplayName } from "@/utils/taxon.utils";
 import { cn } from "@/lib/utils";
+import { formatDate } from "@/utils/date.utils";
 
 export function PlantDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -799,7 +800,7 @@ export function PlantDetail() {
                                   {/* Timestamp overlay */}
                                   <div className="absolute bottom-1.5 left-2 z-10 pointer-events-none">
                                     <p className="text-[10px] font-sans font-black text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] tracking-wider">
-                                      {new Date(image.createdAt).toLocaleDateString("vi-VN")}
+                                      {formatDate(image.createdAt)}
                                     </p>
                                   </div>
 

@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { formatDate } from "@/utils/date.utils";
 
 /**
  * Profile - Trang cá nhân của người dùng, tích hợp quản lý hồ sơ và đóng góp
@@ -206,7 +207,7 @@ export function Profile() {
                       <div className="flex items-center gap-3 mb-1">
                         <div className="flex items-center gap-1.5 text-[9px] font-sans font-bold text-zinc-400 uppercase tracking-widest">
                           <Clock size={10} />
-                          {new Date(image.createdAt).toLocaleDateString('vi-VN')}
+                          {formatDate(image.createdAt)}
                         </div>
                         <Link 
                           to={`/plant/${(image as any).taxon?.slug}`} 

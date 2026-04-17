@@ -44,6 +44,7 @@ import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { formatDate } from "@/utils/date.utils";
 
 const createUserSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
@@ -227,7 +228,7 @@ export function AdminUserManagement() {
                   </TableCell>
                   <TableCell className="py-3.5">
                     <span className="text-xs font-mono text-zinc-500">
-                       {new Date(user.createdAt).toLocaleDateString("vi-VN")}
+                       {formatDate(user.createdAt)}
                     </span>
                   </TableCell>
                   <TableCell className="py-3.5">
