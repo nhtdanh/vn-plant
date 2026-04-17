@@ -2,17 +2,17 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
-import { prisma } from "../../config/prisma";
-import { ApiError } from "../../utils/apiError";
+import { prisma } from "../../config/prisma.js";
+import { ApiError } from "../../utils/apiError.js";
 import {
   JWT_SECRET,
   ACCESS_EXPIRES_IN,
   REFRESH_EXPIRES_IN,
   SALT_ROUNDS,
   getDurationMs,
-} from "../../config/auth-config";
-import { registerSchema, loginSchema } from "./auth.dto";
-import type { UserEntity, UserResponse, UserRole } from "../user/user.types";
+} from "../../config/auth-config.js";
+import { registerSchema, loginSchema } from "./auth.dto.js";
+import type { UserEntity, UserResponse, UserRole } from "../user/user.types.js";
 
 function generateTokens(userId: string, role: UserRole) {
   const accessToken = jwt.sign({ userId, role }, JWT_SECRET, {
@@ -163,3 +163,4 @@ export async function logout(tokenString: string) {
     // Nếu lỗi hoặc token không tồn tại, bỏ qua vì coi như đã logout
   }
 }
+

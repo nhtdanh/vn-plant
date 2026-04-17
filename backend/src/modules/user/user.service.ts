@@ -1,14 +1,14 @@
-import { prisma } from "../../config/prisma";
-import { ApiError } from "../../utils/apiError";
-import { processImage, uploadToR2, deleteFromR2, deleteMultipleFromR2 } from "../upload/upload.service";
-import { R2_PUBLIC_DOMAIN } from "../../config/s3.config";
-import type { UpdateProfileInput } from "./user.dto";
-import { formatPaginatedResponse } from "../../utils/pagination";
-import type { PaginationParams } from "../../utils/pagination";
-import { normalizeUrl } from "../../utils/url";
-import type { UserRole, UserStatus } from "../../../generated/prisma";
+import { prisma } from "../../config/prisma.js";
+import { ApiError } from "../../utils/apiError.js";
+import { processImage, uploadToR2, deleteFromR2, deleteMultipleFromR2 } from "../upload/upload.service.js";
+import { R2_PUBLIC_DOMAIN } from "../../config/s3.config.js";
+import type { UpdateProfileInput } from "./user.dto.js";
+import { formatPaginatedResponse } from "../../utils/pagination.js";
+import type { PaginationParams } from "../../utils/pagination.js";
+import { normalizeUrl } from "../../utils/url.js";
+import type { UserRole, UserStatus } from "../../../generated/prisma/index.js";
 import bcrypt from "bcrypt";
-import { SALT_ROUNDS } from "../../config/auth-config";
+import { SALT_ROUNDS } from "../../config/auth-config.js";
 
 export async function getProfile(id: string) {
   const user = await prisma.user.findUnique({
@@ -224,3 +224,5 @@ export async function adminCreateUser(data: { email: string; passwordHash: strin
     },
   });
 }
+
+

@@ -1,3 +1,3 @@
-export * from "./bookmark.service";
-export * from "./bookmark.route";
-export * from "./bookmark.dto";
+export * from "./bookmark.service.js";
+export * from "./bookmark.route.js";
+export * from "./bookmark.dto.js";

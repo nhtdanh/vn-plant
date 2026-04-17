@@ -1,5 +1,5 @@
-import { TaxonomyRank, Prisma } from "../../../generated/prisma";
-import { ApiError } from "../../utils/apiError";
+import { TaxonomyRank, Prisma } from "../../../generated/prisma/index.js";
+import { ApiError } from "../../utils/apiError.js";
 
 /**
  * Thứ tự phân bậc từ cao xuống thấp
@@ -65,3 +65,5 @@ export async function recalculatePrimaryImageUrl(tx: Prisma.TransactionClient, t
 
   return primaryUrl;
 }
+
+

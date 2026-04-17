@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
-import * as bookmarkService from "./bookmark.service";
-import { addBookmarkSchema, listBookmarksQuerySchema } from "./bookmark.dto";
-import { sendSuccess, sendCreated } from "../../utils/apiResponse";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { ApiError } from "../../utils/apiError";
+import * as bookmarkService from "./bookmark.service.js";
+import { addBookmarkSchema, listBookmarksQuerySchema } from "./bookmark.dto.js";
+import { sendSuccess, sendCreated } from "../../utils/apiResponse.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiError } from "../../utils/apiError.js";
 
 export const addBookmark = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
   const userId = (req as any).user?.id || (req as any).user?.userId;
@@ -34,3 +34,4 @@ export const listBookmarks = asyncHandler(async (req: Request, res: Response, _n
 
   sendSuccess(res, result);
 });
+

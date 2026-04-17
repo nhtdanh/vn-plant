@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { z } from "zod";
-import { ApiError } from "../utils/apiError";
-import { sendError } from "../utils/apiResponse";
+import { ApiError } from "../utils/apiError.js";
+import { sendError } from "../utils/apiResponse.js";
 
 export function errorHandler(
   err: unknown,
@@ -54,3 +54,4 @@ export function errorHandler(
     500,
   );
 }
+

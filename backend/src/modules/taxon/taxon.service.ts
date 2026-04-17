@@ -1,20 +1,20 @@
-import { Prisma, ImageStatus } from "../../../generated/prisma";
-import { prisma } from "../../config/prisma";
-import type { GetTaxaQuery } from "./taxon.dto";
-import { ApiError } from "../../utils/apiError";
-import { generateSlug } from "../../utils/slug";
+import { Prisma, ImageStatus } from "../../../generated/prisma/index.js";
+import { prisma } from "../../config/prisma.js";
+import type { GetTaxaQuery } from "./taxon.dto.js";
+import { ApiError } from "../../utils/apiError.js";
+import { generateSlug } from "../../utils/slug.js";
 import {
   type CreateTaxonInput,
   type UpdateTaxonInput,
   type AdminTaxaQuery,
-} from "./adminTaxon.dto";
-import { validateRankHierarchy, recalculatePrimaryImageUrl } from "./taxon.utils";
-import * as uploadService from "../upload/upload.service";
+} from "./adminTaxon.dto.js";
+import { validateRankHierarchy, recalculatePrimaryImageUrl } from "./taxon.utils.js";
+import * as uploadService from "../upload/upload.service.js";
 import {
   getPaginationParams,
   formatPaginatedResponse,
-} from "../../utils/pagination";
-import { normalizeUrl } from "../../utils/url";
+} from "../../utils/pagination.js";
+import { normalizeUrl } from "../../utils/url.js";
 
 
 
@@ -882,11 +882,11 @@ export async function deleteTaxon(id: number) {
 
   // 2. Chỉ sau khi xóa DB thành công mới dọn dẹp ảnh vật lý trên R2 (Async)
   // Sử dụng dynamic import để tránh circular dependency giữa các service
-  import("./taxonImage.service").then(m => {
-    m.deletePhysicalImagesByTaxonId(id).catch(err => {
+  import("./taxonImage.service.js").then(m => {
+    m.deletePhysicalImagesByTaxonId(id).catch((err: any) => {
       console.error(`[Cleanup] Failed to delete physical images for taxon ${id} after DB delete:`, err);
     });
-  }).catch(err => {
+  }).catch((err: any) => {
     console.error(`[Cleanup] Failed to import taxonImageService for cleanup:`, err);
   });
 
@@ -980,3 +980,5 @@ export async function getBreadcrumb(slug: string) {
 
   return breadcrumb;
 }
+
+

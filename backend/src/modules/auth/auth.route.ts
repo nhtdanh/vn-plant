@@ -1,7 +1,7 @@
 import { Router } from "express";
-import * as authController from "./auth.controller";
-import { validate } from "../../middlewares/validate";
-import { registerSchema, loginSchema } from "./auth.dto";
+import * as authController from "./auth.controller.js";
+import { validate } from "../../middlewares/validate.js";
+import { registerSchema, loginSchema } from "./auth.dto.js";
 
 const authRoutes = Router();
 
@@ -11,3 +11,4 @@ authRoutes.post("/refresh", authController.refresh);
 authRoutes.post("/logout", authController.logout);
 
 export { authRoutes };
+

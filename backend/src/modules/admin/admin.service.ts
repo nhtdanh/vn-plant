@@ -1,7 +1,7 @@
-import * as taxonService from "../taxon/taxon.service";
-import * as taxonImageService from "../taxon/taxonImage.service";
-import * as userService from "../user/user.service";
-import { prisma } from "../../config/prisma";
+import * as taxonService from "../taxon/taxon.service.js";
+import * as taxonImageService from "../taxon/taxonImage.service.js";
+import * as userService from "../user/user.service.js";
+import { prisma } from "../../config/prisma.js";
 
 export async function getSystemStats() {
   const [
@@ -41,5 +41,6 @@ export async function getSystemStats() {
     distribution: distributionStats,
   };
 }
+
 
 

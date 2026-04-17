@@ -1,12 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
-import * as userService from "./user.service";
-import * as taxonImageService from "../taxon/taxonImage.service";
-import { updateProfileSchema } from "./user.dto";
-import { sendSuccess } from "../../utils/apiResponse";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { ApiError } from "../../utils/apiError";
-import { paginationQuerySchema } from "../../common/pagination.dto";
-import { getPaginationParams } from "../../utils/pagination";
+import * as userService from "./user.service.js";
+import * as taxonImageService from "../taxon/taxonImage.service.js";
+import { updateProfileSchema } from "./user.dto.js";
+import { sendSuccess } from "../../utils/apiResponse.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { ApiError } from "../../utils/apiError.js";
+import { paginationQuerySchema } from "../../common/pagination.dto.js";
+import { getPaginationParams } from "../../utils/pagination.js";
 
 export const getMe = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
   const userId = (req as any).user?.id || (req as any).user?.userId;
@@ -59,3 +59,4 @@ export const uploadAvatar = asyncHandler(async (req: Request, res: Response, _ne
 
   sendSuccess(res, result, "Cập nhật ảnh đại diện thành công");
 });
+

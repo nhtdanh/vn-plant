@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { authRoutes } from "../modules/auth";
-import { taxonRoutes, taxonImageRoutes } from "../modules/taxon";
-import { bookmarkRoutes } from "../modules/bookmark";
-import { userRoutes } from "../modules/user";
-import { adminRoutes } from "../modules/admin/admin.route";
+import { authRoutes } from "../modules/auth/index.js";
+import { taxonRoutes, taxonImageRoutes } from "../modules/taxon/index.js";
+import { bookmarkRoutes } from "../modules/bookmark/index.js";
+import { userRoutes } from "../modules/user/index.js";
+import { adminRoutes } from "../modules/admin/admin.route.js";
 
 const router = Router();
 

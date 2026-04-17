@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { requireAuth, authorize } from "../auth/auth.middleware";
-import * as adminStatsController from "./admin.controller";
-import * as adminTaxonController from "../taxon/adminTaxon.controller";
-import * as adminUserController from "../user/adminUser.controller";
-import * as taxonImageController from "../taxon/taxonImage.controller";
-import { memoryUpload } from "../../middlewares/upload";
+import { requireAuth, authorize } from "../auth/auth.middleware.js";
+import * as adminStatsController from "./admin.controller.js";
+import * as adminTaxonController from "../taxon/adminTaxon.controller.js";
+import * as adminUserController from "../user/adminUser.controller.js";
+import * as taxonImageController from "../taxon/taxonImage.controller.js";
+import { memoryUpload } from "../../middlewares/upload.js";
 
 const adminRoutes = Router();
 
@@ -33,3 +33,4 @@ adminRoutes.patch("/images/:id/review", taxonImageController.reviewImage);
 adminRoutes.delete("/images/:id", taxonImageController.deleteImage);
 
 export { adminRoutes };
+

@@ -1,13 +1,13 @@
 import type { Request, Response, NextFunction } from "express";
-import * as taxonService from "./taxon.service";
+import * as taxonService from "./taxon.service.js";
 import { 
   getTaxaQuerySchema, 
   taxonSlugSchema, 
   getSuggestionsQuerySchema,
   taxonIdParamsSchema
-} from "./taxon.dto";
-import { sendSuccess } from "../../utils/apiResponse";
-import { asyncHandler } from "../../utils/asyncHandler";
+} from "./taxon.dto.js";
+import { sendSuccess } from "../../utils/apiResponse.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
 
 export const getTaxa = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
   const query = getTaxaQuerySchema.parse(req.query);
@@ -49,3 +49,4 @@ export const getRelatedTaxa = asyncHandler(async (req: Request, res: Response, _
   const related = await taxonService.getRelatedTaxa(id);
   sendSuccess(res, related);
 });
+

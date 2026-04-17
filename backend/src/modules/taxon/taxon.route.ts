@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as taxonController from "./taxon.controller";
+import * as taxonController from "./taxon.controller.js";
 
 const router = Router();
 
@@ -39,3 +39,4 @@ router.get("/:id/related", taxonController.getRelatedTaxa);
 router.get("/:slug", taxonController.getTaxonDetail);
 
 export default router;
+

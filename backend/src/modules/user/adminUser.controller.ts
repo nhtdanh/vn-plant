@@ -1,12 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
-import * as userService from "./user.service";
-import { sendSuccess } from "../../utils/apiResponse";
-import { asyncHandler } from "../../utils/asyncHandler";
+import * as userService from "./user.service.js";
+import { sendSuccess } from "../../utils/apiResponse.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
 import { z } from "zod";
-import { paginationQuerySchema } from "../../common/pagination.dto";
-import { getPaginationParams } from "../../utils/pagination";
+import { paginationQuerySchema } from "../../common/pagination.dto.js";
+import { getPaginationParams } from "../../utils/pagination.js";
 
-import { userRoleSchema, userStatusSchema } from "./user.dto";
+import { userRoleSchema, userStatusSchema } from "./user.dto.js";
 
 export const listUsers = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
   const querySchema = paginationQuerySchema.extend({
@@ -63,3 +63,4 @@ export const createUser = asyncHandler(async (req: Request, res: Response, _next
 
   sendSuccess(res, user, "Tạo tài khoản thành công", 201);
 });
+

@@ -1,5 +1,5 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client, R2_BUCKET_NAME } from "../../config/s3.config";
+import { s3Client, R2_BUCKET_NAME } from "../../config/s3.config.js";
 import crypto from "crypto";
 import sharp from "sharp";
 
@@ -97,3 +97,4 @@ export async function deleteMultipleFromR2(keys: string[]) {
   });
   await s3Client.send(command);
 }
+

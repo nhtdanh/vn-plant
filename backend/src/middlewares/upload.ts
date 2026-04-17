@@ -1,7 +1,7 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { ApiError } from "../utils/apiError";
+import { ApiError } from "../utils/apiError.js";
 
 const uploadDir = path.join(process.cwd(), "public/uploads");
 if (!fs.existsSync(uploadDir)) {
@@ -62,3 +62,4 @@ export const memoryUpload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter,
 });
+

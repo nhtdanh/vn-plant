@@ -1,7 +1,7 @@
 import { Router } from "express";
-import * as userController from "./user.controller";
-import { requireAuth } from "../auth/auth.middleware";
-import { memoryUpload } from "../../middlewares/upload";
+import * as userController from "./user.controller.js";
+import { requireAuth } from "../auth/auth.middleware.js";
+import { memoryUpload } from "../../middlewares/upload.js";
 
 const router = Router();
 
@@ -14,3 +14,4 @@ router.patch("/me", userController.updateMe);
 router.post("/me/avatar", memoryUpload.single("avatar"), userController.uploadAvatar);
 
 export { router as userRoutes };
+

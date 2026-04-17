@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import * as taxonService from "./taxon.service";
-import { createTaxonSchema, updateTaxonSchema, adminTaxaQuerySchema } from "./adminTaxon.dto";
-import { sendSuccess, sendCreated } from "../../utils/apiResponse";
-import { asyncHandler } from "../../utils/asyncHandler";
+import * as taxonService from "./taxon.service.js";
+import { createTaxonSchema, updateTaxonSchema, adminTaxaQuerySchema } from "./adminTaxon.dto.js";
+import { sendSuccess, sendCreated } from "../../utils/apiResponse.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
 
 export const listTaxa = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
   const query = adminTaxaQuerySchema.parse(req.query);
@@ -42,3 +42,4 @@ export const deleteTaxon = asyncHandler(async (req: Request, res: Response, _nex
   await taxonService.deleteTaxon(id);
   sendSuccess(res, null, "Xóa thành công");
 });
+

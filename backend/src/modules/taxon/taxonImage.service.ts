@@ -1,11 +1,11 @@
-import { prisma } from "../../config/prisma";
-import { uploadToR2, deleteFromR2, processImage, deleteMultipleFromR2 } from "../upload/upload.service";
-import { ApiError } from "../../utils/apiError";
-import { R2_PUBLIC_DOMAIN } from "../../config/s3.config";
-import type { ImageStatus } from "../../../generated/prisma";
-import { formatPaginatedResponse } from "../../utils/pagination";
-import type { PaginationParams } from "../../utils/pagination";
-import { recalculatePrimaryImageUrl } from "./taxon.utils";
+import { prisma } from "../../config/prisma.js";
+import { uploadToR2, deleteFromR2, processImage, deleteMultipleFromR2 } from "../upload/upload.service.js";
+import { ApiError } from "../../utils/apiError.js";
+import { R2_PUBLIC_DOMAIN } from "../../config/s3.config.js";
+import type { ImageStatus } from "../../../generated/prisma/index.js";
+import { formatPaginatedResponse } from "../../utils/pagination.js";
+import type { PaginationParams } from "../../utils/pagination.js";
+import { recalculatePrimaryImageUrl } from "./taxon.utils.js";
 
 interface ContributeImageData {
   taxonId: number;
@@ -308,3 +308,5 @@ export async function deleteImage(id: number) {
 
   return { id, deleted: true };
 }
+
+

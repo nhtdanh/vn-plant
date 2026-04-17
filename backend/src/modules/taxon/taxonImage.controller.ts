@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
-import * as taxonImageService from "./taxonImage.service";
-import { contributeImageSchema, reviewImageSchema, taxonImageIdSchema } from "./taxonImage.dto";
-import { sendSuccess, sendCreated } from "../../utils/apiResponse";
-import { ApiError } from "../../utils/apiError";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { paginationQuerySchema } from "../../common/pagination.dto";
-import { getPaginationParams } from "../../utils/pagination";
+import * as taxonImageService from "./taxonImage.service.js";
+import { contributeImageSchema, reviewImageSchema, taxonImageIdSchema } from "./taxonImage.dto.js";
+import { sendSuccess, sendCreated } from "../../utils/apiResponse.js";
+import { ApiError } from "../../utils/apiError.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { paginationQuerySchema } from "../../common/pagination.dto.js";
+import { getPaginationParams } from "../../utils/pagination.js";
 
 // Người dùng đóng góp ảnh
 export const contributeImage = asyncHandler(async (req: Request, res: Response) => {
@@ -105,3 +105,4 @@ export const deleteImage = asyncHandler(async (req: Request, res: Response) => {
   const result = await taxonImageService.deleteImage(id);
   sendSuccess(res, result, "Đã xóa ảnh thành công");
 });
+

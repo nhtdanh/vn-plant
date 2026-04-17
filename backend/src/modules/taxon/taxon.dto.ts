@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { paginationQuerySchema } from "../../common/pagination.dto";
+import { paginationQuerySchema } from "../../common/pagination.dto.js";
 
 export const taxonRankSchema = z.enum([
   "kingdom",
@@ -58,3 +58,4 @@ export const taxonIdParamsSchema = z.object({
 export type GetTaxaQuery = z.infer<typeof getTaxaQuerySchema>;
 export type TaxonSlugParams = z.infer<typeof taxonSlugSchema>;
 export type TaxonIdParams = z.infer<typeof taxonIdParamsSchema>;
+

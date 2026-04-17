@@ -1,6 +1,6 @@
 import { Router } from "express";
-import * as bookmarkController from "./bookmark.controller";
-import { requireAuth } from "../auth/auth.middleware";
+import * as bookmarkController from "./bookmark.controller.js";
+import { requireAuth } from "../auth/auth.middleware.js";
 
 const router = Router();
 
@@ -12,3 +12,4 @@ router.post("/", bookmarkController.addBookmark);
 router.delete("/:taxonId", bookmarkController.removeBookmark);
 
 export { router as bookmarkRoutes };
+

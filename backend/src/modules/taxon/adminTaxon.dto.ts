@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { taxonRankSchema, plantGroupSchema, toArray } from "./taxon.dto";
-import { paginationQuerySchema } from "../../common/pagination.dto";
+import { taxonRankSchema, plantGroupSchema, toArray } from "./taxon.dto.js";
+import { paginationQuerySchema } from "../../common/pagination.dto.js";
 
 export const taxonStatusSchema = z.enum(["draft", "published", "archived"]);
 
@@ -121,3 +121,4 @@ export const adminTaxaQuerySchema = paginationQuerySchema.extend({
 export type CreateTaxonInput = z.infer<typeof createTaxonSchema>;
 export type UpdateTaxonInput = z.infer<typeof updateTaxonSchema>;
 export type AdminTaxaQuery = z.infer<typeof adminTaxaQuerySchema>;
+

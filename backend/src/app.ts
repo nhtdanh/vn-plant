@@ -4,8 +4,8 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import morgan from "morgan";
-import { router } from "./routes/index";
-import { errorHandler } from "./middlewares/errorHandler";
+import { router } from "./routes/index.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import * as taxonImageController from "./taxonImage.controller";
-import { requireAuth, authorize } from "../auth/auth.middleware";
-import { memoryUpload } from "../../middlewares/upload";
+import * as taxonImageController from "./taxonImage.controller.js";
+import { requireAuth, authorize } from "../auth/auth.middleware.js";
+import { memoryUpload } from "../../middlewares/upload.js";
 
 const router = Router();
 
@@ -84,3 +84,4 @@ router.delete(
 );
 
 export default router;
+

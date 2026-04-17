@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import * as authService from "./auth.service";
-import { sendSuccess, sendCreated } from "../../utils/apiResponse";
-import { ApiError } from "../../utils/apiError";
-import { asyncHandler } from "../../utils/asyncHandler";
-import { REFRESH_EXPIRES_IN, getDurationMs } from "../../config/auth-config";
+import * as authService from "./auth.service.js";
+import { sendSuccess, sendCreated } from "../../utils/apiResponse.js";
+import { ApiError } from "../../utils/apiError.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { REFRESH_EXPIRES_IN, getDurationMs } from "../../config/auth-config.js";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const userAgent = req.get("User-Agent");
@@ -56,3 +56,4 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   });
   sendSuccess(res, null, "Đăng xuất thành công");
 });
+

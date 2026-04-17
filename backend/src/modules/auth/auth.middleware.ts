@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { ApiError } from "../../utils/apiError";
-import { JWT_SECRET } from "../../config/auth-config";
-import type { AuthPayload } from "./auth.types";
-import type { UserRole } from "../user/user.types";
+import { ApiError } from "../../utils/apiError.js";
+import { JWT_SECRET } from "../../config/auth-config.js";
+import type { AuthPayload } from "./auth.types.js";
+import type { UserRole } from "../user/user.types.js";
 
 function verifyToken(token: string): AuthPayload {
   const decoded = jwt.verify(token, JWT_SECRET, {
@@ -33,7 +33,7 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
     const payload = verifyToken(token);
     
     // Kiểm tra trạng thái User trong Database (Chống khóa tài khoản vẫn dùng được JWT)
-    const { prisma } = await import("../../config/prisma");
+    const { prisma } = await import("../../config/prisma.js");
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
       select: { status: true }
@@ -79,3 +79,4 @@ export function authorize(...roles: UserRole[]) {
     next();
   };
 }
+

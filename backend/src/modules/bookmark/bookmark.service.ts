@@ -1,7 +1,7 @@
-import { prisma } from "../../config/prisma";
-import { ApiError } from "../../utils/apiError";
-import type { ListBookmarksQuery } from "./bookmark.dto";
-import { getPaginationParams, formatPaginatedResponse } from "../../utils/pagination";
+import { prisma } from "../../config/prisma.js";
+import { ApiError } from "../../utils/apiError.js";
+import type { ListBookmarksQuery } from "./bookmark.dto.js";
+import { getPaginationParams, formatPaginatedResponse } from "../../utils/pagination.js";
 
 export async function addBookmark(userId: string, taxonId: number) {
   // Check if taxon exists
@@ -105,3 +105,4 @@ export async function checkIsBookmarked(userId: string | undefined, taxonId: num
 
   return !!bookmark;
 }
+
