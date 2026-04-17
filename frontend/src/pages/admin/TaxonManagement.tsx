@@ -320,7 +320,7 @@ export function TaxonManagement() {
                 </TableCell>
               </TableRow>
             ) : (
-              taxons.map((taxon, idx) => (
+              taxons.map((taxon) => (
                 <TableRow
                   key={taxon.id}
                   className="group hover:bg-emerald-50/30 transition-colors border-zinc-50"

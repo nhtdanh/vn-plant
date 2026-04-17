@@ -5,8 +5,7 @@ import type {
   ImageStatus, 
   ApiResponse, 
   User, 
-  CreateUserInput, 
-  CreateTaxonInput 
+  CreateUserInput
 } from "../types";
 
 /**
