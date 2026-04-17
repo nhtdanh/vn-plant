@@ -8,7 +8,7 @@ import { adminRoutes } from "../modules/admin/admin.route.js";
 const router = Router();
 
 // health check
-router.get("/health", (_req, res) => {
+router.get("/health", (_req: any, res: any) => {
   res.json({ success: true, message: "OK" });
 });
 

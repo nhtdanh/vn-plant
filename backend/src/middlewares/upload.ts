@@ -16,10 +16,10 @@ function sanitizeFileName(filename: string): string {
 }
 
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+  destination: (_req: any, _file: any, cb: any) => {
     cb(null, uploadDir);
   },
-  filename: (_req, file, cb) => {
+  filename: (_req: any, file: any, cb: any) => {
     const safeName = sanitizeFileName(file.fieldname);
     const safeBasename = sanitizeFileName(path.parse(file.originalname).name);
     const ext = path.extname(file.originalname).toLowerCase();

@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import "multer";
 import * as taxonService from "./taxon.service.js";
 import { createTaxonSchema, updateTaxonSchema, adminTaxaQuerySchema } from "./adminTaxon.dto.js";
 import { sendSuccess, sendCreated } from "../../utils/apiResponse.js";
