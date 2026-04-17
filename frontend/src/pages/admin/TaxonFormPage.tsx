@@ -115,7 +115,7 @@ export function TaxonFormPage() {
     setValue,
     watch,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<any>({
     resolver: zodResolver(taxonSchema),
     defaultValues: {
@@ -143,8 +143,6 @@ export function TaxonFormPage() {
   const watchVietnameseName = watch("vietnameseName") || "";
   const watchCommonNames = watch("commonNames") || [];
   
-  const { isDirty } = formState;
-
   // Cảnh báo khi rời trang nếu có thay đổi chưa lưu
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
