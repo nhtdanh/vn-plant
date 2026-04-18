@@ -64,3 +64,9 @@ export const createUser = asyncHandler(async (req: Request, res: Response, _next
   sendSuccess(res, user, "Tạo tài khoản thành công", 201);
 });
 
+export const deleteUser = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+  const { id } = req.params;
+  await userService.deleteUser(id as string);
+  sendSuccess(res, null, "Xóa tài khoản thành công");
+});
+

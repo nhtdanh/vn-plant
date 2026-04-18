@@ -189,6 +189,26 @@ export async function updateUserStatus(id: string, status: UserStatus) {
   });
 }
 
+export async function deleteUser(id: string) {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { role: true }
+  });
+
+  if (!user) {
+    throw ApiError.notFound("Không tìm thấy người dùng để xóa");
+  }
+
+  // Chặn xóa Admin (Tùy chọn bảo mật thêm)
+  if (user.role === "admin") {
+    throw ApiError.badRequest("Không thể xóa tài khoản quản trị viên thông qua giao diện này");
+  }
+
+  return prisma.user.delete({
+    where: { id },
+  });
+}
+
 export async function countTotalUsers() {
   const count = await prisma.user.count({
     where: { role: { not: 'admin' } }

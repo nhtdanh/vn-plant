@@ -21,6 +21,7 @@ import {
   Mail,
   Lock,
   User as UserIcon,
+  Trash2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -70,6 +71,7 @@ export function AdminUserManagement() {
   const [confirmUser, setConfirmUser] = useState<{ id: string, status: UserStatus } | null>(null);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
 
   const {
     register,
@@ -108,6 +110,21 @@ export function AdminUserManagement() {
       fetchUsers(currentPage);
     } catch (error) {
       toast.error("Cập nhật trạng thái thất bại");
+    } finally {
+      setIsProcessing(null);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!deleteUserId) return;
+    try {
+      setIsProcessing(deleteUserId);
+      await adminService.deleteUser(deleteUserId);
+      toast.success("Đã xóa tài khoản thành viên");
+      setDeleteUserId(null);
+      fetchUsers(currentPage);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Xóa tài khoản thất bại");
     } finally {
       setIsProcessing(null);
     }
@@ -267,8 +284,18 @@ export function AdminUserManagement() {
                              <UserCheck size={16} />
                              <span className="text-[11px] font-bold uppercase tracking-widest">Kích hoạt lại</span>
                           </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
+                          )}
+
+                          <div className="my-1 border-t border-zinc-100" />
+
+                          <DropdownMenuItem 
+                            onClick={() => setDeleteUserId(user.id)}
+                            className="flex items-center gap-3 py-2.5 rounded-sm text-rose-600 focus:text-rose-700 focus:bg-rose-50 cursor-pointer"
+                          >
+                             <Trash2 size={16} />
+                             <span className="text-[11px] font-bold uppercase tracking-widest">Xóa vĩnh viễn</span>
+                          </DropdownMenuItem>
+                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
                 </TableRow>
@@ -396,6 +423,16 @@ export function AdminUserManagement() {
           : "Tài khoản này sẽ bị tạm dừng quyền truy cập vào hệ thống."}
         confirmText={confirmUser?.status === 'active' ? "Kích hoạt" : "Vô hiệu hóa"}
         variant={confirmUser?.status === 'active' ? "emerald" : "destructive"}
+      />
+      <ConfirmDialog 
+        isOpen={!!deleteUserId}
+        onClose={() => setDeleteUserId(null)}
+        onConfirm={handleDeleteUser}
+        isLoading={isProcessing === deleteUserId}
+        title="Xóa vĩnh viễn"
+        description="Hành động này không thể hoàn tác. Mọi dữ liệu cá nhân của thành viên này sẽ bị xóa khỏi hệ thống."
+        confirmText="Xác nhận xóa"
+        variant="destructive"
       />
     </div>
   );

@@ -88,6 +88,10 @@ export async function login(data: z.infer<typeof loginSchema>, userAgent?: strin
     throw ApiError.unauthorized(message);
   }
 
+  if (user.status !== "active") {
+    throw ApiError.forbidden("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+  }
+
   if (!user.passwordHash) {
     throw ApiError.unauthorized(
       "Tài khoản này được đăng nhập bằng Google/Facebook. Vui lòng sử dụng phương thức đăng nhập tương ứng.",
@@ -138,8 +142,8 @@ export async function refreshToken(tokenString: string) {
   }
 
   const user = await prisma.user.findUnique({ where: { id: payload.userId } });
-  if (!user) {
-    throw ApiError.unauthorized(message);
+  if (!user || user.status !== "active") {
+    throw ApiError.unauthorized("Tài khoản không tồn tại hoặc đã bị khóa");
   }
 
   const accessToken = jwt.sign(

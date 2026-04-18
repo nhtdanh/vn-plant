@@ -211,6 +211,7 @@ export function TaxonFormPage() {
             hasVietnamRecord: data.hasVietnamRecord,
             parentId: data.parentId,
             description: data.description,
+            rawDescriptionInBook: data.rawDescriptionInBook,
             habit: data.habit,
             leaf: data.leaf,
             reproduction: data.reproduction,
@@ -218,7 +219,6 @@ export function TaxonFormPage() {
             value: data.value,
             distributionText: data.distributionText,
             note: data.note,
-            sourceName: data.sourceName,
             orderInBook: data.orderInBook,
             provinceIds: data.provinces?.map(p => p.provinceId) || [],
             synonyms: data.synonyms?.map(s => ({ 
@@ -476,16 +476,6 @@ export function TaxonFormPage() {
                                className="h-11 rounded-sm border-zinc-100 bg-white font-sans text-base focus:border-amber-400 focus-visible:ring-0"
                             />
                          </div>
-                         <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1 flex items-center gap-1.5">
-                               <BookOpen size={10} /> Nguồn dữ liệu
-                            </label>
-                            <Input 
-                               {...register("sourceName")}
-                               placeholder="Ví dụ: Cây Cỏ Việt Nam..."
-                               className="h-11 rounded-sm border-zinc-100 bg-white text-sm focus:border-amber-400 focus-visible:ring-0"
-                            />
-                         </div>
 
                          <div className="space-y-1.5">
                             <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Số thứ tự trong sách</label>
@@ -494,27 +484,29 @@ export function TaxonFormPage() {
 
                          <div className="space-y-1.5">
                             <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Trạng thái phát hành</label>
-                            <select 
-                               {...register("status")}
-                               className="w-full h-11 px-4 rounded-sm border border-zinc-100 bg-white font-sans font-bold uppercase tracking-widest text-[10px] appearance-none focus:border-amber-400 focus:outline-none"
-                            >
-                               <option value="draft">Bản nháp (Draft)</option>
-                               <option value="published">Công bố (Published)</option>
-                               <option value="archived">Lưu trữ (Archived)</option>
-                             </select>
+                            <div className="relative">
+                               <select 
+                                  {...register("status")}
+                                  className="w-full h-11 px-4 rounded-sm border border-zinc-100 bg-white font-sans font-bold uppercase tracking-widest text-[10px] appearance-none focus:border-amber-400 focus:outline-none"
+                               >
+                                  <option value="draft">Bản nháp (Draft)</option>
+                                  <option value="published">Công bố (Published)</option>
+                                  <option value="archived">Lưu trữ (Archived)</option>
+                                </select>
+                             </div>
                          </div>
-                      </div>
 
-                      <div className="p-5 bg-zinc-50 rounded-sm border border-dashed border-zinc-200 items-center justify-between flex">
-                        <div className="flex items-center gap-2">
-                           <Globe size={16} className="text-zinc-400" />
-                           <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-900">Ghi nhận tại Việt Nam</span>
-                        </div>
-                        <input 
-                          type="checkbox" 
-                          {...register("hasVietnamRecord")}
-                          className="w-10 h-6 appearance-none rounded-full bg-zinc-200 checked:bg-zinc-900 transition-all relative after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-all checked:after:translate-x-4 cursor-pointer"
-                        />
+                         <div className="flex items-center justify-between h-11 px-4 bg-zinc-50 rounded-sm border border-zinc-100 self-end mb-0.5">
+                            <div className="flex items-center gap-2">
+                               <Globe size={14} className="text-zinc-400" />
+                               <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-900">Có tại Việt Nam</span>
+                            </div>
+                            <input 
+                              type="checkbox" 
+                              {...register("hasVietnamRecord")}
+                              className="w-8 h-5 appearance-none rounded-full bg-zinc-200 checked:bg-emerald-600 transition-all relative after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:w-3 after:h-3 after:rounded-full after:transition-all checked:after:translate-x-3 cursor-pointer"
+                            />
+                         </div>
                       </div>
                    </div>
                 )}
@@ -760,10 +752,18 @@ export function TaxonFormPage() {
                                      placeholder="Tên gọi"
                                      className="flex-1 h-10 font-bold text-sm rounded-sm bg-transparent border-none focus-visible:ring-0"
                                   />
+                                  <select
+                                     {...register(`commonNames.${index}.language` as const)}
+                                     className="w-20 h-8 bg-zinc-100 border-none rounded-sm text-[10px] font-bold uppercase tracking-wider focus:ring-0 cursor-pointer"
+                                  >
+                                     <option value="vi">VI</option>
+                                     <option value="en">EN</option>
+                                     <option value="cn">CN</option>
+                                  </select>
                                   <Input 
                                      {...register(`commonNames.${index}.regionNote` as const)} 
-                                     placeholder="Vùng miền (Vd: Nam Bộ)"
-                                     className="w-1/3 h-10 text-xs rounded-sm bg-transparent border-none focus-visible:ring-0 text-zinc-500"
+                                     placeholder="Vùng miền"
+                                     className="w-1/4 h-10 text-xs rounded-sm bg-transparent border-none focus-visible:ring-0 text-zinc-500"
                                   />
                                   <Button 
                                      type="button" 
@@ -784,7 +784,6 @@ export function TaxonFormPage() {
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       {/* Map / Regions */}
                       <div className="space-y-4">
-                         <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Phân bố</h3>
                          <div className="flex flex-wrap gap-2 p-4 bg-zinc-50/50 border border-zinc-100 rounded-sm">
                              {provinces.map((p) => (
                                <button

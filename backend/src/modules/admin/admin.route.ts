@@ -26,6 +26,7 @@ adminRoutes.get("/users", adminUserController.listUsers);
 adminRoutes.post("/users", adminUserController.createUser);
 adminRoutes.patch("/users/:id/role", adminUserController.updateRole);
 adminRoutes.patch("/users/:id/status", adminUserController.updateStatus);
+adminRoutes.delete("/users/:id", adminUserController.deleteUser);
 
 // Image Moderation (Chuyển sang group admin cho nhất quán)
 adminRoutes.get("/images/pending", taxonImageController.getPendingImages);

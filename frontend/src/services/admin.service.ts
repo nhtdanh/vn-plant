@@ -86,6 +86,14 @@ export const adminService = {
     const response = await api.post<ApiResponse<User>>("/admin/users", data);
     return response.data.data;
   },
+  
+  /**
+   * Xóa vĩnh viễn người dùng
+   */
+  deleteUser: async (userId: string) => {
+    const response = await api.delete(`/admin/users/${userId}`);
+    return response.data.data;
+  },
 
   /**
    * Lấy danh sách Taxon cùng với các tiêu chí lọc bộ (Admin)
