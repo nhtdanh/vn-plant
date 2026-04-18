@@ -364,7 +364,8 @@ export function TaxonFormPage() {
     { id: "identity", label: "Định danh", icon: Info },
     { id: "classification", label: "Phân loại", icon: Layers },
     { id: "biology", label: "Mô tả", icon: Leaf },
-    { id: "relations", label: "Quan hệ & Vùng", icon: MapPin },
+    { id: "names", label: "Tên khác", icon: Globe },
+    { id: "distribution", label: "Phân bố", icon: MapPin },
     { id: "media", label: "Hình ảnh", icon: ImageIcon },
   ];
 
@@ -452,7 +453,7 @@ export function TaxonFormPage() {
                             <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Tên khoa học (Scientific Name) *</label>
                             <Input 
                                {...register("scientificName")}
-                               placeholder="Ví dụ: Rosa canina"
+                               placeholder="Ví dụ: Helianthus annuus"
                                className="h-11 rounded-sm border-zinc-100 bg-white font-sans italic text-base focus:border-amber-400 focus-visible:ring-0"
                             />
                             {errors.scientificName && <span className="text-zinc-500 text-[10px] uppercase tracking-widest mt-1 block">{errors.scientificName.message as string}</span>}
@@ -468,16 +469,16 @@ export function TaxonFormPage() {
                             />
                          </div>
                          <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Tên tiếng Việt (VN Common Name)</label>
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Tên tiếng Việt</label>
                             <Input 
                                {...register("vietnameseName")}
                                placeholder="Ví dụ: Hướng Dương"
-                               className="h-11 rounded-sm border-zinc-100 bg-white font-sans font-bold text-base focus:border-amber-400 focus-visible:ring-0"
+                               className="h-11 rounded-sm border-zinc-100 bg-white font-sans text-base focus:border-amber-400 focus-visible:ring-0"
                             />
                          </div>
                          <div className="space-y-1.5">
                             <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1 flex items-center gap-1.5">
-                               <BookOpen size={10} /> Nguồn dữ liệu (Source)
+                               <BookOpen size={10} /> Nguồn dữ liệu
                             </label>
                             <Input 
                                {...register("sourceName")}
@@ -487,8 +488,8 @@ export function TaxonFormPage() {
                          </div>
 
                          <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Thứ tự trong sách (Order)</label>
-                            <Input {...register("orderInBook")} placeholder="Số trang hoặc mã số..." className="h-11 rounded-sm border-zinc-100 bg-white shadow-sm" />
+                            <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Số thứ tự trong sách</label>
+                            <Input {...register("orderInBook")} placeholder="STT trong sách nếu có" className="h-11 rounded-sm border-zinc-100 bg-white shadow-sm" />
                          </div>
 
                          <div className="space-y-1.5">
@@ -670,8 +671,8 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* SECTION: RELATIONS (Tab 4) */}
-                {activeSection === "relations" && (
+                {/* SECTION: NAMES (Tab 4) */}
+                {activeSection === "names" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       
                       {/* Synonyms */}
@@ -725,7 +726,7 @@ export function TaxonFormPage() {
                       {/* Common Names */}
                       <div className="space-y-4">
                          <div className="flex items-center justify-between">
-                            <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Tên thường gọi (Local Names)</h3>
+                            <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Tên thường gọi</h3>
                             <Button 
                                type="button" 
                                onClick={() => appendCommonName({ name: "", language: "vi", isPrimary: false })}
@@ -775,10 +776,15 @@ export function TaxonFormPage() {
                             )})}
                          </div>
                       </div>
+                   </div>
+                )}
 
+                {/* SECTION: DISTRIBUTION (Tab 5) */}
+                {activeSection === "distribution" && (
+                   <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       {/* Map / Regions */}
                       <div className="space-y-4">
-                         <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Phân bố (Dist. in Provinces)</h3>
+                         <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Phân bố</h3>
                          <div className="flex flex-wrap gap-2 p-4 bg-zinc-50/50 border border-zinc-100 rounded-sm">
                              {provinces.map((p) => (
                                <button
