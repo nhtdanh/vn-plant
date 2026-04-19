@@ -20,7 +20,6 @@ import {
   Globe,
   Upload,
   Star,
-  BookOpen,
   User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

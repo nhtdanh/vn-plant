@@ -61,6 +61,16 @@ export async function fetchTaxonMetadata(): Promise<ApiResponse<any>> {
   return response.data;
 }
 
+// Lấy danh sách con phục vụ sơ đồ cây
+export async function fetchTaxonTreeNodes(
+  parentId: number
+): Promise<ApiResponse<PaginatedResponse<Taxon>>> {
+  const response = await api.get<ApiResponse<PaginatedResponse<Taxon>>>("/taxa", {
+    params: { parentId, limit: 100 }
+  });
+  return response.data;
+}
+
 // Lấy danh sách tỉnh thành
 export async function fetchProvinces(): Promise<ApiResponse<any[]>> {
   const response = await api.get<ApiResponse<any[]>>("/taxa/provinces");

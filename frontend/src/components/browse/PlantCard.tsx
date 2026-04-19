@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Leaf } from "lucide-react";
-import type { Taxon } from "../../types";
+import type { Taxon } from "@/types";
 import {
   getRankDisplayName,
   getRankBadgeColor,
   capitalize,
-} from "../../utils/taxon.utils";
-import { Badge } from "../ui/badge";
+} from "@/utils/taxon.utils";
+import { Badge } from "@/components/ui/badge";
 
 interface PlantCardProps {
   plant: Taxon;

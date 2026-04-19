@@ -7,6 +7,7 @@ import {
   Leaf,
   X,
   ImageIcon,
+  Network,
   Upload,
 } from "lucide-react";
 import { fetchTaxonDetail, fetchAncestors } from "@/services/taxon.service";
@@ -22,6 +23,7 @@ import type { TaxonDetail, TaxonAncestor } from "@/types";
 import { getRankDisplayName } from "@/utils/taxon.utils";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/utils/date.utils";
+import { TaxonomyTreeModal } from "@/components/taxonomy/TaxonomyTreeModal";
 
 export function PlantDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -37,6 +39,7 @@ export function PlantDetail() {
     "description" | "synonyms" | "children" | "contributions"
   >("description");
   const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
+  const [isTreeModalOpen, setIsTreeModalOpen] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
 
@@ -282,6 +285,19 @@ export function PlantDetail() {
             ))
           )}
         </AnimatePresence>
+
+        {/* Nút xem sơ đồ phả hệ tối giản cạnh Breadcrumb */}
+        {!isLoading && plant && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={() => setIsTreeModalOpen(true)}
+            className="p-1 -translate-y-[1px] text-muted-foreground/30 hover:text-primary hover:bg-primary/5 rounded-full transition-all duration-300 group/tree"
+            title="Xem sơ đồ phả hệ"
+          >
+            <Network size={16} className="-rotate-90 group-hover/tree:scale-110 transition-transform" />
+          </motion.button>
+        )}
       </div>
 
       {/* PHẦN HERO (Ảnh & Thông tin chính) */}
@@ -456,6 +472,7 @@ export function PlantDetail() {
                               : "DƯƠNG XỈ"}
                         </div>
                       )}
+                      
                       <div
                         className={cn(
                           "flex items-center gap-1.5 text-[10px] font-sans font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border transition-colors",
@@ -929,6 +946,15 @@ export function PlantDetail() {
           }}
           initialFile={pendingFile}
           showCloseButton={false}
+        />
+      )}
+      {/* Taxonomy Tree Modal */}
+      {plant && (
+        <TaxonomyTreeModal
+          isOpen={isTreeModalOpen}
+          onClose={() => setIsTreeModalOpen(false)}
+          plant={plant}
+          ancestors={ancestors}
         />
       )}
     </div>
