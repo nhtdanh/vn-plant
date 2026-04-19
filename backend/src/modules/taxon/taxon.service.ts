@@ -286,9 +286,9 @@ export async function getAncestors(id: number) {
 
 export async function countStats() {
   const [total, published, draft] = await Promise.all([
-    prisma.taxon.count({ where: { rank: "species" } }),
-    prisma.taxon.count({ where: { status: "published", rank: "species" } }),
-    prisma.taxon.count({ where: { status: "draft", rank: "species" } }),
+    prisma.taxon.count(),
+    prisma.taxon.count({ where: { status: "published" } }),
+    prisma.taxon.count({ where: { status: "draft" } }),
   ]);
   return { total, published, draft };
 }

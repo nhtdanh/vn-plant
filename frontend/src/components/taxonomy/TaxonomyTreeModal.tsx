@@ -167,10 +167,17 @@ export function TaxonomyTreeModal({
   const updateTreeData = (
     node: TreeNode,
     nodeId: string,
-    children: TreeNode[],
+    children: TreeNode[] | null,
     isExpanded: boolean
   ): TreeNode => {
-    if (node.id === nodeId) return { ...node, children, isExpanded, isLoading: false };
+    if (node.id === nodeId) {
+      return { 
+        ...node, 
+        children: children === null ? node.children : children, 
+        isExpanded, 
+        isLoading: false 
+      };
+    }
     if (node.children) {
       return {
         ...node,
@@ -198,7 +205,13 @@ export function TaxonomyTreeModal({
 
     const targetNode = findNode(treeData);
     if (targetNode?.isExpanded) {
-      setTreeData(updateTreeData(treeData, nodeId, [], false));
+      setTreeData(updateTreeData(treeData, nodeId, null, false));
+      return;
+    }
+
+    // Nếu đã có con rồi thì chỉ cần mở ra, không cần fetch lại
+    if (targetNode?.children && targetNode.children.length > 0) {
+      setTreeData(updateTreeData(treeData, nodeId, null, true));
       return;
     }
 
@@ -233,7 +246,7 @@ export function TaxonomyTreeModal({
   const { treeResult, dynamicBounds, minX } = useMemo(() => {
     if (!treeData) return { treeResult: null, dynamicBounds: { width: 1200, height: 800 }, minX: 0 };
     
-    const rootNode = hierarchy(treeData);
+    const rootNode = hierarchy(treeData, d => d.isExpanded ? d.children : null);
     
     // Sử dụng nodeSize để khoảng cách nốt là cố định, nốt gốc bắt đầu từ 0
     const treeLayout = tree<TreeNode>().nodeSize([70, 260]);
