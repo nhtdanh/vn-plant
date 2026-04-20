@@ -44,7 +44,11 @@ export function getRankLevel(rank: TaxonomyRank): number {
  * 2. Ảnh có sortOrder thấp nhất
  * 3. Ảnh được tạo sớm nhất
  */
-export async function recalculatePrimaryImageUrl(tx: Prisma.TransactionClient, taxonId: number) {
+export async function recalculatePrimaryImageUrl(
+  tx: Prisma.TransactionClient, 
+  taxonId: number,
+  skipUpdate: boolean = false
+) {
   const images = await tx.taxonImage.findMany({
     where: { taxonId, status: "approved" },
     orderBy: [
@@ -58,10 +62,12 @@ export async function recalculatePrimaryImageUrl(tx: Prisma.TransactionClient, t
 
   const primaryUrl = images[0]?.url || null;
   
-  await tx.taxon.update({
-    where: { id: taxonId },
-    data: { primaryImageUrl: primaryUrl }
-  });
+  if (!skipUpdate) {
+    await tx.taxon.update({
+      where: { id: taxonId },
+      data: { primaryImageUrl: primaryUrl }
+    });
+  }
 
   return primaryUrl;
 }

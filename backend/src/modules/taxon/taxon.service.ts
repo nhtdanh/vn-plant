@@ -15,6 +15,7 @@ import {
   formatPaginatedResponse,
 } from "../../utils/pagination.js";
 import { normalizeUrl } from "../../utils/url.js";
+import { R2_PUBLIC_DOMAIN } from "../../config/s3.config.js";
 
 
 
@@ -442,7 +443,7 @@ export async function createTaxon(data: CreateTaxonInput, files?: any[]) {
         );
         
         newR2Keys.push(result.key);
-        const publicUrl = normalizeUrl(`${process.env["R2_PUBLIC_DOMAIN"]}/${result.key}`) as string;
+        const publicUrl = normalizeUrl(`${R2_PUBLIC_DOMAIN}/${result.key}`) as string;
 
         uploadedImages.push({
           url: publicUrl,
@@ -614,7 +615,7 @@ export async function updateTaxon(
           "image/webp",
         );
         newR2Keys.push(result.key);
-        const publicUrl = normalizeUrl(`${process.env["R2_PUBLIC_DOMAIN"]}/${result.key}`) as string;
+        const publicUrl = normalizeUrl(`${R2_PUBLIC_DOMAIN}/${result.key}`) as string;
 
         uploadedImages.push({
           url: publicUrl,
@@ -747,7 +748,7 @@ export async function updateTaxon(
         }
       }
 
-      // --- 3.5 CẬP NHẬT DỮ LIỆU CHÍNH ---
+      // --- 3.5 CHUẨN BỊ DỮ LIỆU CẬP NHẬT ---
       const updateData: any = {
         ...data,
         ...(data.scientificName && {
@@ -756,21 +757,14 @@ export async function updateTaxon(
         }),
       };
 
-      // Xóa các trường quan hệ đã được xử lý riêng bằng Diffing
+      // Xóa các trường quan hệ đã được xử lý riêng bằng Diffing hoặc xử lý sau
       delete updateData.synonyms;
       delete updateData.commonNames;
       delete updateData.provinceIds;
       delete updateData.deleteImageIds;
       delete updateData.images; 
-      
-      // rawDescriptionInBook is already in updateData if provided
 
-      const updated = await tx.taxon.update({
-        where: { id },
-        data: updateData,
-      });
-
-      // Tạo các bản ghi ảnh mới (từ file upload hoặc link dán)
+      // --- 3.6 XỬ LÝ ẢNH MỚI (TẠO BẢN GHI) ---
       const imagesToCreate = [
         ...uploadedImages.map((img) => ({
           url: normalizeUrl(img.url) as string,
@@ -804,7 +798,7 @@ export async function updateTaxon(
         await tx.taxonImage.createMany({ data: finalImagesToCreate });
       }
 
-      // Nếu thay đổi cha hoặc cấp bậc, cần kiểm tra tính hợp lệ
+      // --- 3.7 KIỂM TRA HIERARCHY ---
       if (data.parentId !== undefined || data.rank !== undefined) {
         const targetRank = data.rank || original.rank;
         const targetParentId = data.parentId !== undefined ? data.parentId : original.parentId;
@@ -820,7 +814,7 @@ export async function updateTaxon(
         }
       }
 
-      // 3.6 Cập nhật ltree path (Atomic Move)
+      // --- 3.8 DI CHUYỂN NHÁNH (LTREE) ---
       if (newPath) {
         await tx.$executeRawUnsafe(
           `UPDATE taxon 
@@ -831,13 +825,20 @@ export async function updateTaxon(
         );
       }
 
-      // 3.7 ĐỒNG BỘ ẢNH CHÍNH CACHE
-      await recalculatePrimaryImageUrl(tx, id);
+      // --- 3.9 ĐỒNG BỘ ẢNH CHÍNH (VÀ CẬP NHẬT TAXON) ---
+      // Tính toán ảnh chính sau khi đã createMany ảnh mới
+      const primaryUrl = await recalculatePrimaryImageUrl(tx, id, true);
+      updateData.primaryImageUrl = primaryUrl;
+
+      const updated = await tx.taxon.update({
+        where: { id },
+        data: updateData,
+      });
 
       return updated;
     });
 
-    // 4. Cleanup R2 SUCCESS: Xóa những ảnh cũ thực sự bị loại bỏ
+    // 4. Cleanup R2 SUCCESS
     if (oldR2KeysToDelete.length > 0) {
       console.log(`[Cleanup] Post-update cleanup: removing ${oldR2KeysToDelete.length} obsolete images from R2...`);
       uploadService.deleteMultipleFromR2(oldR2KeysToDelete).catch(e => 
@@ -847,6 +848,17 @@ export async function updateTaxon(
 
     return result;
   } catch (error) {
+    // Logging chi tiết lỗi cho nhà phát triển
+    console.error("===== TAXON UPDATE ERROR =====");
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.error(`Prisma Error Code: ${error.code}`);
+      console.error(`Target: ${error.meta?.target}`);
+      console.error(`Message: ${error.message}`);
+    } else {
+      console.error(error);
+    }
+    console.error("==============================");
+
     // 5. Cleanup R2 FAIL: Xóa ảnh vừa upload nếu transaction thất bại
     if (newR2Keys.length > 0) {
       console.error(`[Cleanup] Update failed, removing ${newR2Keys.length} orphan images from R2...`);
