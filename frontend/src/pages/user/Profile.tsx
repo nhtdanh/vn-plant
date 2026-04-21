@@ -20,15 +20,13 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/date.utils";
 
-/**
- * Profile - Trang cá nhân của người dùng, tích hợp quản lý hồ sơ và đóng góp
- */
+// profile - trang cá nhân của người dùng, tích hợp quản lý hồ sơ và đóng góp
 export function Profile() {
   const { user, checkAuth } = useAuthStore();
   const [data, setData] = useState<PaginatedResponse<TaxonImage> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Profile Edit State
+  // trạng thái chỉnh sửa hồ sơ
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -88,7 +86,7 @@ export function Profile() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 pt-6 pb-20">
-      {/* User Header Section - Condensed & Interactive */}
+      {/* phần tiêu đề người dùng */}
       <section className="flex flex-col md:flex-row items-center md:items-start gap-8 pb-4">
         <div className="relative group shrink-0">
           <div className="w-28 h-28 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-300 overflow-hidden border-2 border-zinc-100 shadow-sm relative">
@@ -160,11 +158,11 @@ export function Profile() {
         </div>
         
         <div className="shrink-0 flex gap-2">
-           {/* Nút chỉnh sửa cũ đã được thay thế bằng icon kế tên */}
+           {/* nút chỉnh sửa cũ đã được thay thế bằng biểu tượng bên cạnh tên */}
         </div>
       </section>
 
-      {/* Contributions List - Dense Card Style */}
+      {/* danh sách đóng góp */}
       <section className="mt-0">
         <div className="flex justify-end">
           <h2 className="text-xl font-sans font-bold uppercase tracking-tight text-zinc-700">

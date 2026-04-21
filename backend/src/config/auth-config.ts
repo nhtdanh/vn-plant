@@ -4,9 +4,7 @@ function getEnv(name: string): string {
   return value;
 }
 
-/**
- * Chuyển đổi định dạng thời gian (ví dụ: '15m', '7d') thành mili giây
- */
+// chuyển đổi định dạng thời gian (ví dụ: '15m', '7d') thành mili giây
 export function getDurationMs(duration: string): number {
   const units: { [key: string]: number } = {
     s: 1000,
@@ -19,7 +17,7 @@ export function getDurationMs(duration: string): number {
   const match = duration.match(regex);
 
   if (!match) {
-    // Nếu không khớp regex, mặc định trả về số (nếu là số) hoặc 0
+    // nếu không khớp regex, mặc định trả về số (nếu là số) hoặc 0
     const value = parseInt(duration);
     return isNaN(value) ? 0 : value;
   }

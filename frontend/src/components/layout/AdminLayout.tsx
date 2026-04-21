@@ -14,10 +14,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { cn } from "@/lib/utils";
 import { adminService } from "@/services/admin.service";
 
-/**
- * AdminLayout - Giao diện khung dành cho khu vực quản trị
- * Bao gồm Sidebar cố định và khu vực nội dung chính
- */
+// adminlayout - giao diện khung dành cho khu vực quản trị
+// bao gồm sidebar cố định và khu vực nội dung chính
 export function AdminLayout() {
   const { logout } = useAuthStore();
   const location = useLocation();
@@ -37,7 +35,7 @@ export function AdminLayout() {
       }
     };
     fetchStats();
-  }, [location.pathname]); // Refetch when navigating to see updates
+  }, [location.pathname]); // lấy lại dữ liệu khi điều hướng để cập nhật số liệu
 
   const navItems = [
     { name: "DASHBOARD", icon: LayoutDashboard, path: "/admin" },
@@ -53,7 +51,7 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-zinc-50/50">
-      {/* 1. MOBILE HEADER */}
+      {/* 1. tiêu đề cho di động */}
       <div className="md:hidden fixed top-0 w-full h-16 bg-white border-b border-zinc-200 z-50 flex items-center justify-between px-6">
         <Link to="/admin" className="flex items-center gap-2">
           <img src="/images/logo.png" alt="Logo" className="h-8 w-auto" />
@@ -66,20 +64,20 @@ export function AdminLayout() {
         </button>
       </div>
 
-      {/* 2. DESKTOP SIDEBAR */}
+      {/* 2. thanh bên cho máy tính */}
       <motion.aside
         initial={false}
         animate={{ width: 220 }}
         className="hidden md:flex flex-col fixed inset-y-0 left-0 bg-[#3a6851] border-r border-white/10 z-40 transition-all text-white/80"
       >
-        {/* Sidebar Header: Logo */}
+        {/* tiêu đề thanh bên: logo */}
         <div className="h-14 flex items-center mt-2 mb-2 justify-center">
             <Link to="/" className="flex items-center gap-3">
                <img src="/images/logo.png" alt="Logo" className="h-8 w-auto" />
             </Link>
         </div>
 
-        {/* Sidebar Navigation */}
+        {/* điều hướng thanh bên */}
         <nav className="flex-1 px-0 space-y-0.5">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -94,7 +92,7 @@ export function AdminLayout() {
                     : "text-white/60 hover:bg-white/5 hover:text-white",
                 )}
               >
-                {/* Active Indicator Bar - Snappy & Light */}
+                {/* thanh chỉ báo mục đang hoạt động */}
                 {isActive && (
                   <motion.div 
                     layoutId="activeNavIndicator"
@@ -116,7 +114,7 @@ export function AdminLayout() {
           })}
         </nav>
 
-        {/* Sidebar Footer: Logout */}
+        {/* chân trang thanh bên: đăng xuất */}
         <div className="py-2 border-t border-white/10 px-4">
           <button
             onClick={handleLogout}
@@ -131,7 +129,7 @@ export function AdminLayout() {
         </div>
       </motion.aside>
 
-      {/* 3. MOBILE MENU OVERLAY */}
+      {/* 3. trình đơn phủ cho di động */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -198,12 +196,12 @@ export function AdminLayout() {
         )}
       </AnimatePresence>
 
-      {/* 4. MAIN CONTENT AREA */}
+      {/* 4. khu vực nội dung chính */}
       <main
         className={cn(
           "flex-1 flex flex-col transition-all duration-300 min-h-screen",
           "md:ml-[220px]",
-          "pt-16 md:pt-0", // Padding for mobile header
+          "pt-16 md:pt-0", // phần đệm cho tiêu đề di động
         )}
       >
         <div className="px-6 py-4">

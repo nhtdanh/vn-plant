@@ -182,7 +182,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased selection:bg-accent/30;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-yellow-200 selection:text-yellow-900;
   }
 
   h1,

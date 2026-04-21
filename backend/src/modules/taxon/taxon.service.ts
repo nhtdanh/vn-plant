@@ -246,6 +246,7 @@ export async function getAncestors(id: number) {
   if (!path) return [];
 
   // 2. Tìm tất cả các bản ghi mà path của chúng là tiền tố (ancestor) của path hiện tại
+  // Dùng id != ${id} để loại bỏ chính nút hiện tại (vì @> trong ltree là "ancestor OR EQUAL")
   const ancestors: any[] = await prisma.$queryRaw`
     SELECT 
       id, 
@@ -256,6 +257,7 @@ export async function getAncestors(id: number) {
       rank
     FROM taxon
     WHERE path @> ${path}::ltree
+      AND id != ${id}
     ORDER BY nlevel(path) ASC
   `;
 
@@ -359,7 +361,7 @@ export async function updatePrimaryImage(id: number, url: string | null) {
 
 
 export async function findAllAdmin(query: AdminTaxaQuery) {
-  const { status, rank, plantGroup, hasImage, hasDescription, q } = query;
+  const { status, rank, plantGroup, hasImage, hasDescription, hasVietnamName, q } = query;
   const pagination = getPaginationParams(query);
 
   const where: any = {
@@ -372,6 +374,13 @@ export async function findAllAdmin(query: AdminTaxaQuery) {
     ...(hasDescription !== undefined && {
       description: hasDescription ? { not: null } : null,
     }),
+    ...(hasVietnamName !== undefined && (
+      hasVietnamName
+        // Có tên Việt: vietnameseName không null VÀ không rỗng
+        ? { AND: [{ vietnameseName: { not: null } }, { vietnameseName: { not: "" } }] }
+        // Chưa có tên Việt: null HOẶC chuỗi rỗng
+        : { OR: [{ vietnameseName: null }, { vietnameseName: "" }] }
+    )),
     ...(q && {
       OR: [
         { scientificName: { contains: q, mode: "insensitive" } },
@@ -525,28 +534,30 @@ export async function createTaxon(data: CreateTaxonInput, files?: any[]) {
         };
       }
 
-      // Quan hệ Hình ảnh
-      if (uploadedImages.length > 0 || data.images?.length) {
+      // Quan hệ Hình ảnh — Chỉ dùng uploadedImages (đã có URL R2 thật)
+      // Ghép metadata (caption/author/isPrimary) từ data.images theo index
+      const newImageMetaCreate = (data.images || []).filter((img: any) => img.url === "new_upload");
+      if (uploadedImages.length > 0) {
         createData.images = {
-          create: [
-            ...uploadedImages.map((img) => ({
+          create: uploadedImages.map((img, i) => {
+            const meta = newImageMetaCreate[i];
+            return {
               url: normalizeUrl(img.url) as string,
               storageKey: img.storageKey,
               width: img.width,
               height: img.height,
+              caption: meta?.caption || null,
+              author: meta?.author || null,
+              isPrimary: meta ? !!meta.isPrimary : i === 0,
               status: "approved" as ImageStatus,
-              isPrimary: !!img.isPrimary,
-            })),
-            ...(data.images || []).map((img) => ({
-              url: normalizeUrl(img.url) as string,
-              caption: img.caption || null,
-              isPrimary: !!img.isPrimary,
-              author: img.author || null,
-              license: img.license || null,
-              status: "approved" as ImageStatus,
-            })),
-          ],
+            };
+          }),
         };
+        const primaryMeta = newImageMetaCreate.find((m: any) => m.isPrimary);
+        const primaryIdx = primaryMeta ? newImageMetaCreate.indexOf(primaryMeta) : 0;
+        if (uploadedImages[primaryIdx]) {
+          createData.primaryImageUrl = normalizeUrl(uploadedImages[primaryIdx].url);
+        }
       }
 
       // Quan hệ Địa lý
@@ -661,25 +672,43 @@ export async function updateTaxon(
       }
 
       // --- 3.3 SMART SYNC IMAGES ---
-      if (data.images !== undefined || (data.deleteImageIds && data.deleteImageIds.length > 0)) {
-        const currentImages = await tx.taxonImage.findMany({
-          where: { taxonId: id },
-          select: { id: true, url: true, storageKey: true }
-        });
+      // Tách metadata: ảnh cũ (có URL thật) vs ảnh mới (url === "new_upload")
+      const existingImageMeta = (data.images || []).filter(img => img.url && img.url !== "new_upload");
+      const newImageMeta     = (data.images || []).filter(img => img.url === "new_upload");
 
-        // Xác định những ảnh thực tế cần xóa
-        const imagesToDelete = currentImages.filter(img => {
-          if (data.deleteImageIds?.includes(img.id)) return true;
-          if (data.images !== undefined && !data.images.some(ni => ni.url === img.url)) return true;
-          return false;
-        });
+      const currentImages = await tx.taxonImage.findMany({
+        where: { taxonId: id },
+        select: { id: true, url: true, storageKey: true }
+      });
 
-        if (imagesToDelete.length > 0) {
-          imagesToDelete.forEach(img => {
-            if (img.storageKey) oldR2KeysToDelete.push(img.storageKey);
-          });
-          await tx.taxonImage.deleteMany({
-            where: { id: { in: imagesToDelete.map(i => i.id) } }
+      // Ảnh cần xóa: có trong deleteImageIds HOẶC không còn trong danh sách ảnh cũ
+      const keepUrls = new Set(existingImageMeta.map(m => m.url));
+      const imagesToDelete = currentImages.filter(img => {
+        if (data.deleteImageIds?.includes(img.id)) return true;
+        if (data.images !== undefined && !keepUrls.has(img.url)) return true;
+        return false;
+      });
+
+      if (imagesToDelete.length > 0) {
+        imagesToDelete.forEach(img => {
+          if (img.storageKey) oldR2KeysToDelete.push(img.storageKey);
+        });
+        await tx.taxonImage.deleteMany({
+          where: { id: { in: imagesToDelete.map(i => i.id) } }
+        });
+      }
+
+      // Update metadata (caption, author, isPrimary) cho ảnh cũ còn lại
+      for (const meta of existingImageMeta) {
+        const existing = currentImages.find(ci => ci.url === meta.url);
+        if (existing && !imagesToDelete.some(d => d.id === existing.id)) {
+          await tx.taxonImage.update({
+            where: { id: existing.id },
+            data: {
+              caption: meta.caption ?? null,
+              author: meta.author ?? null,
+              isPrimary: !!meta.isPrimary,
+            }
           });
         }
       }
@@ -749,53 +778,56 @@ export async function updateTaxon(
       }
 
       // --- 3.5 CHUẨN BỊ DỮ LIỆU CẬP NHẬT ---
+      // Liệt kê rõ ràng từng field — tránh spread DTO thô vào Prisma (an toàn hơn)
       const updateData: any = {
-        ...data,
-        ...(data.scientificName && {
+        // Thông tin cơ bản
+        ...(data.scientificName !== undefined && {
+          scientificName: data.scientificName,
           slug: generateSlug(data.scientificName),
           canonicalName: data.canonicalName || data.scientificName,
         }),
+        ...(data.vietnameseName !== undefined && { vietnameseName: data.vietnameseName }),
+        ...(data.author !== undefined && { author: data.author }),
+        ...(data.rank !== undefined && { rank: data.rank }),
+        ...(data.status !== undefined && { status: data.status }),
+        ...(data.plantGroup !== undefined && { plantGroup: data.plantGroup }),
+        ...(data.parentId !== undefined && { parentId: data.parentId }),
+        ...(data.hasVietnamRecord !== undefined && { hasVietnamRecord: data.hasVietnamRecord }),
+        // Mô tả sinh học
+        ...(data.description !== undefined && { description: data.description }),
+        ...(data.rawDescriptionInBook !== undefined && { rawDescriptionInBook: data.rawDescriptionInBook }),
+        ...(data.habit !== undefined && { habit: data.habit }),
+        ...(data.leaf !== undefined && { leaf: data.leaf }),
+        ...(data.reproduction !== undefined && { reproduction: data.reproduction }),
+        ...(data.phenology !== undefined && { phenology: data.phenology }),
+        ...(data.value !== undefined && { value: data.value }),
+        ...(data.distributionText !== undefined && { distributionText: data.distributionText }),
+        ...(data.note !== undefined && { note: data.note }),
+        // Metadata biên mục
+        ...(data.orderInBook !== undefined && { orderInBook: data.orderInBook }),
+        ...(data.sourceName !== undefined && { sourceName: data.sourceName }),
+        ...(data.descriptionLang !== undefined && { descriptionLang: data.descriptionLang }),
       };
 
-      // Xóa các trường quan hệ đã được xử lý riêng bằng Diffing hoặc xử lý sau
-      delete updateData.synonyms;
-      delete updateData.commonNames;
-      delete updateData.provinceIds;
-      delete updateData.deleteImageIds;
-      delete updateData.images; 
-
       // --- 3.6 XỬ LÝ ẢNH MỚI (TẠO BẢN GHI) ---
-      const imagesToCreate = [
-        ...uploadedImages.map((img) => ({
+      // Ghép file upload với metadata (newImageMeta[i] <-> uploadedImages[i])
+      const imagesToCreate = uploadedImages.map((img, i) => {
+        const meta = newImageMeta[i]; // metadata tương ứng theo thứ tự frontend gửi
+        return {
           url: normalizeUrl(img.url) as string,
           storageKey: img.storageKey,
           width: img.width,
           height: img.height,
+          caption: meta?.caption || null,
+          author: meta?.author || null,
+          isPrimary: meta ? !!meta.isPrimary : false,
           status: "approved" as ImageStatus,
           taxonId: id
-        })),
-        ...(data.images || [])
-          .filter(ni => ni.url)
-          .map((img) => ({
-            url: normalizeUrl(img.url) as string,
-            caption: img.caption || null,
-            isPrimary: !!img.isPrimary,
-            author: img.author || null,
-            license: img.license || null,
-            status: "approved" as ImageStatus,
-            taxonId: id
-          }))
-      ];
-
-      // Chỉ thêm những ảnh chưa tồn tại (so sánh theo URL)
-      const currentImagesAfterDelete = await tx.taxonImage.findMany({ 
-        where: { taxonId: id }, 
-        select: { url: true } 
+        };
       });
-      const finalImagesToCreate = imagesToCreate.filter(ni => !currentImagesAfterDelete.some(ci => ci.url === ni.url));
 
-      if (finalImagesToCreate.length > 0) {
-        await tx.taxonImage.createMany({ data: finalImagesToCreate });
+      if (imagesToCreate.length > 0) {
+        await tx.taxonImage.createMany({ data: imagesToCreate });
       }
 
       // --- 3.7 KIỂM TRA HIERARCHY ---
@@ -929,42 +961,35 @@ export async function findBySlug(slug: string, userId?: string) {
     throw ApiError.notFound("Không tìm thấy thực vật này");
   }
 
-  // Lấy thêm danh sách con trực tiếp (Children)
-  const children = await prisma.taxon.findMany({
-    where: {
-      parentId: taxon.id,
-      status: "published",
-    },
-    select: {
-      id: true,
-      scientificName: true,
-      canonicalName: true,
-      vietnameseName: true,
-      slug: true,
-      rank: true,
-      author: true,
-    },
-    orderBy: { scientificName: "asc" },
-  });
-
-  // Kiểm tra trạng thái bookmark nếu có userId
-  let isBookmarked = false;
-  if (userId) {
-    const bookmark = await prisma.bookmark.findUnique({
+  // Chạy song song: children và bookmark không phụ thuộc nhau
+  const [children, bookmark] = await Promise.all([
+    prisma.taxon.findMany({
       where: {
-        userId_taxonId: {
-          userId,
-          taxonId: taxon.id,
-        },
+        parentId: taxon.id,
+        status: "published",
       },
-    });
-    isBookmarked = !!bookmark;
-  }
+      select: {
+        id: true,
+        scientificName: true,
+        canonicalName: true,
+        vietnameseName: true,
+        slug: true,
+        rank: true,
+        author: true,
+      },
+      orderBy: { scientificName: "asc" },
+    }),
+    userId
+      ? prisma.bookmark.findUnique({
+          where: { userId_taxonId: { userId, taxonId: taxon.id } },
+        })
+      : Promise.resolve(null),
+  ]);
 
   return {
     ...taxon,
     children,
-    isBookmarked,
+    isBookmarked: !!bookmark,
   };
 }
 

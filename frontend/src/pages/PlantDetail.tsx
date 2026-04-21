@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
@@ -44,7 +44,7 @@ export function PlantDetail() {
   const tabsRef = useRef<HTMLDivElement>(null);
 
   const handleExternalFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Nếu chưa đăng nhập, chuyển hướng sang Login luôn
+    // nếu chưa đăng nhập, chuyển hướng sang login luôn
     if (!isAuthenticated) {
       toast.info("Vui lòng đăng nhập để đóng góp hình ảnh");
       navigate("/login", { state: { from: location } });
@@ -55,7 +55,7 @@ export function PlantDetail() {
     if (file) {
       setPendingFile(file);
       setIsContributionModalOpen(true);
-      // Clear input so same file can be selected again
+      // xóa giá trị đầu vào để có thể chọn lại cùng một tệp
       e.target.value = "";
     }
   };
@@ -69,12 +69,12 @@ export function PlantDetail() {
     }
 
     if (pendingFile) {
-      e.preventDefault(); // Ngăn label kích hoạt input file
+      e.preventDefault(); // ngăn nhãn (label) kích hoạt đầu vào tệp
       setIsContributionModalOpen(true);
     }
   };
 
-  // Lấy nhãn cho tab cấp dưới
+  // lấy nhãn cho tab cấp dưới
   const getChildRankLabel = (rank: string) => {
     switch (rank) {
       case "kingdom":
@@ -116,18 +116,13 @@ export function PlantDetail() {
           const targetImageUrl =
             result.data.primaryImageUrl || result.data.images?.[0]?.url || null;
 
-          // Tạo độ trễ ngẫu nhiên (Staggered Loading) từ 300ms - 800ms
-          // để tránh dồn dập request ảnh cùng lúc khi chuyển trang nhanh hoặc load ảnh hàng loạt
-          setTimeout(
-            () => {
-              setActiveImageUrl(targetImageUrl);
-            },
-            Math.floor(Math.random() * 500) + 300,
-          );
+          // hiển thị dần dần: bố cục ổn định trước (150ms), rồi ảnh mới hiện lên sau
+          // tạo cảm giác mượt mà hơn so với tất cả xuất hiện cùng lúc
+          setTimeout(() => setActiveImageUrl(targetImageUrl), 150);
 
           setError(null);
 
-          // Lấy danh sách tổ tiên nếu có ID
+          // lấy danh sách tổ tiên nếu có id
           const ancResult = await fetchAncestors(result.data.id);
           if (ancResult.success) {
             setAncestors(ancResult.data);
@@ -150,7 +145,7 @@ export function PlantDetail() {
     fetchData();
   }, [slug]);
 
-  // Logic điều hướng cho Lightbox
+  // logic điều hướng cho lightbox
   const currentIndex =
     plant?.images?.findIndex((img) => img.url === activeImageUrl) ?? -1;
   const hasPrev = currentIndex > 0;
@@ -210,7 +205,7 @@ export function PlantDetail() {
     }
   };
 
-  // Phím tắt điều khiển Lightbox
+  // phím tắt điều khiển lightbox
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isLightboxOpen) return;
@@ -234,7 +229,12 @@ export function PlantDetail() {
   }
 
   const allImages = plant?.images || [];
-  const contributedImages = allImages.filter((img) => img.contributorId !== null);
+  // usememo: tránh lọc lại mỗi lần hiển thị khi di chuột hoặc cuộn hoặc mở lightbox
+  const contributedImages = useMemo(
+    () => allImages.filter((img) => img.contributorId !== null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [plant?.images]
+  );
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -242,7 +242,7 @@ export function PlantDetail() {
         {isLoading && <LoadingBar key="global-loader" />}
       </AnimatePresence>
 
-      {/* ĐIỀU HƯỚNG / BREADCRUMB */}
+      {/* điều hướng / thanh phân cấp */}
       <div className="pt-5 pb-4 mb-0 flex items-center gap-2 flex-wrap min-h-[40px]">
         <button
           onClick={() => navigate(-1)}
@@ -286,7 +286,7 @@ export function PlantDetail() {
           )}
         </AnimatePresence>
 
-        {/* Nút xem sơ đồ phả hệ tối giản cạnh Breadcrumb */}
+        {/* nút xem sơ đồ phả hệ tối giản cạnh thanh phân cấp */}
         {!isLoading && plant && (
           <motion.button
             initial={{ opacity: 0 }}
@@ -300,10 +300,10 @@ export function PlantDetail() {
         )}
       </div>
 
-      {/* PHẦN HERO (Ảnh & Thông tin chính) */}
+      {/* phần hero (ảnh và thông tin chính) */}
       <section className="pt-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
-          {/* Left Side: Editorial Image Frame - Restored Original Styling */}
+          {/* phía bên trái: khung ảnh phong cách biên tập */}
           <div className="relative aspect-[5/4] w-full mx-auto overflow-hidden shadow-soft border border-foreground/5 bg-muted cursor-zoom-in group">
             <AnimatePresence mode="wait">
               {isLoading || !plant ? (
@@ -342,7 +342,7 @@ export function PlantDetail() {
               )}
             </AnimatePresence>
 
-            {/* Gallery ảnh nhỏ trượt */}
+            {/* bộ sưu tập ảnh nhỏ dạng trượt */}
             {!isLoading && allImages.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -388,6 +388,7 @@ export function PlantDetail() {
                         <img
                           src={image.url}
                           alt="Thumbnail"
+                          loading="lazy"
                           className="w-full h-full object-cover"
                         />
                       </button>
@@ -398,7 +399,7 @@ export function PlantDetail() {
             )}
           </div>
 
-          {/* Thông tin định danh (bên phải) */}
+          {/* thông tin định danh (bên phải) */}
           <div className="flex flex-col lg:h-0 lg:min-h-full space-y-8 pt-2 overflow-hidden">
             <div className="flex-1 overflow-y-auto no-scrollbar space-y-8">
               <AnimatePresence mode="wait">
@@ -503,7 +504,7 @@ export function PlantDetail() {
         </div>
       </section>
 
-      {/* PHẦN NỘI DUNG CHI TIẾT (Tab) */}
+      {/* phần nội dung chi tiết (tab) */}
       {!isLoading && plant
         ? (() => {
             const hasDescription = !!(
@@ -520,7 +521,7 @@ export function PlantDetail() {
 
             if (!hasDescription && !hasSynonyms && !hasChildren) return null;
 
-            // Auto-select best tab if current is hidden
+            // tự động chọn tab phù hợp nếu tab hiện tại bị ẩn
             let displayTab = activeTab;
             if (activeTab === "description" && !hasDescription) {
               if (hasChildren) displayTab = "children";
@@ -528,12 +529,12 @@ export function PlantDetail() {
               else displayTab = "contributions";
             }
 
-            // Update state if needed (using a side-effect or just display logic)
+            // cập nhật trạng thái nếu cần (xử lý logic hiển thị)
             // For simplicity in this render block, we'll use displayTab for rendering
 
             return (
               <section className="pt-4 md:pt-6 pb-0" ref={tabsRef}>
-                {/* Thanh điều hướng Tab */}
+                {/* thanh điều hướng tab */}
                 <div className="flex items-end ml-0 overflow-visible">
                   {hasDescription && (
                     <button
@@ -605,7 +606,7 @@ export function PlantDetail() {
                         "rounded-tl-none",
                     )}
                   >
-                    {displayTab === "contributions" ? "ĐÓNG GÓP" : "ĐÓNG GÓP"}
+                    ĐÓNG GÓP
                     {contributedImages.length > 0
                       ? ` (${contributedImages.length})`
                       : ""}
@@ -636,12 +637,7 @@ export function PlantDetail() {
                         className="w-full py-3"
                       >
 
-                          <motion.div
-                            key="structured-view"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="flex flex-col"
-                          >
+                          <div className="flex flex-col">
                           {(
                             [
                               { label: "Dạng sống", value: plant.habit },
@@ -659,21 +655,21 @@ export function PlantDetail() {
                             .filter((item) => item.value)
                             .map((item, idx, filteredArray) => (
                               <div
-                                key={idx}
+                                key={item.label}
                                 className={cn(
                                   "flex flex-col md:flex-row py-2.5 md:items-center",
                                   idx !== filteredArray.length - 1 &&
                                     "border-b border-chart-5-fg/10",
                                 )}
                               >
-                                {/* Left Column: Label - Solid, Clear & More Compact */}
+                                {/* cột trái: nhãn */}
                                 <div className="w-full md:w-[20%] mb-1 md:mb-0 pr-4">
                                   <h3 className="text-[13px] font-sans font-black uppercase tracking-[0.2em] text-emerald-950/80 dark:text-emerald-200/80 leading-tight">
                                     {item.label}
                                   </h3>
                                 </div>
 
-                                {/* Right Column: Value - Maximum Space */}
+                                {/* cột phải: giá trị */}
                                 <div className="w-full md:w-[80%]">
                                   <p
                                     className={cn(
@@ -688,7 +684,7 @@ export function PlantDetail() {
                                 </div>
                               </div>
                             ))}
-                          </motion.div>
+                          </div>
                       </motion.div>
                     )}
 
@@ -811,10 +807,11 @@ export function PlantDetail() {
                                   <img
                                     src={image.url}
                                     alt="Contributor"
+                                    loading="lazy"
                                     className="w-full h-full object-cover"
                                   />
                                   
-                                  {/* Timestamp overlay */}
+                                  {/* hiển thị thời gian */}
                                   <div className="absolute bottom-1.5 left-2 z-10 pointer-events-none">
                                     <p className="text-[10px] font-sans font-black text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)] tracking-wider">
                                       {formatDate(image.createdAt)}
@@ -838,7 +835,7 @@ export function PlantDetail() {
           })()
         : null}
 
-      {/* Lightbox xem ảnh toàn màn hình */}
+      {/* cửa sổ phóng to ảnh toàn màn hình */}
       <AnimatePresence>
         {isLightboxOpen && activeImageUrl && (
           <motion.div
@@ -848,7 +845,7 @@ export function PlantDetail() {
             className="fixed inset-0 z-100 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-10 cursor-default"
             onClick={() => setIsLightboxOpen(false)}
           >
-            {/* Close Button */}
+            {/* nút đóng */}
             <motion.button
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -858,7 +855,7 @@ export function PlantDetail() {
               <X size={32} />
             </motion.button>
 
-            {/* Navigation: Prev */}
+            {/* điều hướng: trước */}
             {hasPrev && (
               <button
                 onClick={(e) => {
@@ -872,7 +869,7 @@ export function PlantDetail() {
               </button>
             )}
 
-            {/* Navigation: Next */}
+            {/* điều hướng: sau */}
             {hasNext && (
               <button
                 onClick={(e) => {
@@ -886,7 +883,7 @@ export function PlantDetail() {
               </button>
             )}
 
-            {/* Image Container */}
+            {/* khung chứa ảnh */}
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -900,7 +897,7 @@ export function PlantDetail() {
                 className="max-w-full max-h-[80vh] object-contain shadow-2xl rounded-sm"
               />
 
-              {/* Metadata row below image */}
+              {/* thông tin mô tả dưới ảnh */}
               {plant?.images && currentIndex !== -1 && (
                 <div className="mt-4 flex items-center justify-center gap-3 text-white/60 text-[11px] font-medium uppercase tracking-wider">
                   {plant.images[currentIndex].caption && (
@@ -937,18 +934,18 @@ export function PlantDetail() {
           isOpen={isContributionModalOpen}
           onOpenChange={(open) => {
             setIsContributionModalOpen(open);
-            // Không setPendingFile(null) ở đây để giữ ảnh trong bộ nhớ khi đóng modal
+            // giữ ảnh trong bộ nhớ khi đóng hộp thoại
           }}
-          onFileCleared={() => setPendingFile(null)} // Thêm logic xóa thực sự ở đây
+          onFileCleared={() => setPendingFile(null)} // xóa tệp khi cần thiết
           taxonId={plant.id}
           onSuccess={() => {
-            setPendingFile(null); // Chỉ xóa khi gửi thành công
+            setPendingFile(null); // chỉ xóa khi gửi thành công
           }}
           initialFile={pendingFile}
           showCloseButton={false}
         />
       )}
-      {/* Taxonomy Tree Modal */}
+      {/* hộp thoại sơ đồ phả hệ */}
       {plant && (
         <TaxonomyTreeModal
           isOpen={isTreeModalOpen}

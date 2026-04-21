@@ -37,12 +37,12 @@ export function SearchBar({
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Đồng bộ với initialValue khi thay đổi
+  // đồng bộ với giá trị ban đầu khi thay đổi
   useEffect(() => {
     setQuery(initialValue);
   }, [initialValue]);
 
-  // Tự động focus nếu được yêu cầu
+  // tự động tập trung nếu được yêu cầu
   useEffect(() => {
     if (autoFocus && inputRef.current) {
       inputRef.current.focus();
@@ -56,7 +56,7 @@ export function SearchBar({
 
   const navigate = useNavigate();
 
-  // Lấy gợi ý khi query thay đổi (debounced)
+  // lấy gợi ý khi truy vấn thay đổi (trễ 300ms)
   useEffect(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
@@ -68,9 +68,12 @@ export function SearchBar({
     }
 
     setIsLoadingSuggestions(true);
+    let ignore = false; // cờ để tránh tình trạng tranh chấp dữ liệu: phản hồi cũ không ghi đè trạng thái
+
     debounceTimerRef.current = setTimeout(async () => {
       try {
         const result = await fetchTaxonSuggestions(query, limit);
+        if (ignore) return; // phản hồi này đã lỗi thời, bỏ qua
         if (result.success && result.data) {
           setSuggestions(result.data);
           setHasSearched(true);
@@ -80,15 +83,17 @@ export function SearchBar({
           setHasSearched(true);
         }
       } catch (error) {
+        if (ignore) return;
         console.error("Failed to fetch suggestions:", error);
         setSuggestions([]);
         setHasSearched(true);
       } finally {
-        setIsLoadingSuggestions(false);
+        if (!ignore) setIsLoadingSuggestions(false);
       }
-    }, 100);
+    }, 300); // 300ms — cân bằng trải nghiệm người dùng và số lượng yêu cầu (request)
 
     return () => {
+      ignore = true; // hủy các phản hồi đang xử lý khi dọn dẹp
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
@@ -108,7 +113,7 @@ export function SearchBar({
     if (query.trim()) {
       setHasSearched(false);
       setIsFocused(false);
-      inputRef.current?.blur(); // Thực sự thoát focus khỏi input
+      inputRef.current?.blur(); // thực sự thoát khỏi ô nhập liệu
       if (onSearch) {
         onSearch(query);
       } else {
@@ -123,7 +128,7 @@ export function SearchBar({
     setSuggestions([]);
     setHasSearched(false);
     setIsFocused(false);
-    inputRef.current?.blur(); // Thực sự thoát focus khỏi input
+    inputRef.current?.blur(); // thực sự thoát khỏi ô nhập liệu
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -173,7 +178,7 @@ export function SearchBar({
           )}
         </form>
 
-        {/* Dropdown gợi ý - Biến thể Navbar */}
+        {/* danh sách gợi ý - biến thể thanh điều hướng */}
         <AnimatePresence>
           {isFocused &&
             (suggestions.length > 0 || (hasSearched && query.length >= 1)) && (
@@ -228,7 +233,7 @@ export function SearchBar({
     );
   }
 
-  // Biến thể mặc định (Hero)
+  // biến thể mặc định (hero)
   return (
     <div
       ref={containerRef}
@@ -285,7 +290,7 @@ export function SearchBar({
         </div>
       </form>
 
-      {/* Dropdown gợi ý - Biến thể mặc định */}
+      {/* danh sách gợi ý - biến thể mặc định */}
       <AnimatePresence>
         {isFocused &&
           (suggestions.length > 0 || (hasSearched && query.length >= 1)) && (

@@ -20,9 +20,7 @@ interface ContributionModalProps {
   showCloseButton?: boolean;
 }
 
-/**
- * ContributionModal - Unified console for uploading and editing in a single view
- */
+// contributionmodal - giao diện hợp nhất để tải lên và biên tập ảnh trong cùng một khung nhìn
 export function ContributionModal({
   isOpen,
   onOpenChange,
@@ -40,7 +38,7 @@ export function ContributionModal({
   const [caption, setCaption] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  // Sync initialFile
+  // đồng bộ hóa tệp tin ban đầu
   useEffect(() => {
     let objectUrl: string | null = null;
     if (isOpen && initialFile) {
@@ -80,7 +78,7 @@ export function ContributionModal({
     try {
       setIsUploading(true);
 
-      // 1. Get cropped image from the inline editor if visible
+      // 1. lấy ảnh đã cắt từ trình biên tập trực tiếp nếu đang hiển thị
       if (editorRef.current && tempBlob) {
         if (typeof editorRef.current.getCroppedBlob === 'function') {
            const croppedBlob = await editorRef.current.getCroppedBlob();
@@ -99,7 +97,7 @@ export function ContributionModal({
         return;
       }
 
-      // 2. Upload
+      // 2. tải lên máy chủ
       const formData = new FormData();
       formData.append("image", finalImageToUpload);
       formData.append("taxonId", taxonId.toString());
@@ -143,7 +141,7 @@ export function ContributionModal({
           </DialogHeader>
 
              <div className="flex flex-col">
-               {/* 1. Main Workspace (Fixed 4:3 Slot like Hero) */}
+                {/* 1. khu vực làm việc chính (khung 4:3 cố định) */}
                <div className="relative w-full overflow-hidden bg-white flex items-center justify-center p-3">
                   {!tempBlob ? (
                     <div className="w-full aspect-[4/3] flex items-center justify-center">
@@ -158,7 +156,7 @@ export function ContributionModal({
                     </div>
                   ) : (
                     <div className="w-full relative animate-in fade-in duration-500 flex items-center justify-center">
-                       {/* Editor slot: FIXED 4:3 Frame */}
+                       {/* khung dành cho trình biên tập: tỉ lệ 4:3 cố định */}
                        <div className="w-full aspect-[4/3] relative rounded-lg overflow-hidden border border-zinc-100 shadow-sm bg-zinc-50/50">
                          <ImageEditor 
                            ref={editorRef}
@@ -177,7 +175,7 @@ export function ContributionModal({
                   )}
                </div>
 
-               {/* 2. Control Area (Always visible if image is present) */}
+               {/* 2. khu vực điều khiển (luôn hiển thị nếu có ảnh) */}
                <div className={cn(
                  "p-4 bg-white transition-all duration-500",
                  !tempBlob && "hidden"

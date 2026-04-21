@@ -7,7 +7,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   
-  // Hành động
+  // hành động
   login: (user: User, token: string) => void;
   logout: () => Promise<void>;
   setUser: (user: User | null) => void;
@@ -18,7 +18,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: true, // Bắt đầu ở trạng thái loading để kiểm tra token hiện có
+  isLoading: true, // bắt đầu ở trạng thái tải (loading) để kiểm tra mã truy cập hiện có
 
   login: (user, token) => {
     localStorage.setItem("accessToken", token);
@@ -27,14 +27,14 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: async () => {
     try {
-      // Backend sẽ xóa HttpOnly refreshToken cookie
+      // máy chủ sẽ xóa cookie làm mới (httponly refreshtoken)
       await api.post("/auth/logout");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("accessToken");
       set({ user: null, isAuthenticated: false, isLoading: false });
-      window.location.href = "/login"; // Chuyển hướng sau khi logout
+      window.location.href = "/login"; // chuyển hướng sau khi đăng xuất
     }
   },
 
@@ -45,19 +45,19 @@ export const useAuthStore = create<AuthState>((set) => ({
   checkAuth: async () => {
     const token = localStorage.getItem("accessToken");
     
-    // Nếu không có token, không cần gọi API (giả định session-less)
+    // nếu không có mã truy cập, không cần gọi api
     if (!token) {
       set({ user: null, isAuthenticated: false, isLoading: false });
       return;
     }
 
     try {
-      // SỬA LỖI: Gọi đúng endpoint /users/me thay vì /auth/me
+      // gọi đúng điểm cuối /users/me thay vì /auth/me
       const response = await api.get("/users/me");
       const user = response.data.data;
       set({ user, isAuthenticated: true, isLoading: false });
     } catch {
-      // Nếu /me thất bại ngay cả sau khi interceptors đã thử refresh
+      // nếu yêu cầu lấy thông tin người dùng thất bại ngay cả sau khi đã thử làm mới mã truy cập
       localStorage.removeItem("accessToken");
       set({ user: null, isAuthenticated: false, isLoading: false });
     }

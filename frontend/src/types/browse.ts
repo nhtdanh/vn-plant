@@ -9,5 +9,5 @@ export interface BrowseQuery {
   parentId?: number; // lọc theo taxon cha
   page?: number;
   limit?: number;
-  sort?: "name" | "relevance"; // sắp xếp
+  // sort không cần thiết: backend tự chọn (có q → by score, không có q → by name)
 }

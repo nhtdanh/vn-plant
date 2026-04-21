@@ -2,18 +2,18 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 
-// Layouts
+// giao diện khung (layouts)
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthLayout } from "@/components/layout/AuthLayout";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 
-// Guards
+// bảo vệ tuyến đường (guards)
 import { AdminGuard } from "@/components/auth/AdminGuard";
 
-// UI Components
+// thành phần giao diện (ui)
 import { Toaster } from "@/components/ui/Toaster";
 
-// Pages
+// trang (pages)
 import { Home } from "@/pages/Home";
 import { Browse } from "@/pages/Browse";
 import { PlantDetail } from "@/pages/PlantDetail";
@@ -27,18 +27,18 @@ import { AdminUserManagement } from "@/pages/admin/UserManagement";
 
 import { Profile } from "@/pages/user/Profile";
 
-// Common components
+// thành phần chung (common)
 import { ScrollToTop } from "@/components/shared/ScrollToTop";
 
 function App() {
   const { checkAuth, isAuthenticated, user, isLoading } = useAuthStore();
 
   useEffect(() => {
-    // Khởi tạo trạng thái xác thực
+    // khởi tạo trạng thái xác thực
     checkAuth();
   }, [checkAuth]);
 
-  // Ngăn chặn việc render route khi đang kiểm tra token để tránh gây "chớp" UI
+  // ngăn chặn việc hiển thị tuyến đường khi đang kiểm tra mã truy cập để tránh gây giật giao diện (flickering)
   if (isLoading) {
     return <div className="min-h-screen bg-background" />;
   }
@@ -48,7 +48,7 @@ function App() {
       <ScrollToTop />
       <Toaster />
       <Routes>
-        {/* Route xác thực (chỉ cho người chưa đăng nhập) */}
+        {/* tuyến đường xác thực (chỉ cho người chưa đăng nhập) */}
         <Route
           element={
             !isAuthenticated ? (
@@ -62,7 +62,7 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* Route ứng dụng (truy cập công khai) */}
+        {/* tuyến đường ứng dụng (truy cập công khai) */}
         <Route element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="/browse" element={<Browse />} />
@@ -75,7 +75,7 @@ function App() {
           />
         </Route>
 
-        {/* Route Admin (bảo vệ bằng AdminGuard) */}
+        {/* tuyến đường admin (bảo vệ bằng adminguard) */}
         <Route
           path="/admin"
           element={
@@ -85,7 +85,7 @@ function App() {
           }
         >
           <Route index element={<AdminDashboard />} />
-          {/* Các trang admin khác sẽ thêm vào đây */}
+          {/* các trang admin khác sẽ thêm vào đây */}
           <Route path="images" element={<AdminImageReview />} />
           <Route path="taxons" element={<TaxonManagement />} />
           <Route path="taxons/new" element={<TaxonFormPage />} />
@@ -94,7 +94,7 @@ function App() {
 
         </Route>
 
-        {/* Redirect mặc định */}
+        {/* chuyển hướng mặc định */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

@@ -36,7 +36,7 @@ import type {
 } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Schema validation chuyên sâu cho Taxon - Đồng bộ với Backend DTO
+// schema validation chuyên sâu cho taxon - đồng bộ với backend dto
 const taxonSchema = z.object({
   scientificName: z.string().min(1, "Tên khoa học là bắt buộc"),
   author: z.string().nullish(),
@@ -58,7 +58,7 @@ const taxonSchema = z.object({
   sourceName: z.string().nullish(),
   orderInBook: z.string().nullish(),
   provinceIds: z.array(z.number()).default([]),
-  deleteImageIds: z.array(z.number()).default([]),
+  // lưu ý: deleteimageids được quản lý bằng state riêng (không thuộc form schema)
   synonyms: z.array(z.object({
     id: z.number().optional(),
     scientificName: z.string().min(1),
@@ -74,9 +74,7 @@ const taxonSchema = z.object({
 });
 
 
-/**
- * TaxonFormPage - Trình soạn thảo dữ liệu thực vật thực tế
- */
+// taxonformpage - trình soạn thảo dữ liệu thực vật thực tế
 export function TaxonFormPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -90,7 +88,7 @@ export function TaxonFormPage() {
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
   
-  // States cho Quản lý Hình ảnh
+  // các trạng thái quản lý hình ảnh
   const [existingImages, setExistingImages] = useState<TaxonImage[]>([]);
   const [newImageFiles, setNewImageFiles] = useState<{ 
     id: string; 
@@ -102,7 +100,7 @@ export function TaxonFormPage() {
   }[]>([]);
   const [deleteImageIds, setDeleteImageIds] = useState<number[]>([]);
 
-  // States cho Autocomplete Hierarchy
+  // các trạng thái cho tìm kiếm phân cấp
   const [parentSearch, setParentSearch] = useState("");
   const [parentSuggestions, setParentSuggestions] = useState<TaxonSuggestion[]>([]);
   const [selectedParent, setSelectedParent] = useState<TaxonSuggestion | null>(null);
@@ -142,7 +140,7 @@ export function TaxonFormPage() {
   const watchVietnameseName = watch("vietnameseName") || "";
   const watchCommonNames = watch("commonNames") || [];
   
-  // Cảnh báo khi rời trang nếu có thay đổi chưa lưu
+  // cảnh báo khi rời trang nếu có thay đổi chưa lưu
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isDirty && !isSaving) {
@@ -156,7 +154,7 @@ export function TaxonFormPage() {
 
   const isSyncingRef = useRef(false);
 
-  // Sync vietnameseName -> primary commonName
+  // đồng bộ tên tiếng việt sang tên thường gọi chính
   useEffect(() => {
     if (isSyncingRef.current) return;
     
@@ -165,17 +163,17 @@ export function TaxonFormPage() {
     if (watchVietnameseName) {
       isSyncingRef.current = true;
       if (primaryIndex === -1) {
-        // Create new primary if none exists
+        // tạo mới nếu chưa tồn tại
         appendCommonName({ name: watchVietnameseName, language: "vi", isPrimary: true });
       } else if (watchCommonNames[primaryIndex].name !== watchVietnameseName) {
-        // Update existing primary
+        // cập nhật nếu đã tồn tại
         setValue(`commonNames.${primaryIndex}.name`, watchVietnameseName);
       }
       setTimeout(() => { isSyncingRef.current = false; }, 50);
     }
   }, [watchVietnameseName]);
 
-  // Sync primary commonName -> vietnameseName
+  // đồng bộ tên thường gọi chính sang tên tiếng việt
   useEffect(() => {
     if (isSyncingRef.current) return;
     
@@ -187,7 +185,7 @@ export function TaxonFormPage() {
     }
   }, [watchCommonNames]);
 
-  // Load ban đầu
+  // tải dữ liệu ban đầu
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -249,14 +247,14 @@ export function TaxonFormPage() {
     loadData();
   }, [id, reset, isEditMode]);
 
-  // Cleanup Object URLs
+  // dọn dẹp các đường dẫn (url) của đối tượng
   useEffect(() => {
     return () => {
       newImageFiles.forEach(img => URL.revokeObjectURL(img.preview));
     };
   }, [newImageFiles]);
 
-  // Handle Autocomplete Search
+  // xử lý tìm kiếm gợi ý
   useEffect(() => {
     if (parentSearch.length < 2) {
       setParentSuggestions([]);
@@ -277,63 +275,79 @@ export function TaxonFormPage() {
     setIsSaving(true);
     try {
       const formData = new FormData();
-      const { synonyms, commonNames, provinceIds, ...coreData } = values;
-      
-      // 1. Phân rã & Làm sạch dữ liệu lõi (String/Number/Boolean)
-      Object.entries(coreData).forEach(([key, val]) => {
-        if (val !== undefined && val !== null) {
-          // Tự động TRIM các trường chuỗi ký tự để tránh rác dữ liệu
-          const finalVal = typeof val === "string" ? val.trim() : val;
-          formData.append(key, finalVal.toString());
-        }
-      });
 
-      // 2. Chuyển đổi các mảng phức tạp thành chuỗi JSON
-      // Đảm bảo Primary Common Name luôn tồn tại nếu có Tên tiếng Việt
-      const finalCommonNames = [...commonNames];
-      if (values.vietnameseName?.trim() && !finalCommonNames.some(c => c.isPrimary)) {
-          finalCommonNames.push({ 
-              name: values.vietnameseName.trim(), 
-              language: "vi", 
-              isPrimary: true 
-          });
+      // đảm bảo tên thường gọi chính luôn tồn tại nếu có tên tiếng việt
+      const finalCommonNames = [...(values.commonNames ?? [])];
+      if (values.vietnameseName?.trim() && !finalCommonNames.some((c: any) => c.isPrimary)) {
+        finalCommonNames.push({
+          name: values.vietnameseName.trim(),
+          language: "vi",
+          isPrimary: true,
+        });
       }
 
-      formData.append("synonyms", JSON.stringify(synonyms.map((s: any) => ({ 
-          scientificName: s.scientificName?.trim(), 
-          sourceName: s.sourceName?.trim() 
-      }))));
-      
-      formData.append("commonNames", JSON.stringify(finalCommonNames.map((c: any) => ({ 
-          name: c.name?.trim(), 
-          language: c.language || "vi", 
-          isPrimary: c.isPrimary, 
-          regionNote: c.regionNote?.trim() 
-      }))));
-
-      formData.append("provinceIds", JSON.stringify(provinceIds));
-      formData.append("deleteImageIds", JSON.stringify(deleteImageIds));
-
-      // 3. Xử lý Metadata Hình ảnh (Tất cả ảnh: cũ + mới)
+      // xử lý thông tin metadata hình ảnh (tất cả ảnh: cũ và mới)
       const imageMetadata = [
         ...existingImages.map(img => ({
-            url: img.url,
-            isPrimary: img.isPrimary,
-            caption: img.caption || "",
-            author: img.author || "",
+          url: img.url,
+          isPrimary: img.isPrimary,
+          caption: img.caption || "",
+          author: img.author || "",
         })),
         ...newImageFiles.map(img => ({
-            url: "new_upload",
-            isPrimary: img.isPrimary,
-            caption: img.caption || "",
-            author: img.author || "",
-        }))
+          url: "new_upload",
+          isPrimary: img.isPrimary,
+          caption: img.caption || "",
+          author: img.author || "",
+        })),
       ];
-      formData.append("images", JSON.stringify(imageMetadata));
 
-      // 4. Đưa file ảnh vật lý vào
+      // gom tất cả dữ liệu thành một chuỗi json trong trường "data"
+      // Giúp giữ nguyên kiểu dữ liệu (boolean, number, array) qua network.
+      // backend đã hỗ trợ xử lý dữ liệu dạng chuỗi json
+      const payload = {
+        // các trường dữ liệu lõi
+        scientificName: values.scientificName?.trim(),
+        author: values.author?.trim() || undefined,
+        vietnameseName: values.vietnameseName?.trim() || undefined,
+        rank: values.rank,
+        plantGroup: values.plantGroup || undefined,
+        status: values.status,
+        hasVietnamRecord: Boolean(values.hasVietnamRecord), // ✅ đảm bảo là boolean thực
+        parentId: values.parentId ?? undefined,
+        description: values.description?.trim() || undefined,
+        rawDescriptionInBook: values.rawDescriptionInBook?.trim() || undefined,
+        habit: values.habit?.trim() || undefined,
+        leaf: values.leaf?.trim() || undefined,
+        reproduction: values.reproduction?.trim() || undefined,
+        phenology: values.phenology?.trim() || undefined,
+        value: values.value?.trim() || undefined,
+        distributionText: values.distributionText?.trim() || undefined,
+        note: values.note?.trim() || undefined,
+        sourceName: values.sourceName?.trim() || undefined,
+        orderInBook: values.orderInBook?.trim() || undefined,
+        // các mảng dữ liệu (giữ nguyên kiểu số/logic)
+        provinceIds: (values.provinceIds ?? []).map(Number), // ✅ number[]
+        deleteImageIds: deleteImageIds.map(Number),           // ✅ number[]
+        synonyms: (values.synonyms ?? []).map((s: any) => ({
+          scientificName: s.scientificName?.trim(),
+          sourceName: s.sourceName?.trim() || undefined,
+        })),
+        commonNames: finalCommonNames.map((c: any) => ({
+          name: c.name?.trim(),
+          language: c.language || "vi",
+          isPrimary: Boolean(c.isPrimary), // ✅ boolean thực
+          regionNote: c.regionNote?.trim() || undefined,
+        })),
+        images: imageMetadata,
+      };
+
+      // thêm toàn bộ dữ liệu dưới dạng chuỗi json - giữ nguyên kiểu dữ liệu
+      formData.append("data", JSON.stringify(payload));
+
+      // thêm file ảnh riêng lẻ
       newImageFiles.forEach(img => {
-          formData.append("files", img.file);
+        formData.append("files", img.file);
       });
 
       if (isEditMode) {
@@ -344,8 +358,17 @@ export function TaxonFormPage() {
         toast.success("Tạo mới thành công");
         navigate("/admin/taxons");
       }
-    } catch (error) {
-      toast.error("Đã xảy ra lỗi khi lưu dữ liệu");
+    } catch (error: any) {
+      console.error("[TaxonForm] Submit error:", error);
+      // hiển thị thông báo từ máy chủ hoặc thông báo mặc định
+      const serverMessage = error?.response?.data?.message;
+      const serverErrors = error?.response?.data?.errors;
+      if (serverErrors?.length) {
+        const firstError = serverErrors[0];
+        toast.error(`Lỗi validation: ${firstError.path} — ${firstError.message}`);
+      } else {
+        toast.error(serverMessage || "Đã xảy ra lỗi khi lưu dữ liệu");
+      }
     } finally {
       setIsSaving(false);
     }
@@ -379,7 +402,7 @@ export function TaxonFormPage() {
 
   return (
     <div className="max-w-6xl mx-auto pb-32">
-       {/* Top Navigation Bar */}
+       {/* thanh điều hướng trên cùng */}
        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Button type="button" onClick={() => navigate("/admin/taxons")} className="bg-white hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900 rounded-sm border border-zinc-200 shadow-sm w-9 h-9 p-0 flex items-center justify-center transition-colors">
@@ -410,7 +433,7 @@ export function TaxonFormPage() {
           </div>
        </div>
 
-       {/* Horizontal Navigation Tabs */}
+       {/* các tab điều hướng ngang */}
        <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-zinc-100 mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex items-center overflow-x-auto no-scrollbar gap-1 py-1">
              {sections.map((s) => {
@@ -440,11 +463,11 @@ export function TaxonFormPage() {
           </div>
        </div>
 
-       {/* Form Content Area Area (Centered) */}
+       {/* khu vực nội dung biểu mẫu */}
        <div className="max-w-4xl mx-auto">
           <form className="space-y-12">
                 
-                {/* SECTION: IDENTITY (Tab 1) */}
+                {/* phần: định danh (tab 1) */}
                 {activeSection === "identity" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -510,7 +533,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* SECTION: CLASSIFICATION (Tab 2) */}
+                {/* phần: phân loại (tab 2) */}
                 {activeSection === "classification" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -610,7 +633,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* SECTION: BIOLOGY (Tab 3) */}
+                {/* phần: sinh học (tab 3) */}
                 {activeSection === "biology" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
                       <div className="space-y-8">
@@ -662,11 +685,11 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* SECTION: NAMES (Tab 4) */}
+                {/* phần: tên gọi (tab 4) */}
                 {activeSection === "names" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       
-                      {/* Synonyms */}
+                      {/* tên đồng nghĩa */}
                       <div className="space-y-4">
                          <div className="flex items-center justify-between">
                             <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Tên đồng nghĩa (Synonyms)</h3>
@@ -714,7 +737,7 @@ export function TaxonFormPage() {
                          </div>
                       </div>
 
-                      {/* Common Names */}
+                      {/* tên thường gọi */}
                       <div className="space-y-4">
                          <div className="flex items-center justify-between">
                             <h3 className="text-[10px] font-bold uppercase tracking-widest text-zinc-900 border-l-2 border-emerald-600 pl-2">Tên thường gọi</h3>
@@ -778,10 +801,10 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* SECTION: DISTRIBUTION (Tab 5) */}
+                {/* phần: phân bố (tab 5) */}
                 {activeSection === "distribution" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
-                      {/* Map / Regions */}
+                      {/* bản đồ / khu vực */}
                       <div className="space-y-4">
                          <div className="flex flex-wrap gap-2 p-4 bg-zinc-50/50 border border-zinc-100 rounded-sm">
                              {provinces.map((p) => (
@@ -804,7 +827,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* SECTION: MEDIA (Tab 5) */}
+                {/* phần: hình ảnh (tab 6) */}
                 {activeSection === "media" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       <div className="p-10 border-2 border-dashed border-zinc-200 rounded-sm flex flex-col items-center justify-center text-center space-y-4 bg-zinc-50/50 hover:bg-emerald-50 transition-all group cursor-pointer relative">
@@ -841,7 +864,7 @@ export function TaxonFormPage() {
                          </h3>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             
-                            {/* Existing Images */}
+                            {/* hình ảnh hiện có */}
                             {existingImages.map((img) => (
                                <div key={img.id} className={cn(
                                    "flex flex-col rounded-sm border overflow-hidden bg-white group transition-all",
@@ -903,7 +926,7 @@ export function TaxonFormPage() {
                                </div>
                             ))}
 
-                            {/* New Uploads */}
+                            {/* hình ảnh tải lên mới */}
                             {newImageFiles.map((img) => (
                                <div key={img.id} className={cn(
                                    "flex flex-col rounded-sm border-2 border-dashed bg-emerald-50/30 overflow-hidden group transition-all",
@@ -970,7 +993,7 @@ export function TaxonFormPage() {
           </form>
        </div>
 
-       {/* Footer Floating bar (Mobile mostly) */}
+       {/* thanh nổi chân trang (chủ yếu cho di động) */}
        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-40 lg:hidden pointer-events-none">
           <div className="bg-zinc-900/90 backdrop-blur-md p-3 rounded-sm shadow-2xl flex items-center justify-between gap-4 pointer-events-auto border border-zinc-700">
              <div className="flex flex-col">
@@ -983,7 +1006,7 @@ export function TaxonFormPage() {
           </div>
        </div>
 
-       {/* --- MODAL BIÊN TẬP ẢNH --- */}
+       {/* --- hộp thoại biên tập ảnh --- */}
        {isEditorOpen && editingBlob && (
           <ImageEditor 
              image={editingBlob.url}

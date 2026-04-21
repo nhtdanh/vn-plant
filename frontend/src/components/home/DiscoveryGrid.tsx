@@ -27,7 +27,7 @@ function DiscoveryCard({
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      {/* Background Image */}
+      {/* ảnh nền */}
       <motion.img
         src={image}
         alt={category}
@@ -38,14 +38,14 @@ function DiscoveryCard({
         transition={{ duration: 0.3 }}
       />
 
-      {/* Gradient Overlay - Hidden by default, appears on hover */}
+      {/* lớp phủ gradient - hiện lên khi di chuột */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
         animate={{ opacity: isHovered ? 0.95 : 0 }}
         transition={{ duration: 0.3 }}
       />
 
-      {/* Text Overlay - Center, appears on hover */}
+      {/* lớp phủ văn bản - nằm giữa, hiện lên khi di chuột */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center"
         animate={{ opacity: isHovered ? 1 : 0 }}
@@ -85,7 +85,7 @@ export function DiscoveryGrid() {
   return (
     <section className="py-12 bg-background">
       <div className="max-w-[1440px] mx-auto px-4 md:px-0">
-        {/* BUTTON SECTION */}
+        {/* phần nút bấm */}
         <div className="flex justify-end mb-8">
           <Link to="/browse">
             <motion.button
@@ -123,7 +123,7 @@ export function DiscoveryGrid() {
           </Link>
         </div>
 
-        {/* GRID SECTION */}
+        {/* phần lưới hiển thị */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
           {cards.map((card) => {
             const group = getCategoryGroup(card.categoryName);

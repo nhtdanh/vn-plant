@@ -35,7 +35,7 @@ export async function getProfile(id: string) {
   return {
     ...user,
     bookmarkCount: user._count.bookmarks,
-    _count: undefined, // Remove nested count from response
+    _count: undefined, // loại bỏ số lượng lồng nhau khỏi phản hồi
   };
 }
 
@@ -59,7 +59,7 @@ export async function updateProfile(id: string, data: UpdateProfileInput) {
 }
 
 export async function updateAvatar(id: string, fileBuffer: Buffer) {
-  // 1. Lấy thông tin user hiện tại để kiểm tra tồn tại và xóa ảnh cũ
+  // 1. lấy thông tin người dùng hiện tại để kiểm tra tồn tại và xóa ảnh cũ
   const currentUser = await prisma.user.findUnique({
     where: { id },
     select: { avatarUrl: true, id: true },
@@ -69,10 +69,10 @@ export async function updateAvatar(id: string, fileBuffer: Buffer) {
   const newR2Keys: string[] = [];
 
   try {
-    // 2. Xử lý ảnh (Tối ưu hóa WebP)
+    // 2. xử lý ảnh (tối ưu hóa webp)
     const processed = await processImage(fileBuffer);
 
-    // 3. Upload lên R2
+    // 3. upload lên r2
     // fileName hint dùng để lấy extension gốc nếu cần, nhưng uploadToR2 đã hash ngẫu nhiên
     const uploadResult = await uploadToR2(
       processed.buffer,
@@ -84,7 +84,7 @@ export async function updateAvatar(id: string, fileBuffer: Buffer) {
 
     const newAvatarUrl = normalizeUrl(`${R2_PUBLIC_DOMAIN}/${uploadResult.key}`) as string;
 
-    // 4. Cập nhật DB
+    // 4. cập nhật cơ sở dữ liệu
     const user = await prisma.user.update({
       where: { id },
       data: { avatarUrl: newAvatarUrl },
@@ -98,7 +98,7 @@ export async function updateAvatar(id: string, fileBuffer: Buffer) {
       },
     });
 
-    // 5. Cleanup R2 SUCCESS: Xóa ảnh cũ trên R2 nếu có
+    // 5. dọn dẹp r2 thành công: xóa ảnh cũ trên r2 nếu có
     if (currentUser.avatarUrl && R2_PUBLIC_DOMAIN && currentUser.avatarUrl.includes(R2_PUBLIC_DOMAIN)) {
       try {
         const oldKey = currentUser.avatarUrl.replace(`${R2_PUBLIC_DOMAIN}/`, "");
@@ -115,7 +115,7 @@ export async function updateAvatar(id: string, fileBuffer: Buffer) {
 
     return user;
   } catch (error) {
-    // 6. Rollback R2 FAIL: Xóa ảnh vừa upload nếu DB update thất bại
+    // 6. hoàn tác r2 thất bại: xóa ảnh vừa upload nếu cập nhật dữ liệu thất bại
     if (newR2Keys.length > 0) {
       console.error(`[Cleanup] Avatar update failed, removing orphan file from R2...`);
       await deleteMultipleFromR2(newR2Keys).catch(e => 
@@ -126,11 +126,11 @@ export async function updateAvatar(id: string, fileBuffer: Buffer) {
   }
 }
 
-// === ADMIN METHODS ===
+// === phương thức quản trị ===
 
 export async function listAllUsers(pagination: PaginationParams, role?: string, q?: string) {
   const where: any = {
-    role: role ? role : { not: "admin" }, // Mặc định không lấy tài khoản admin trừ khi được yêu cầu cụ thể
+    role: role ? role : { not: "admin" }, // mặc định không lấy tài khoản admin trừ khi được yêu cầu cụ thể
     ...(q && {
       OR: [
         { email: { contains: q, mode: "insensitive" } },
@@ -199,7 +199,7 @@ export async function deleteUser(id: string) {
     throw ApiError.notFound("Không tìm thấy người dùng để xóa");
   }
 
-  // Chặn xóa Admin (Tùy chọn bảo mật thêm)
+  // chặn xóa admin (tùy chọn bảo mật thêm)
   if (user.role === "admin") {
     throw ApiError.badRequest("Không thể xóa tài khoản quản trị viên thông qua giao diện này");
   }
@@ -216,7 +216,7 @@ export async function countTotalUsers() {
   return { total: count };
 }
 
-export async function adminCreateUser(data: { email: string; passwordHash: string; displayName?: string | null }) {
+export async function adminCreateUser(data: { email: string; plainPassword: string; displayName?: string | null }) {
   const existing = await prisma.user.findUnique({
     where: { email: data.email },
   });
@@ -225,7 +225,7 @@ export async function adminCreateUser(data: { email: string; passwordHash: strin
     throw ApiError.conflict("Email đã được sử dụng");
   }
 
-  const passwordHash = await bcrypt.hash(data.passwordHash, SALT_ROUNDS);
+  const passwordHash = await bcrypt.hash(data.plainPassword, SALT_ROUNDS);
 
   return prisma.user.create({
     data: {

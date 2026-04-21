@@ -164,7 +164,7 @@ export async function logout(tokenString: string) {
       where: { tokenHash },
     });
   } catch (error) {
-    // Nếu lỗi hoặc token không tồn tại, bỏ qua vì coi như đã logout
+    // nếu lỗi hoặc token không tồn tại, bỏ qua vì coi như đã logout
   }
 }
 

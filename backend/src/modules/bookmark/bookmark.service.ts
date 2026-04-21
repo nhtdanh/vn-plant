@@ -4,7 +4,7 @@ import type { ListBookmarksQuery } from "./bookmark.dto.js";
 import { getPaginationParams, formatPaginatedResponse } from "../../utils/pagination.js";
 
 export async function addBookmark(userId: string, taxonId: number) {
-  // Check if taxon exists
+  // kiểm tra taxon tồn tại
   const taxon = await prisma.taxon.findUnique({
     where: { id: taxonId },
   });
@@ -35,7 +35,7 @@ export async function addBookmark(userId: string, taxonId: number) {
     });
     return bookmark;
   } catch (error: any) {
-    // Handle unique constraint (already bookmarked)
+    // xử lý ràng buộc duy nhất (đã lưu bookmark trước đó)
     if (error.code === "P2002") {
       throw ApiError.conflict("Bạn đã lưu loài này trước đó");
     }

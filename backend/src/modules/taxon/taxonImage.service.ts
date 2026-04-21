@@ -18,12 +18,12 @@ interface ContributeImageData {
   license?: string | undefined;
 }
 
-// Đóng góp ảnh cho một loài thực vật (Trạng thái PENDING)
+// đóng góp ảnh cho một loài thực vật (trạng thái pending)
 export async function contributeImage(data: ContributeImageData) {
-  // 1. Tối ưu hóa ảnh (Convert WebP, Resize)
+  // 1. tối ưu hóa ảnh (convert webp, resize)
   const processed = await processImage(data.fileBuffer);
 
-  // 2. Upload lên R2 (Ép kiểu .webp)
+  // 2. upload lên r2 (ép kiểu .webp)
   const webpFileName = data.fileName.replace(/\.[^/.]+$/, "") + ".webp";
   const uploadResult = await uploadToR2(
     processed.buffer,
@@ -34,9 +34,9 @@ export async function contributeImage(data: ContributeImageData) {
 
   const url = `${R2_PUBLIC_DOMAIN}/${uploadResult.key}`;
 
-  // 3. Thực hiện lưu vào DB trong Transaction
+  // 3. thực hiện lưu vào db trong transaction
    return prisma.$transaction(async (tx) => {
-     // 3.1 Tính toán sortOrder tiếp theo (max + 1)
+     // 3.1 tính toán sortOrder tiếp theo (max + 1)
      const lastImage = await tx.taxonImage.findFirst({
        where: { taxonId: data.taxonId },
        orderBy: { sortOrder: 'desc' },
@@ -44,13 +44,8 @@ export async function contributeImage(data: ContributeImageData) {
      });
      const nextSortOrder = (lastImage?.sortOrder ?? 0) + 1;
  
-     // 3.2 Kiểm tra xem Taxon đã có ảnh approved nào chưa
-     const approvedCount = await tx.taxonImage.count({
-       where: { taxonId: data.taxonId, status: "approved" }
-     });
-     const isFirstApproved = approvedCount === 0;
- 
-     // 3.3 Tạo bản ghi ảnh
+     // 3.2 tạo bản ghi ảnh với trạng thái pending
+     // isPrimary và primaryImageUrl chỉ được cập nhật sau khi admin phê duyệt
      const newImage = await tx.taxonImage.create({
        data: {
          taxonId: data.taxonId,
@@ -62,29 +57,21 @@ export async function contributeImage(data: ContributeImageData) {
          ...(data.author !== undefined && { author: data.author }),
          ...(data.license !== undefined && { license: data.license }),
          status: "pending",
-         isPrimary: isFirstApproved,
+         isPrimary: false, // luôn false khi pending - chỉ được đặt khi approved
          sortOrder: nextSortOrder,
          contributorId: data.contributorId,
        },
      });
  
-     // 3.4 Nếu là ảnh đầu tiên -> Cập nhật primaryImageUrl cho Taxon
-     if (isFirstApproved) {
-       await tx.taxon.update({
-         where: { id: data.taxonId },
-         data: { primaryImageUrl: url }
-       });
-     }
- 
      return newImage;
    });
  }
 
-// Lấy danh sách ảnh phê duyệt (Chỉ Admin)
+// lấy danh sách ảnh phê duyệt (chỉ admin)
 export async function getPendingImages(pagination: PaginationParams, status?: ImageStatus) {
   const where = { 
     ...(status ? { status: status as ImageStatus } : { status: { in: ['pending', 'approved', 'rejected'] as ImageStatus[] } }),
-    contributorId: { not: null } // Chỉ lấy ảnh do người dùng đóng góp
+    contributorId: { not: null } // chỉ lấy ảnh do người dùng đóng góp
   };
 
   const [total, items] = await Promise.all([
@@ -107,7 +94,7 @@ export async function getPendingImages(pagination: PaginationParams, status?: Im
   return formatPaginatedResponse(items, total, pagination);
 }
 
-// Phê duyệt hoặc từ chối ảnh (Chỉ Admin)
+// phê duyệt hoặc từ chối ảnh (chỉ admin)
 export async function reviewImage(
   id: number,
   reviewerId: string,
@@ -122,16 +109,16 @@ export async function reviewImage(
     throw ApiError.notFound("Không tìm thấy ảnh này");
   }
 
-  // Cập nhật bản ghi ảnh
+  // cập nhật bản ghi ảnh
    const updatedImage = await prisma.$transaction(async (tx) => {
-     // 1. Kiểm tra xem Taxon này đã có ảnh nào được duyệt chưa (trước khi duyệt ảnh này)
+     // 1. kiểm tra xem taxon này đã có ảnh nào được duyệt chưa (trước khi duyệt ảnh này)
      let effectivelyPrimary = data.isPrimary;
  
      if (data.status === "approved" && effectivelyPrimary === undefined) {
         const approvedCount = await tx.taxonImage.count({
           where: { taxonId: image.taxonId, status: "approved", id: { not: id } }
         });
-        // Nếu chưa có ảnh nào -> Mặc định gán làm ảnh chính
+        // nếu chưa có ảnh nào -> mặc định gán làm ảnh chính
         if (approvedCount === 0) {
           effectivelyPrimary = true;
         }
@@ -149,7 +136,7 @@ export async function reviewImage(
        },
      });
  
-     // Nếu ảnh này được gán làm ảnh chính -> Reset các ảnh khác
+     // nếu ảnh này được gán làm ảnh chính -> reset các ảnh khác
      if (img.isPrimary && img.status === "approved") {
        await tx.taxonImage.updateMany({
          where: { taxonId: image.taxonId, id: { not: id } },
@@ -157,7 +144,7 @@ export async function reviewImage(
        });
      }
  
-     // Luôn tính toán lại ảnh chính cho Taxon để đảm bảo đồng bộ (đặc biệt khi Reject ảnh đang làm Primary)
+     // luôn tính toán lại ảnh chính cho taxon để đảm bảo đồng bộ (đặc biệt khi reject ảnh đang làm primary)
      await recalculatePrimaryImageUrl(tx, image.taxonId);
  
      return img;
@@ -166,7 +153,7 @@ export async function reviewImage(
   return updatedImage;
 }
 
-// Tìm và xóa toàn bộ ảnh vật lý trên R2 thuộc về một Taxon (Dùng khi xóa Taxon)
+// tìm và xóa toàn bộ ảnh vật lý trên r2 thuộc về một taxon (dùng khi xóa taxon)
 export async function deletePhysicalImagesByTaxonId(taxonId: number) {
   const images = await prisma.taxonImage.findMany({
     where: { taxonId },
@@ -185,9 +172,9 @@ export async function deletePhysicalImagesByTaxonId(taxonId: number) {
   }
 }
 
-// Thả tim hoặc gỡ tim cho ảnh
+// thả tim hoặc gỡ tim cho ảnh
 export async function toggleLike(userId: string, imageId: number) {
-  // 1. Kiểm tra sự tồn tại của ảnh và người đóng góp (Chỉ cho phép tim ảnh của người dùng)
+  // 1. kiểm tra sự tồn tại của ảnh và người đóng góp (chỉ cho phép tim ảnh của người dùng)
   const image = await prisma.taxonImage.findUnique({
     where: { id: imageId },
     select: { contributorId: true }
@@ -198,7 +185,7 @@ export async function toggleLike(userId: string, imageId: number) {
     throw ApiError.forbidden("Chỉ có thể thả tim cho ảnh do người dùng đóng góp");
   }
 
-  // 2. Kiểm tra xem đã like chưa
+  // 2. kiểm tra xem đã like chưa
   const existingLike = await prisma.taxonImageLike.findUnique({
     where: {
       userId_imageId: { userId, imageId }
@@ -206,13 +193,13 @@ export async function toggleLike(userId: string, imageId: number) {
   });
 
   if (existingLike) {
-    // Nếu đã like -> Xóa like
+    // nếu đã like -> xóa like
     await prisma.taxonImageLike.delete({
       where: { id: existingLike.id }
     });
     return { liked: false };
   } else {
-    // Nếu chưa like -> Thêm like
+    // nếu chưa like -> thêm like
     await prisma.taxonImageLike.create({
       data: { userId, imageId }
     });
@@ -220,7 +207,7 @@ export async function toggleLike(userId: string, imageId: number) {
   }
 }
 
-// Thống kê thành tích đóng góp của một User
+// thống kê thành tích đóng góp của một người dùng
 export async function getUserContributionStats(userId: string) {
   const [pending, approved, rejected, totalLikes] = await Promise.all([
     prisma.taxonImage.count({ where: { contributorId: userId, status: "pending" } }),
@@ -241,7 +228,7 @@ export async function getUserContributionStats(userId: string) {
   };
 }
 
-// Thống kê ảnh đóng góp (Admin)
+// thống kê ảnh đóng góp (admin)
 export async function countStats() {
   const [total, pending, contributed] = await Promise.all([
     prisma.taxonImage.count(),
@@ -251,7 +238,7 @@ export async function countStats() {
   return { total, pending, contributed };
 }
 
-// Lấy danh sách đóng góp của một người dùng cụ thể
+// lấy danh sách đóng góp của một người dùng cụ thể
 export async function findByContributor(contributorId: string, pagination: PaginationParams) {
   const where = { contributorId };
 
@@ -277,7 +264,7 @@ export async function findByContributor(contributorId: string, pagination: Pagin
   return formatPaginatedResponse(items, total, pagination);
 }
 
-// Xóa một tấm ảnh (Chỉ Admin - Standalone)
+// xóa một tấm ảnh (chỉ admin - standalone)
 export async function deleteImage(id: number) {
   const image = await prisma.taxonImage.findUnique({
     where: { id },
@@ -288,18 +275,18 @@ export async function deleteImage(id: number) {
     throw ApiError.notFound("Không tìm thấy ảnh để xóa");
   }
 
-  // 1. Thực hiện trong Transaction để đảm bảo tính nhất quán
+  // 1. thực hiện trong transaction để đảm bảo tính nhất quán
   await prisma.$transaction(async (tx) => {
-    // Xóa trong DB
+    // xóa trong db
     await tx.taxonImage.delete({ where: { id } });
 
-    // 2. Nếu là ảnh chính của Taxon -> Tính toán và tìm ảnh thay thế tốt nhất
+    // 2. nếu là ảnh chính của taxon -> tính toán và tìm ảnh thay thế tốt nhất
     if (image.taxon.primaryImageUrl === image.url) {
       await recalculatePrimaryImageUrl(tx, image.taxonId);
     }
   });
 
-  // 3. Xóa vật lý trên R2 (Async)
+  // 3. xóa vật lý trên r2 (async)
   if (image.storageKey) {
     await deleteFromR2(image.storageKey).catch(e => 
       console.error(`[Cleanup] Failed to delete image ${id} from R2:`, e)

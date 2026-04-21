@@ -5,7 +5,7 @@ export function Hero() {
   return (
     <section className="relative pt-4 pl-6 sm:pl-8 md:pl-12 pr-2 sm:pr-3 md:pr-4 pb-12 md:pb-20">
       <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 md:gap-16 lg:gap-20 items-center px-0 sm:px-4 md:pl-10 md:pr-0">
-        {/* CONTENT COLUMN - 6 columns */}
+        {/* cột nội dung */}
         <div className="md:col-span-6 flex flex-col items-start text-left order-2 md:order-1 min-w-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* IMAGE COLUMN - 6 columns */}
+        {/* cột hình ảnh */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

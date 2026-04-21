@@ -9,12 +9,12 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
-// 1. Core Middlewares (Parse dữ liệu sớm nhất có thể)
+// 1. các trung gian cốt lõi (parse dữ liệu sớm nhất có thể)
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// 2. Security & CORS
+// 2. bảo mật và cors (cross-origin resource sharing)
 app.use(
   cors({
     origin: process.env["CLIENT_URL"] || "http://localhost:5173",
@@ -23,7 +23,7 @@ app.use(
 );
 app.use(helmet({ crossOriginResourcePolicy: false }));
 
-// 3. Rate Limiting (Disabled per user request)
+// 3. giới hạn lưu lượng (rate limiting - đã tắt theo yêu cầu người dùng)
 
 // static files
 app.use(

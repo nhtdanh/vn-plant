@@ -16,8 +16,8 @@ adminRoutes.get("/stats", adminStatsController.getStats);
 
 // Taxon Management
 adminRoutes.get("/taxa", adminTaxonController.listTaxa);
-adminRoutes.post("/taxa", memoryUpload.array("images"), adminTaxonController.createTaxon);
-adminRoutes.patch("/taxa/:id", memoryUpload.array("images"), adminTaxonController.updateTaxon);
+adminRoutes.post("/taxa", memoryUpload.array("files"), adminTaxonController.createTaxon);
+adminRoutes.patch("/taxa/:id", memoryUpload.array("files"), adminTaxonController.updateTaxon);
 adminRoutes.get("/taxa/:id", adminTaxonController.getTaxon);
 adminRoutes.delete("/taxa/:id", adminTaxonController.deleteTaxon);
 

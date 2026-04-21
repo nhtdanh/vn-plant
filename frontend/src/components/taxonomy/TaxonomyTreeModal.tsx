@@ -25,6 +25,7 @@ interface TreeNode {
   isTarget?: boolean;
   isExpanded?: boolean;
   isLoading?: boolean;
+  isSiblingLoaded?: boolean; // true khi đã fetch siblings từ API (khác với spine-only child)
   children?: TreeNode[];
 }
 
@@ -97,6 +98,8 @@ export function TaxonomyTreeModal({
             slug: anc.slug,
             children: [],
           };
+          // Đánh dấu node hiện tại là expanded để D3 có thể traverse qua spine
+          current.isExpanded = true;
           current.children = [newNode];
           if (anc.id === plant.parentId) {
             targetParentInSpine = newNode;
@@ -120,6 +123,7 @@ export function TaxonomyTreeModal({
         if (targetParentInSpine) {
           targetParentInSpine.children = [targetNode];
         } else {
+          current.isExpanded = true;
           current.children = [targetNode];
           targetParentInSpine = current;
         }
@@ -140,6 +144,7 @@ export function TaxonomyTreeModal({
           }));
           targetParentInSpine.children = siblings;
           targetParentInSpine.isExpanded = true;
+          targetParentInSpine.isSiblingLoaded = true; // Đánh dấu đã load siblings thật
         }
       }
 
@@ -168,71 +173,90 @@ export function TaxonomyTreeModal({
     node: TreeNode,
     nodeId: string,
     children: TreeNode[] | null,
-    isExpanded: boolean
+    isExpanded: boolean,
+    isSiblingLoaded?: boolean
   ): TreeNode => {
     if (node.id === nodeId) {
       return { 
         ...node, 
         children: children === null ? node.children : children, 
         isExpanded, 
-        isLoading: false 
+        isLoading: false,
+        ...(isSiblingLoaded !== undefined && { isSiblingLoaded }),
       };
     }
     if (node.children) {
       return {
         ...node,
         children: node.children.map((child) =>
-          updateTreeData(child, nodeId, children, isExpanded)
+          updateTreeData(child, nodeId, children, isExpanded, isSiblingLoaded)
         ),
       };
     }
     return node;
   };
 
-  const handleExpandNode = async (nodeId: string, parentId?: number) => {
+  // Helper dùng được cả trong functional update (không phụ thuộc closure nodeId)
+  const findInTree = (root: TreeNode, id: string): TreeNode | null => {
+    if (root.id === id) return root;
+    for (const child of root.children || []) {
+      const found = findInTree(child, id);
+      if (found) return found;
+    }
+    return null;
+  };
+
+  const handleExpandNode = async (nodeId: string) => {
     if (!treeData) return;
 
-    const findNode = (node: TreeNode): TreeNode | null => {
-      if (node.id === nodeId) return node;
-      if (node.children) {
-        for (const child of node.children) {
-          const found = findNode(child);
-          if (found) return found;
-        }
-      }
-      return null;
-    };
+    const targetNode = findInTree(treeData, nodeId);
 
-    const targetNode = findNode(treeData);
-    if (targetNode?.isExpanded) {
-      setTreeData(updateTreeData(treeData, nodeId, null, false));
+    // Rule 1: Đã load siblings → chỉ toggle collapse/expand, không fetch lại
+    if (targetNode?.isSiblingLoaded) {
+      setTreeData((prev) => {
+        if (!prev) return prev;
+        const node = findInTree(prev, nodeId);
+        return updateTreeData(prev, nodeId, null, !node?.isExpanded);
+      });
       return;
     }
 
-    // Nếu đã có con rồi thì chỉ cần mở ra, không cần fetch lại
-    if (targetNode?.children && targetNode.children.length > 0) {
-      setTreeData(updateTreeData(treeData, nodeId, null, true));
-      return;
-    }
-
-    const idToFetch = parentId || Number(nodeId);
+    // Rule 2: Chưa load siblings → fetch từ API
     setLoadingNodes((prev) => new Set(prev).add(nodeId));
     try {
-      const result = await fetchTaxonTreeNodes(idToFetch);
+      const result = await fetchTaxonTreeNodes(Number(nodeId));
       if (result.success) {
-        const newChildren: TreeNode[] = result.data.items.map((item) => ({
-          id: item.id.toString(),
-          name: item.vietnameseName || item.canonicalName,
-          scientificName: item.scientificName,
-          rank: item.rank,
-          slug: item.slug,
-          isTarget: item.id === plant.id,
-          children: [],
-        }));
-        setTreeData(updateTreeData(treeData, nodeId, newChildren, true));
+        const apiItems = result.data.items;
+
+        setTreeData((prev) => {
+          if (!prev) return prev;
+
+          const currentNode = findInTree(prev, nodeId);
+          const currentChildren = currentNode?.children || [];
+
+          // Merge: ưu tiên giữ existing node (preserve toàn bộ isExpanded/isSiblingLoaded/children)
+          const mergedChildren: TreeNode[] = apiItems.map((item) => {
+            const existing = currentChildren.find((c) => c.id === item.id.toString());
+            return existing ?? {
+              id: item.id.toString(),
+              name: item.vietnameseName || item.canonicalName,
+              scientificName: item.scientificName,
+              rank: item.rank,
+              slug: item.slug,
+              isTarget: item.id === plant.id,
+              children: [],
+            };
+          });
+
+          // Orphan protection: giữ lại existing children KHÔNG nằm trong API response
+          const apiIds = new Set(apiItems.map((i) => i.id.toString()));
+          const orphaned = currentChildren.filter((c) => !apiIds.has(c.id));
+
+          return updateTreeData(prev, nodeId, [...mergedChildren, ...orphaned], true, true);
+        });
       }
     } catch (error) {
-      console.error("Failed", error);
+      console.error("Failed to expand node", error);
     } finally {
       setLoadingNodes((prev) => {
         const next = new Set(prev);
@@ -292,28 +316,7 @@ export function TaxonomyTreeModal({
     }
   }, [isOpen, !!treeResult, zoom, minX]);
 
-  // Logic Tự động mở nhánh cha - Đặt sau useMemo
-  useEffect(() => {
-    if (isOpen && plant.parentId && treeData) {
-      const findNode = (node: TreeNode): TreeNode | null => {
-        if (node.id === plant.parentId?.toString()) return node;
-        if (node.children) {
-          for (const child of node.children) {
-            const found = findNode(child);
-            if (found) return found;
-          }
-        }
-        return null;
-      };
-
-      const parentNode = findNode(treeData);
-      // Logic cũ này có thể được đơn giản hóa vì chúng ta nạp sẵn trong initSpine
-      if (parentNode && !parentNode.isExpanded && !loadingNodes.has(parentNode.id)) {
-        // handleExpandNode(plant.parentId.toString(), plant.parentId);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, !!treeData]);
+  // Logic tự động mở nhánh cha đã được xử lý trong initSpine bằng cách nạp sẵn siblings
 
   if (!treeData || !treeResult) return null;
 

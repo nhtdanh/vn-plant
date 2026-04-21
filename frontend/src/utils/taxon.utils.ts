@@ -1,22 +1,22 @@
-// Utility functions và constants cho Browse/Search page
+// các hàm tiện ích và hằng số cho trang khám phá/tìm kiếm
 
 import type { PlantGroup, TaxonomyRank } from "../types";
 
-// Map từ category name sang plant group (DiscoveryGrid)
+// ánh xạ từ tên danh mục sang nhóm thực vật (discoverygrid)
 export const CATEGORY_TO_GROUP: Record<string, PlantGroup> = {
   "Dương xỉ": "fern",
   "Hạt trần": "gymnosperm",
   "Hạt kín": "angiosperm",
 };
 
-// Tên hiển thị của các nhóm thực vật
+// tên hiển thị của các nhóm thực vật
 export const GROUP_DISPLAY_NAMES: Record<PlantGroup, string> = {
   fern: "Dương xỉ",
   gymnosperm: "Hạt trần",
   angiosperm: "Hạt kín",
 };
 
-// Tên hiển thị của các cấp phân loại
+// tên hiển thị của các cấp phân loại
 export const RANK_DISPLAY_NAMES: Record<TaxonomyRank, string> = {
   kingdom: "Giới",
   phylum: "Ngành",
@@ -30,22 +30,22 @@ export const RANK_DISPLAY_NAMES: Record<TaxonomyRank, string> = {
   forma: "Dạng",
 };
 
-// Map từ category name sang plant group
+// ánh xạ từ tên danh mục sang nhóm thực vật
 export function getCategoryGroup(categoryName: string): PlantGroup | null {
   return CATEGORY_TO_GROUP[categoryName] || null;
 }
 
-// Lấy tên hiển thị cho nhóm thực vật
+// lấy tên hiển thị cho nhóm thực vật
 export function getGroupDisplayName(group: PlantGroup): string {
   return GROUP_DISPLAY_NAMES[group] || group;
 }
 
-// Lấy tên hiển thị cho cấp phân loại
+// lấy tên hiển thị cho cấp phân loại
 export function getRankDisplayName(rank: TaxonomyRank): string {
   return RANK_DISPLAY_NAMES[rank] || rank;
 }
 
-// Viết hoa chữ cái đầu mỗi từ
+// viết hoa chữ cái đầu mỗi từ
 export function capitalize(str: string): string {
   return str
     .split(" ")
@@ -53,7 +53,7 @@ export function capitalize(str: string): string {
     .join(" ");
 }
 
-// Lất màu badge dựa trên cấp phân loại (màu nhạt)
+// lấy màu thẻ (badge) dựa trên cấp phân loại (màu nhạt)
 export function getRankBadgeColor(rank: TaxonomyRank): {
   bg: string;
   text: string;

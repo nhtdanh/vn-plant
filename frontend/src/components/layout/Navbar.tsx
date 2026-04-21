@@ -61,7 +61,7 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full bg-primary border-b-2 border-white/20 text-white">
       <div className="max-w-360 mx-auto border-x-2 border-white/10">
         <div className="flex h-13 items-center">
-          {/* 1. LOGO CELL */}
+          {/* 1. ô chứa logo */}
           <div className="flex items-center h-full px-4 sm:px-6 md:px-10 border-r-2 border-white/20 shrink-0">
             <Link to="/" className="flex items-center group">
               <img
@@ -72,7 +72,7 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* 2. NAVIGATION LINKS (Desktop Only) */}
+          {/* 2. các liên kết điều hướng (chỉ dành cho máy tính) */}
           <div className="hidden md:flex items-center justify-center flex-1 h-full px-6 gap-6 lg:gap-8 border-r-2 border-white/20 flex-nowrap">
             {navLinks.map((link) => {
               const active = isLinkActive(link.href);
@@ -99,7 +99,7 @@ export function Navbar() {
             })}
           </div>
 
-          {/* 3. SEARCH CELL (Expandable Desktop + Desktop Only Logic) */}
+          {/* 3. ô tìm kiếm (máy tính) */}
           <div className="flex-1 md:flex-none flex items-center h-full">
             <motion.div
               className="hidden md:flex items-center justify-center h-full md:border-r-2 border-white/20"
@@ -143,7 +143,7 @@ export function Navbar() {
             </motion.div>
           </div>
 
-          {/* 4. USER CELL (Desktop Only) */}
+          {/* 4. ô người dùng (máy tính) */}
           <div className="hidden md:flex items-center justify-center h-full px-8 shrink-0">
             {isAuthenticated ? (
               <DropdownMenu>
@@ -166,7 +166,7 @@ export function Navbar() {
                   align="end"
                   className="w-56 mt-2 p-1.5 rounded-lg border-zinc-100 shadow-xl"
                 >
-                  {/* User Identity Header */}
+                  {/* tiêu đề nhận dạng người dùng */}
                   <div className="px-3 py-3 mb-1.5 bg-zinc-50/50 rounded-md border border-zinc-100">
                     <div className="flex items-center gap-2.5 mb-2.5">
                       <div className="w-9 h-9 rounded-md bg-white border border-zinc-200 overflow-hidden shrink-0">
@@ -249,7 +249,7 @@ export function Navbar() {
             )}
           </div>
 
-          {/* 5. MOBILE TOGGLE CELL */}
+          {/* 5. ô chuyển đổi trên di động */}
           <div className="md:hidden flex items-center h-full border-l-2 border-white/20 shrink-0">
             <button
               className="flex items-center justify-center h-full px-5 text-white cursor-pointer"
@@ -261,7 +261,7 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* MOBILE DRAWER */}
+      {/* ngăn kéo trên di động */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -270,7 +270,7 @@ export function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden border-t border-white/10 overflow-hidden bg-primary px-6 py-8 flex flex-col gap-6"
           >
-            {/* Search in Mobile Menu */}
+            {/* tìm kiếm trong thực đơn di động */}
             <div className="bg-white/10 p-3 rounded-xl border border-white/20">
               <SearchBar
                 variant="navbar"

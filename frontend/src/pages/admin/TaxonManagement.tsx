@@ -38,10 +38,8 @@ import { adminService } from "@/services/admin.service";
 import type { Taxon } from "@/types";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 
-/**
- * TaxonManagement - Trang quản lý danh sách loài (Admin Giai đoạn 1)
- * Tập trung vào lọc, tìm kiếm và xem nhanh trạng thái dữ liệu của 10.000+ bản ghi
- */
+// taxonmanagement - trang quản lý danh sách loài (admin giai đoạn 1)
+// tập trung vào lọc, tìm kiếm và xem nhanh trạng thái dữ liệu của 10.000+ bản ghi
 export function TaxonManagement() {
   const [taxons, setTaxons] = useState<Taxon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,12 +50,12 @@ export function TaxonManagement() {
   const [filterRank, setFilterRank] = useState<string>("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-  // Advanced Filter States
+  // các trạng thái bộ lọc nâng cao
   const [filterGroup, setFilterGroup] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterQuality, setFilterQuality] = useState<string>("all");
 
-  // State cho Confirm Dialog
+  // trạng thái cho hộp thoại xác nhận
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -77,6 +75,9 @@ export function TaxonManagement() {
         hasDescription: 
           filterQuality === "with-desc" ? true : 
           filterQuality === "missing-desc" ? false : undefined,
+        hasVietnamName:
+          filterQuality === "with-vn" ? true :
+          filterQuality === "missing-vn" ? false : undefined,
       });
 
       if (result) {
@@ -96,19 +97,19 @@ export function TaxonManagement() {
     const idToDelete = deleteId;
     setIsDeleting(true);
     try {
-      // Optimistic update: Xóa khỏi danh sách và giảm tổng số bản ghi ngay lập tức
+      // cập nhật lạc quan (optimistic update): xóa khỏi danh sách và giảm tổng số bản ghi ngay lập tức
       setTaxons(prev => prev.filter(t => t.id !== idToDelete));
       setTotalItems(prev => prev - 1);
 
       await adminService.deleteTaxon(idToDelete);
       toast.success("Xóa thành công");
       setDeleteId(null);
-      // Load lại để đảm bảo đồng bộ phân trang chính xác
+      // tải lại để đảm bảo đồng bộ phân trang chính xác
       fetchTaxons(currentPage);
     } catch (error: any) {
       const msg = error.response?.data?.message || "Xóa thất bại (Loài có thể đang có loài con hoặc dữ liệu ràng buộc)";
       toast.error(msg);
-      fetchTaxons(currentPage); // Rollback nếu lỗi
+      fetchTaxons(currentPage); // hoàn tác nếu lỗi
     } finally {
       setIsDeleting(false);
     }
@@ -126,7 +127,7 @@ export function TaxonManagement() {
 
   return (
     <div className="space-y-6 pb-10">
-      {/* Header */}
+      {/* tiêu đề */}
       <div className="h-14 flex items-center justify-between gap-4 mt-2">
         <div className="flex flex-col">
           <h1 className="text-3xl font-sans font-normal uppercase tracking-tight text-zinc-700">
@@ -142,9 +143,9 @@ export function TaxonManagement() {
         </div>
       </div>
 
-      {/* Filters & Search Bar */}
+      {/* bộ lọc và thanh tìm kiếm */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        <form onSubmit={handleSearch} className="md:col-span-6 relative group">
+        <form onSubmit={handleSearch} className="md:col-span-9 relative group">
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-600 transition-colors"
             size={18}
@@ -158,42 +159,23 @@ export function TaxonManagement() {
         </form>
 
         <div className="md:col-span-3">
-          <select
-            className="w-full h-11 px-4 bg-white border border-zinc-200 rounded-sm focus:outline-none focus:ring-4 focus:ring-emerald-600/10 text-xs font-normal uppercase tracking-widest appearance-none cursor-pointer"
-            value={filterRank}
-            onChange={(e) => setFilterRank(e.target.value)}
-          >
-            <option value="all">Tất cả cấp bậc</option>
-            <option value="kingdom">Giới (Kingdom)</option>
-            <option value="phylum">Ngành (Phylum)</option>
-            <option value="taxonomicClass">Lớp (Class)</option>
-            <option value="order">Bộ (Order)</option>
-            <option value="family">Họ (Family)</option>
-            <option value="genus">Chi (Genus)</option>
-            <option value="species">Loài (Species)</option>
-            <option value="subspecies">Dưới loài (Subspecies)</option>
-            <option value="variety">Biến loại</option>
-          </select>
-        </div>
-
-        <div className="md:col-span-3">
           <Button
             variant="outline"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={cn(
               "w-full h-11 rounded-sm border-zinc-200 text-zinc-500 font-normal uppercase tracking-widest text-[10px] gap-2 transition-all hover:bg-emerald-50 hover:text-emerald-700",
               isFilterOpen && "bg-zinc-50 border-zinc-300 text-zinc-900 shadow-inner",
-              (filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all") && "border-emerald-200 text-emerald-700 bg-emerald-50"
+              (filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all" || filterRank !== "all") && "border-emerald-200 text-emerald-700 bg-emerald-50"
             )}
           >
             <Filter size={16} /> 
-            { (filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all") ? "Đã lọc" : "Lọc nâng cao" }
+            { (filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all" || filterRank !== "all") ? "Đã lọc" : "Lọc nâng cao" }
             <ChevronDown size={14} className={cn("ml-auto transition-transform duration-300", isFilterOpen && "rotate-180")} />
           </Button>
         </div>
       </div>
 
-      {/* Persistent Smart Filter Bar (Horizontal) */}
+      {/* thanh bộ lọc nâng cao (ngang) */}
       <AnimatePresence>
         {isFilterOpen && (
           <motion.div
@@ -203,69 +185,96 @@ export function TaxonManagement() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="bg-zinc-50/50 p-6 rounded-sm border border-zinc-100 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Nhóm thực vật</label>
-                  <select
-                    className="w-full h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
-                    value={filterGroup}
-                    onChange={(e) => setFilterGroup(e.target.value)}
-                  >
-                    <option value="all">Tất cả nhóm</option>
-                    <option value="angiosperm">Hạt kín (Angiosperm)</option>
-                    <option value="gymnosperm">Hạt trần (Gymnosperm)</option>
-                    <option value="fern">Dương xỉ (Fern)</option>
-                  </select>
+            <div className="bg-zinc-50/50 p-6 rounded-sm border border-zinc-100 flex flex-col gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Cấp bậc</label>
+                      <select
+                        className="w-full h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
+                        value={filterRank}
+                        onChange={(e) => setFilterRank(e.target.value)}
+                      >
+                        <option value="all">Tất cả</option>
+                        <option value="kingdom">Giới (Kingdom)</option>
+                        <option value="phylum">Ngành (Phylum)</option>
+                        <option value="taxonomicClass">Lớp (Class)</option>
+                        <option value="order">Bộ (Order)</option>
+                        <option value="family">Họ (Family)</option>
+                        <option value="genus">Chi (Genus)</option>
+                        <option value="species">Loài (Species)</option>
+                        <option value="subspecies">Dưới loài</option>
+                        <option value="variety">Biến loại</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Nhóm thực vật</label>
+                      <select
+                        className="w-full h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
+                        value={filterGroup}
+                        onChange={(e) => setFilterGroup(e.target.value)}
+                      >
+                        <option value="all">Tất cả nhóm</option>
+                        <option value="angiosperm">Hạt kín (Angiosperm)</option>
+                        <option value="gymnosperm">Hạt trần (Gymnosperm)</option>
+                        <option value="fern">Dương xỉ (Fern)</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Trạng thái dữ liệu</label>
+                      <select
+                        className="w-full h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                      >
+                        <option value="all">Tất cả trạng thái</option>
+                        <option value="published">Đã công bố</option>
+                        <option value="draft">Bản nháp</option>
+                        <option value="archived">Lưu trữ</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Chất lượng & Nội dung</label>
+                      <select
+                        className="w-full h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
+                        value={filterQuality}
+                        onChange={(e) => setFilterQuality(e.target.value)}
+                      >
+                        <option value="all">Mọi loại</option>
+                        <option value="with-image">Đã có hình ảnh</option>
+                        <option value="missing-image">Chưa có hình ảnh</option>
+                        <option value="with-desc">Đã có mô tả</option>
+                        <option value="missing-desc">Chưa có mô tả</option>
+                        <option value="with-vn">Đã có tên Việt</option>
+                        <option value="missing-vn">Chưa có tên Việt</option>
+                      </select>
+                    </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Trạng thái dữ liệu</label>
-                  <select
-                    className="w-full h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value)}
-                  >
-                    <option value="all">Tất cả trạng thái</option>
-                    <option value="published">Đã công bố</option>
-                    <option value="draft">Bản nháp</option>
-                    <option value="archived">Lưu trữ</option>
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Chất lượng nội dung</label>
-                  <div className="flex gap-2">
-                    <select
-                      className="flex-1 h-10 px-4 bg-white border border-zinc-200 rounded-sm text-xs font-normal uppercase tracking-widest outline-none focus:ring-2 focus:ring-emerald-600/10 focus:border-emerald-600/30 transition-all appearance-none cursor-pointer"
-                      value={filterQuality}
-                      onChange={(e) => setFilterQuality(e.target.value)}
-                    >
-                      <option value="all">Mọi loại</option>
-                      <option value="with-image">Đã có hình ảnh</option>
-                      <option value="missing-image">Chưa có hình ảnh</option>
-                      <option value="with-desc">Đã có mô tả</option>
-                      <option value="missing-desc">Chưa có mô tả</option>
-                    </select>
-                    {(filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all") && (
-                       <Button 
-                          variant="ghost" 
-                          size="icon"
-                          onClick={() => {
-                            setFilterGroup("all");
-                            setFilterStatus("all");
-                            setFilterQuality("all");
-                          }}
-                          className="h-10 w-10 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-sm"
-                       >
-                          <X size={16} />
-                       </Button>
-                    )}
-                  </div>
-                </div>
+
+                {/* hàng nút cài lại */}
+                {(filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all" || filterRank !== "all") && (
+                   <div className="flex justify-end pt-2 border-t border-zinc-100">
+                     <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setFilterRank("all");
+                          setFilterGroup("all");
+                          setFilterStatus("all");
+                          setFilterQuality("all");
+                        }}
+                        className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-600 hover:bg-rose-50 gap-2 px-3 rounded-sm"
+                     >
+                        <X size={14} />
+                        Xóa tất cả bộ lọc nâng cao
+                     </Button>
+                   </div>
+                )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content: Taxon Table */}
+      {/* nội dung chính: bảng taxon */}
       <div className="bg-white rounded-sm border border-zinc-100 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-zinc-50/50">
@@ -455,7 +464,7 @@ export function TaxonManagement() {
           </TableBody>
         </Table>
 
-        {/* Improved Pagination */}
+        {/* phân trang */}
         {!isLoading && totalItems > 0 && (
           <div className="p-6 bg-zinc-50/50 border-t border-zinc-100 flex items-center justify-between">
             <p className="text-[11px] font-sans font-bold text-zinc-400 uppercase tracking-widest">

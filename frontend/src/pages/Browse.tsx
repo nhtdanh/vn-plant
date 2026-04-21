@@ -11,7 +11,7 @@ import { LoadingBar } from "@/components/ui/LoadingBar";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-// Định dạng số với phân cách phần nghìn
+// định dạng số với phân cách phần nghìn
 function formatNumber(num: number | undefined | null): string {
   if (num === undefined || num === null) return "0";
   return num.toLocaleString("vi-VN");
@@ -22,8 +22,8 @@ export function Browse() {
   const query = searchParams.get("q");
   const page = parseInt(searchParams.get("page") || "1");
 
-  // Lấy bộ lọc từ URL
-  const groupsParam = searchParams.get("groups") || searchParams.get("group");
+  // lấy bộ lọc từ url
+  const groupsParam = searchParams.get("groups"); // chỉ dùng "groups" — nhất quán với applyfilters()
   const ranksParam = searchParams.get("ranks");
   const provincesParam = searchParams.get("provinces");
 
@@ -49,24 +49,24 @@ export function Browse() {
 
   const currentParamsStr = searchParams.toString();
 
-  // Khôi phục vị trí cuộn khi quay lại từ trang chi tiết
+  // khôi phục vị trí cuộn khi quay lại từ trang chi tiết
   useEffect(() => {
     const isReturning = sessionStorage.getItem('browse-returning') === 'true';
     const savedPosition = sessionStorage.getItem('browse-scroll-position');
 
     if (isReturning && savedPosition) {
-      // Đợi nội dung render xong mới cuộn (50ms là đủ cho hầu hết trường hợp)
+      // đợi nội dung render xong mới cuộn (50ms là đủ cho hầu hết trường hợp)
       const timer = setTimeout(() => {
         window.scrollTo(0, parseInt(savedPosition));
-        // Xóa flag sau khi đã khôi phục
+        // xóa cờ sau khi đã khôi phục
         sessionStorage.removeItem('browse-returning');
         sessionStorage.removeItem('browse-scroll-position');
       }, 50);
       return () => clearTimeout(timer);
     }
-  }, []); // Chỉ chạy khi mount
+  }, []); // chỉ chạy khi mount
 
-  // Lưu vị trí cuộn khi thay đổi
+  // lưu vị trí cuộn khi thay đổi
   useEffect(() => {
     const handleScroll = () => {
       if (!isLoading) {
@@ -77,10 +77,10 @@ export function Browse() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLoading, setScrollPosition]);
 
-  // Fetch dữ liệu khi tham số thay đổi
+  // lấy dữ liệu khi tham số thay đổi
   useEffect(() => {
     const fetchData = async () => {
-      // Nếu đã có dữ liệu cho các tham số này (ví dụ: quay lại từ trang chi tiết), không fetch lại
+      // không lấy lại dữ liệu nếu đã có sẵn (ví dụ: quay lại từ trang chi tiết)
       if (plants.length > 0 && currentParamsStr === lastParamsStr) {
         setLoading(false);
         return;
@@ -102,7 +102,7 @@ export function Browse() {
         if (result.success) {
           setBrowseData(result.data, currentParamsStr);
           
-          // Cuộn về đầu trang khi có kết quả mới (trừ khi đang quay lại từ trang chi tiết)
+          // cuộn về đầu trang khi có kết quả mới (trừ khi đang quay lại từ trang chi tiết)
           const isReturning = sessionStorage.getItem('browse-returning') === 'true';
           if (!isReturning) {
             window.scrollTo(0, 0);
@@ -152,7 +152,7 @@ export function Browse() {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("page", "1");
     
-    // Reset scroll position in store when filters change
+    // cài lại vị trí cuộn khi bộ lọc thay đổi
     setScrollPosition(0);
     window.scrollTo(0, 0);
 
@@ -175,7 +175,7 @@ export function Browse() {
     }
 
     setSearchParams(newParams);
-  };
+  }; // kết thúc hàm applyfilters
 
   return (
     <div className="min-h-screen bg-background">
@@ -183,7 +183,7 @@ export function Browse() {
         {isLoading && <LoadingBar key="global-loader" />}
       </AnimatePresence>
 
-      {/* PHẦN BỘ LỌC */}
+      {/* phần bộ lọc */}
       <div className="pt-4 pb-0">
         <div className="mx-auto">
           <FilterButtons
@@ -198,7 +198,7 @@ export function Browse() {
         </div>
       </div>
 
-      {/* Dòng hiển thị số lượng kết quả */}
+      {/* dòng hiển thị số lượng kết quả */}
       <div className="mx-auto min-h-[48px] flex items-center">
         {!isLoading && !error && plants.length > 0 && (
           <motion.p 
@@ -215,7 +215,7 @@ export function Browse() {
         )}
       </div>
 
-      {/* DANH SÁCH KẾT QUẢ */}
+      {/* danh sách kết quả */}
       <main className="mx-auto pb-4">
         <AnimatePresence mode="wait">
           {error ? (
@@ -272,7 +272,7 @@ export function Browse() {
                 ))}
               </div>
 
-              {/* Phân trang */}
+              {/* phân trang */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-4 pt-4 border-t border-foreground/5 mt-12">
                   <Button

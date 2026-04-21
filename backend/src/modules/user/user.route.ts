@@ -5,7 +5,7 @@ import { memoryUpload } from "../../middlewares/upload.js";
 
 const router = Router();
 
-// Tất cả các route user đều yêu cầu đăng nhập
+// tất cả các route người dùng đều yêu cầu đăng nhập
 router.use(requireAuth);
 
 router.get("/me", userController.getMe);

@@ -2,18 +2,18 @@ import { create } from "zustand";
 import type { Taxon } from "../types";
 
 interface BrowseState {
-  // Dữ liệu
+  // dữ liệu
   plants: Taxon[];
   totalItems: number;
   totalPages: number;
   isLoading: boolean;
   error: string | null;
 
-  // Bộ nhớ đệm và vị trí cuộn
+  // bộ nhớ đệm và vị trí cuộn (cache & scroll position)
   lastParamsStr: string | null;
   scrollPosition: number;
 
-  // Hành động
+  // hành động (actions)
   setBrowseData: (data: any, paramsStr: string) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;

@@ -57,7 +57,7 @@ export const createUser = asyncHandler(async (req: Request, res: Response, _next
   const data = createUserSchema.parse(req.body);
   const user = await userService.adminCreateUser({
     email: data.email,
-    passwordHash: data.password, // This will be hashed in the service
+    plainPassword: data.password, // service sẽ mã hóa bcrypt trước khi lưu vào cơ sở dữ liệu
     displayName: data.displayName ?? null,
   });
 

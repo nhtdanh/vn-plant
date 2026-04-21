@@ -4,15 +4,15 @@ import axios, {
   type AxiosResponse,
 } from "axios";
 
-// Flag to prevent multiple refresh calls simultaneously
+// cờ để ngăn nhiều lệnh gọi làm mới đồng thời
 let isRefreshing = false;
-// Queue for failed requests while token is refreshing
+// hàng đợi cho các yêu cầu thất bại trong khi token đang làm mới
 let failedQueue: Array<{
   resolve: (token: string) => void;
   reject: (error: AxiosError) => void;
 }> = [];
 
-// Helper to process the failed request queue
+// hàm tiện ích để xử lý hàng đợi các yêu cầu thất bại
 const processQueue = (
   error: AxiosError | null,
   token: string | null = null,
@@ -29,13 +29,13 @@ const processQueue = (
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "/api/v1",
-  withCredentials: true, // Crucial for sending/receiving HttpOnly refresh cookies
+  withCredentials: true, // quan trọng để gửi/nhận cookie làm mới httponly
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request Interceptor: Attach Access Token from localStorage
+// bộ chặn yêu cầu (request interceptor): gắn access token từ localStorage
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem("accessToken");
@@ -47,7 +47,7 @@ api.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 );
 
-// Response Interceptor: Handle 401 Unauthorized via Refresh Token
+// bộ chặn phản hồi (response interceptor): xử lý lỗi 401 unauthorized qua refresh token
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -55,15 +55,15 @@ api.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Standard high-end 401 Handling (Token refreshing)
-    // IMPORTANT: Only try to refresh if it's NOT a login or register request
+    // xử lý lỗi 401 tiêu chuẩn (làm mới token)
+    // quan trọng: chỉ thử làm mới nếu không phải là yêu cầu đăng nhập hoặc đăng ký
     const isAuthPath =
       originalRequest.url?.includes("/auth/login") ||
       originalRequest.url?.includes("/auth/register") ||
       originalRequest.url?.includes("/auth/refresh");
 
     if (error.response?.status === 401 && !isAuthPath) {
-      // If we already retried and failed again, it means even the refresh failed
+      // nếu đã thử lại và vẫn thất bại, nghĩa là việc làm mới cũng không thành công
       if (originalRequest._retry) {
         localStorage.removeItem("accessToken");
         return Promise.reject(error);
@@ -71,7 +71,7 @@ api.interceptors.response.use(
 
       originalRequest._retry = true;
 
-      // Queue concurrent requests while one is refreshing the token
+      // đưa vào hàng đợi các yêu cầu đồng thời trong khi đang làm mới token
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {
           failedQueue.push({ resolve, reject });
@@ -86,8 +86,8 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Request a new access token from the backend
-        // Backend should receive the refreshToken from the HttpOnly cookie
+        // yêu cầu access token mới từ backend
+        // backend nhận refresh token từ cookie httponly
         const { data } = await axios.post(
           `${api.defaults.baseURL}/auth/refresh`,
           {},
@@ -96,21 +96,21 @@ api.interceptors.response.use(
 
         const newAccessToken = data.data.accessToken;
 
-        // Store the new token
+        // lưu token mới
         localStorage.setItem("accessToken", newAccessToken);
 
-        // Resume all queued requests
+        // tiếp tục các yêu cầu trong hàng đợi
         processQueue(null, newAccessToken);
 
-        // Retry the original request
+        // thử lại yêu cầu gốc
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh token is likely expired or invalid
+        // refresh token có thể đã hết hạn hoặc không hợp lệ
         processQueue(refreshError as AxiosError, null);
         localStorage.removeItem("accessToken");
 
-        // Use a simple redirect for now, could be handled better via event emitter
+        // tạm thời sử dụng chuyển hướng đơn giản
         if (!window.location.pathname.includes("/login")) {
           window.location.href = "/login";
         }
@@ -121,7 +121,7 @@ api.interceptors.response.use(
       }
     }
 
-    // Pass through other errors
+    // chuyển tiếp các lỗi khác
     return Promise.reject(error);
   },
 );

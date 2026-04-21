@@ -10,7 +10,7 @@ import type {
 } from "../types";
 import type { BrowseQuery } from "../types/browse";
 
-// Lấy danh sách thực vật (lọc, tìm kiếm, phân trang)
+// lấy danh sách thực vật (lọc, tìm kiếm, phân trang)
 export async function fetchTaxa(
   query: BrowseQuery,
 ): Promise<ApiResponse<PaginatedResponse<Taxon>>> {
@@ -20,7 +20,7 @@ export async function fetchTaxa(
   return response.data;
 }
 
-// Lấy chi tiết thực vật theo slug
+// lấy chi tiết thực vật theo slug
 export async function fetchTaxonDetail(
   slug: string,
 ): Promise<ApiResponse<TaxonDetail>> {
@@ -28,7 +28,7 @@ export async function fetchTaxonDetail(
   return response.data;
 }
 
-// Lấy gợi ý tìm kiếm (autocomplete)
+// lấy gợi ý tìm kiếm (autocomplete)
 export async function fetchTaxonSuggestions(
   q: string,
   limit = 5,
@@ -39,7 +39,7 @@ export async function fetchTaxonSuggestions(
   return response.data;
 }
 
-// Lấy danh sách loài liên quan
+// lấy danh sách loài liên quan
 export async function fetchRelatedTaxa(
   id: number,
 ): Promise<ApiResponse<Taxon[]>> {
@@ -47,7 +47,7 @@ export async function fetchRelatedTaxa(
   return response.data;
 }
 
-// Lấy chuỗi phân loại (Ancestors) cho Breadcrumb
+// lấy chuỗi phân loại (ancestors) cho breadcrumb
 export async function fetchAncestors(
   id: number,
 ): Promise<ApiResponse<TaxonAncestor[]>> {
@@ -55,13 +55,13 @@ export async function fetchAncestors(
   return response.data;
 }
 
-// Lấy metadata phân loại (rank, group...)
+// lấy metadata phân loại (rank, group...)
 export async function fetchTaxonMetadata(): Promise<ApiResponse<any>> {
   const response = await api.get<ApiResponse<any>>("/taxa/metadata");
   return response.data;
 }
 
-// Lấy danh sách con phục vụ sơ đồ cây
+// lấy danh sách con phục vụ sơ đồ cây
 export async function fetchTaxonTreeNodes(
   parentId: number
 ): Promise<ApiResponse<PaginatedResponse<Taxon>>> {
@@ -71,20 +71,18 @@ export async function fetchTaxonTreeNodes(
   return response.data;
 }
 
-// Lấy danh sách tỉnh thành
+// lấy danh sách tỉnh thành
 export async function fetchProvinces(): Promise<ApiResponse<any[]>> {
   const response = await api.get<ApiResponse<any[]>>("/taxa/provinces");
   return response.data;
 }
 
-// Giữ lại tên hàm cũ để tương thích ngược
+// giữ lại tên hàm cũ để tương thích ngược
 export const fetchPlantDetail = fetchTaxonDetail;
 export const fetchSuggestions = fetchTaxonSuggestions;
 export const fetchMetadata = fetchTaxonMetadata;
 
-/**
- * Đóng góp hình ảnh cho một loài thực vật
- */
+// đóng góp hình ảnh cho một loài thực vật
 export async function contributeImage(
   formData: FormData
 ): Promise<ApiResponse<TaxonImage>> {

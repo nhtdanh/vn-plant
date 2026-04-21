@@ -32,7 +32,7 @@ export async function requireAuth(req: Request, _res: Response, next: NextFuncti
     const token = header.slice(7);
     const payload = verifyToken(token);
     
-    // Kiểm tra trạng thái User trong Database (Chống khóa tài khoản vẫn dùng được JWT)
+    // kiểm tra trạng thái người dùng trong database (chống khóa tài khoản vẫn dùng được jwt)
     const { prisma } = await import("../../config/prisma.js");
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
@@ -63,7 +63,7 @@ export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
     const token = header.slice(7);
     req.user = verifyToken(token);
   } catch (err) {
-    // Bỏ qua lỗi token trong optional auth
+    // bỏ qua lỗi token trong optional auth
   }
   next();
 }

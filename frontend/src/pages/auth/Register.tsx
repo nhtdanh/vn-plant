@@ -26,11 +26,11 @@ export function Register() {
 
     try {
       const data = await authService.register({ email, password, displayName });
-      login(data.user, data.accessToken); // Tự động đăng nhập sau khi đăng ký
+      login(data.user, data.accessToken); // tự động đăng nhập sau khi đăng ký
       toast.success("Đăng ký tài khoản thành công");
 
-      // Navigate back to the page that requested registration, or homepage
-      // Use replace: true to prevent going back to register page
+      // quay lại trang đã yêu cầu đăng ký hoặc trang chủ
+      // sử dụng replace: true để ngăn việc quay lại trang đăng ký
       navigate(from, { replace: true });
     } catch (err: any) {
       const msg =
@@ -75,7 +75,7 @@ export function Register() {
         </h2>
       </motion.div>
 
-      {/* Form Only */}
+      {/* biểu mẫu đăng ký */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <motion.div variants={itemVariants} className="space-y-4">
           <div className="group">

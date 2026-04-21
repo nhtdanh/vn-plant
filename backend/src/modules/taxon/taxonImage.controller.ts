@@ -7,7 +7,7 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 import { paginationQuerySchema } from "../../common/pagination.dto.js";
 import { getPaginationParams } from "../../utils/pagination.js";
 
-// Người dùng đóng góp ảnh
+// người dùng đóng góp ảnh
 export const contributeImage = asyncHandler(async (req: Request, res: Response) => {
   if (!req.file) {
     throw ApiError.badRequest("Vui lòng tải lên một file hình ảnh");
@@ -34,7 +34,7 @@ export const contributeImage = asyncHandler(async (req: Request, res: Response) 
   sendCreated(res, result, "Gửi đóng góp ảnh thành công, vui lòng chờ Admin duyệt");
 });
 
-// Lấy danh sách ảnh phê duyệt (Chỉ Admin)
+// lấy danh sách ảnh phê duyệt (chỉ admin)
 export const getPendingImages = asyncHandler(async (req: Request, res: Response) => {
   const query = paginationQuerySchema.parse(req.query);
   const status = req.query['status'] as any; // Cast to status enum
@@ -44,7 +44,7 @@ export const getPendingImages = asyncHandler(async (req: Request, res: Response)
   sendSuccess(res, result);
 });
 
-// Duyệt/Từ chối ảnh (Chỉ Admin)
+// duyệt/từ chối ảnh (chỉ admin)
 export const reviewImage = asyncHandler(async (req: Request, res: Response) => {
   const { id } = taxonImageIdSchema.parse(req.params);
   const data = reviewImageSchema.parse(req.body);
@@ -60,7 +60,7 @@ export const reviewImage = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, result, message);
 });
 
-// Thả tim/Bỏ tim (Phí người dùng)
+// thả tim/bỏ tim (phía người dùng)
 export const toggleLike = asyncHandler(async (req: Request, res: Response) => {
   const { id } = taxonImageIdSchema.parse(req.params);
   const userPayload = req.user;
@@ -74,7 +74,7 @@ export const toggleLike = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, result, message);
 });
 
-// Lấy danh sách đóng góp của tôi
+// lấy danh sách đóng góp của tôi
 export const getMyContributions = asyncHandler(async (req: Request, res: Response) => {
   const userPayload = req.user;
   if (!userPayload) {
@@ -88,7 +88,7 @@ export const getMyContributions = asyncHandler(async (req: Request, res: Respons
   sendSuccess(res, result);
 });
 
-// Lấy thống kê đóng góp của tôi
+// lấy thống kê đóng góp của tôi
 export const getMyStats = asyncHandler(async (req: Request, res: Response) => {
   const userPayload = req.user;
   if (!userPayload) {
@@ -99,7 +99,7 @@ export const getMyStats = asyncHandler(async (req: Request, res: Response) => {
   sendSuccess(res, result);
 });
 
-// Xóa ảnh (Chỉ Admin)
+// xóa ảnh (chỉ admin)
 export const deleteImage = asyncHandler(async (req: Request, res: Response) => {
   const { id } = taxonImageIdSchema.parse(req.params);
   const result = await taxonImageService.deleteImage(id);

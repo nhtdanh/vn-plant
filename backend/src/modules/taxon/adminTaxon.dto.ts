@@ -4,16 +4,16 @@ import { paginationQuerySchema } from "../../common/pagination.dto.js";
 
 export const taxonStatusSchema = z.enum(["draft", "published", "archived"]);
 
-// Schema cho liên kết ảnh (Nếu gửi URL trực tiếp hoặc metadata cục bộ chưa up)
+// schema cho liên kết ảnh (nếu gửi url trực tiếp hoặc metadata cục bộ chưa up)
 export const taxonImageInputSchema = z.object({
-  url: z.string(), // Nới lỏng từ .url() thành string để hỗ trợ "uploading" hoặc placeholder an toàn
+  url: z.string(), // nới lỏng từ .url() thành string để hỗ trợ "uploading" hoặc placeholder an toàn
   caption: z.string().optional(),
   isPrimary: z.boolean().default(false),
   author: z.string().optional(),
   license: z.string().optional(),
 });
 
-// Schema cho tên thường gọi
+// schema cho tên thường gọi
 export const commonNameInputSchema = z.object({
   name: z.string().min(1),
   language: z.string().default("vi"),
@@ -21,7 +21,7 @@ export const commonNameInputSchema = z.object({
   regionNote: z.string().optional(),
 });
 
-// Schema cho tên đồng nghĩa
+// schema cho tên đồng nghĩa
 export const synonymInputSchema = z.object({
   scientificName: z.string().min(1),
   sourceName: z.string().optional(),
@@ -36,9 +36,13 @@ export const createTaxonSchema = z.object({
   status: taxonStatusSchema.default("draft"),
   plantGroup: plantGroupSchema.optional(),
   parentId: z.preprocess((val) => (val ? Number(val) : undefined), z.number().int().optional()),
-  hasVietnamRecord: z.boolean().default(false),
+  hasVietnamRecord: z.preprocess((val) => {
+    if (val === 'true' || val === true) return true;
+    if (val === 'false' || val === false) return false;
+    return false;
+  }, z.boolean().default(false)),
   
-  // Morphological Fields
+  // trường hình thái học (morphological fields)
   habit: z.string().optional(),
   leaf: z.string().optional(),
   reproduction: z.string().optional(),
@@ -47,7 +51,7 @@ export const createTaxonSchema = z.object({
   distributionText: z.string().optional(),
   note: z.string().optional(),
   
-  // Metadata
+  // metadata
   author: z.string().optional(),
   orderInBook: z.string().optional(),
   description: z.string().optional(),
@@ -55,7 +59,7 @@ export const createTaxonSchema = z.object({
   rawDescriptionInBook: z.string().optional(),
   sourceName: z.string().optional(),
 
-  // Nested Relations (Hỗ trợ parse từ chuỗi JSON nếu gửi qua Multipart)
+  // quan hệ phân cấp (hỗ trợ parse từ chuỗi json nếu gửi qua multipart)
   synonyms: z.preprocess(
     (val) => (typeof val === "string" ? JSON.parse(val) : val),
     z.array(synonymInputSchema).optional().default([])
@@ -75,7 +79,7 @@ export const createTaxonSchema = z.object({
     z.array(z.number()).optional().default([])
   ),
   
-  // Danh sách ID ảnh cần xóa (Chỉ dùng cho update)
+  // Danh sách ID ảnh cần xóa
   deleteImageIds: z.preprocess(
     (val) => (typeof val === "string" ? JSON.parse(val) : val),
     z.array(z.number()).optional().default([])
@@ -111,6 +115,11 @@ export const adminTaxaQuerySchema = paginationQuerySchema.extend({
     return undefined;
   }, z.boolean().optional()),
   hasDescription: z.preprocess((val) => {
+    if (val === 'true' || val === true) return true;
+    if (val === 'false' || val === false) return false;
+    return undefined;
+  }, z.boolean().optional()),
+  hasVietnamName: z.preprocess((val) => {
     if (val === 'true' || val === true) return true;
     if (val === 'false' || val === false) return false;
     return undefined;

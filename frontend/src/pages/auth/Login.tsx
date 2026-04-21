@@ -17,7 +17,7 @@ export function Login() {
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
 
-  // Lấy đường dẫn trang trước đó từ state của location (do AuthLayout hoặc link truyền vào)
+  // lấy đường dẫn trang trước đó từ trạng thái vị trí (do authlayout hoặc liên kết truyền vào)
   const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,7 +29,7 @@ export function Login() {
       login(data.user, data.accessToken);
       toast.success("Đăng nhập thành công");
 
-      // Logic điều hướng sau khi đăng nhập: Admin vào dashboard, User vào trang cũ
+      // logic điều hướng sau khi đăng nhập: admin vào dashboard, thành viên vào trang cũ
       if (data.user.role === "admin") {
         navigate("/admin", { replace: true });
       } else {
@@ -78,7 +78,7 @@ export function Login() {
         </h2>
       </motion.div>
 
-      {/* Form Only */}
+      {/* biểu mẫu đăng nhập */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <motion.div variants={itemVariants} className="space-y-4">
           <div className="group">

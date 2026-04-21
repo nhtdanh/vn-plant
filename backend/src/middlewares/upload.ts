@@ -53,7 +53,7 @@ const fileFilter = (_req: any, file: any, cb: multer.FileFilterCallback) => {
 
 export const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // giới hạn 5mb
   fileFilter,
 });
 

@@ -15,17 +15,17 @@ export interface ImageProcessResult {
   format: string;
 }
 
-// Xử lý tối ưu hóa hình ảnh (Convert WebP, Resize, rotate)
+// xử lý tối ưu hóa hình ảnh (convert webp, resize, rotate)
 export async function processImage(buffer: Buffer): Promise<ImageProcessResult> {
   const image = sharp(buffer);
   const metadata = await image.metadata();
 
-  // Tạo pipeline xử lý
+  // tạo pipeline xử lý
   let pipeline = image
     .webp({ quality: 95 })
-    .rotate(); // Tự động xoay ảnh theo EXIF
+    .rotate(); // tự động xoay ảnh theo exif
 
-  // Resize nếu ảnh quá rộng (> 1920px)
+  // resize nếu ảnh quá rộng (> 1920px)
   if (metadata.width && metadata.width > 1920) {
     pipeline = pipeline.resize(1920);
   }
@@ -41,11 +41,11 @@ export async function processImage(buffer: Buffer): Promise<ImageProcessResult> 
 }
 
 /**
- * Upload một file (Buffer) lên Cloudflare R2
- * @param fileBuffer Buffer của file
- * @param fileName Tên file gốc hoặc gợi ý
- * @param folder Thư mục trên R2 (ví dụ: 'taxa', 'avatars')
- * @param contentType Loại file (ví dụ: 'image/jpeg')
+ * upload một file (buffer) lên cloudflare r2
+ * @param fileBuffer buffer của file
+ * @param fileName tên file gốc hoặc gợi ý
+ * @param folder thư mục trên r2 (ví dụ: 'taxa', 'avatars')
+ * @param contentType loại file (ví dụ: 'image/jpeg')
  */
 export async function uploadToR2(
   fileBuffer: Buffer,
@@ -53,7 +53,7 @@ export async function uploadToR2(
   folder: string = "misc",
   contentType: string = "image/jpeg"
 ): Promise<UploadResult> {
-  // Tạo tên file ngẫu nhiên để tránh trùng lặp
+  // tạo tên file ngẫu nhiên để tránh trùng lặp
   const fileExtension = fileName.split(".").pop();
   const randomName = crypto.randomBytes(16).toString("hex");
   const key = `${folder}/${randomName}.${fileExtension}`;
@@ -63,7 +63,7 @@ export async function uploadToR2(
     Key: key,
     Body: fileBuffer,
     ContentType: contentType,
-    // Note: R2 supports some ACLs but often managed via bucket policies
+    // ghi chú: r2 hỗ trợ một số acl nhưng thường được quản lý qua bucket policy
     // ACL: 'public-read' as any, 
   });
 
@@ -74,7 +74,7 @@ export async function uploadToR2(
   };
 }
 
-// Xóa một file trên R2 (Dùng cho dọn dẹp hoặc cập nhật ảnh)
+// xóa một file trên r2 (dùng cho dọn dẹp hoặc cập nhật ảnh)
 export async function deleteFromR2(key: string) {
   const { DeleteObjectCommand } = await import("@aws-sdk/client-s3");
   const command = new DeleteObjectCommand({
@@ -84,7 +84,7 @@ export async function deleteFromR2(key: string) {
   await s3Client.send(command);
 }
 
-// Xóa nhiều file trên R2 (Dọn dẹp hàng loạt khi lỗi hoặc xóa Taxon)
+// xóa nhiều file trên r2 (dọn dẹp hàng loạt khi lỗi hoặc xóa taxon)
 export async function deleteMultipleFromR2(keys: string[]) {
   if (!keys || keys.length === 0) return;
   const { DeleteObjectsCommand } = await import("@aws-sdk/client-s3");

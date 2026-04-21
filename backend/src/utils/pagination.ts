@@ -1,6 +1,4 @@
-/**
- * Utility for unified pagination across the application.
- */
+// tiện ích phân trang thống nhất cho toàn bộ ứng dụng
 
 export interface PaginationParams {
   take: number;
@@ -19,13 +17,9 @@ export interface PaginatedResponse<T> {
   meta: PaginationMeta;
 }
 
-/**
- * Converts limit and offset (or page) to Prisma's take and skip.
- * Handles defaults and edge cases.
- * Supports both:
- * - offset/limit params (traditional)
- * - page/limit params (converts page to offset)
- */
+// chuyển đổi limit và offset (hoặc page) sang take và skip của prisma
+// xử lý mặc định và các trường hợp biên
+// hỗ trợ cả offset/limit (truyền thống) và page/limit (chuyển đổi page sang offset)
 export function getPaginationParams(query: {
   limit?: number | undefined;
   offset?: number | undefined;
@@ -51,9 +45,7 @@ export function getPaginationParams(query: {
   };
 }
 
-/**
- * Formats data and counts into a standard paginated response.
- */
+// định dạng dữ liệu và số lượng thành phản hồi phân trang tiêu chuẩn
 export function formatPaginatedResponse<T>(
   items: T[],
   total: number,

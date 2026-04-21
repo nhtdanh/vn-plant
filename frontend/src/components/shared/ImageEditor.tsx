@@ -4,7 +4,7 @@ import { X, Check } from "lucide-react";
 
 export interface ImageEditorRef {
   getCroppedBlob: () => Promise<Blob | null>;
-  getCroppedData?: () => Promise<string | null>; // keep for legacy support if needed
+  getCroppedData?: () => Promise<string | null>; // giữ lại để hỗ trợ phiên bản cũ nếu cần
 }
 
 interface ImageEditorProps {
@@ -15,11 +15,9 @@ interface ImageEditorProps {
   onCancel?: () => void;
 }
 
-/**
- * ImageEditor - Fixed-Frame 4:3 Architecture
- * The image is contained within a fixed 4:3 enclosure (Khung gốc).
- * The crop frame (Khung crop) is intelligently restricted to the visible pixels.
- */
+// imageeditor - cấu trúc cố định khung 4:3
+// hình ảnh được nằm gọn trong khung tỉ lệ 4:3 cố định
+// khung cắt được giới hạn thông minh theo điểm ảnh hiển thị
 export const ImageEditor = React.forwardRef<ImageEditorRef, ImageEditorProps>(({
   image,
   isInline = false,
@@ -34,14 +32,14 @@ export const ImageEditor = React.forwardRef<ImageEditorRef, ImageEditorProps>(({
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
-  // Crop box state in percentages (relative to the container)
+  // trạng thái hộp cắt theo tỷ lệ phần trăm (phụ thuộc vào khung chứa)
   const [crop, setCrop] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { naturalWidth, naturalHeight } = e.currentTarget;
     setImgSize({ width: naturalWidth, height: naturalHeight });
     
-    // Calculate effective bounds within the 4:3 container
+    // tính toán ranh giới hiệu dụng trong khung chứa 4:3
     const container = containerRef.current?.getBoundingClientRect();
     if (!container || container.width === 0 || container.height === 0) {
       setViewBounds({ x: 0, y: 0, width: 100, height: 100 });
@@ -56,11 +54,11 @@ export const ImageEditor = React.forwardRef<ImageEditorRef, ImageEditorProps>(({
     let bounds = { x: 0, y: 0, width: 100, height: 100 };
     
     if (imageRatio > containerRatio) {
-      // Image is wider than container (Letterbox top/bottom)
+      // ảnh rộng hơn khung chứa (hiển thị dải đen trên và dưới)
       bounds.height = (containerRatio / imageRatio) * 100;
       bounds.y = (100 - bounds.height) / 2;
     } else {
-      // Image is taller than container (Pillarbox sides)
+      // ảnh cao hơn khung chứa (hiển thị dải đen hai bên)
       bounds.width = (imageRatio / containerRatio) * 100;
       bounds.x = (100 - bounds.width) / 2;
     }
@@ -186,7 +184,7 @@ export const ImageEditor = React.forwardRef<ImageEditorRef, ImageEditorProps>(({
       !isInline ? "fixed inset-0 z-[100] bg-zinc-950" : "w-full h-full bg-zinc-50/50",
       className
     )}>
-      {/* Header for Modal usage */}
+      {/* tiêu đề khi sử dụng hộp thoại */}
       {!isInline && (
         <div className="flex items-center justify-between p-4 border-b border-white/10 bg-zinc-900/50 backdrop-blur-xl">
            <h3 className="text-white font-black uppercase tracking-widest text-xs">Biên tập ảnh</h3>
@@ -253,7 +251,7 @@ export const ImageEditor = React.forwardRef<ImageEditorRef, ImageEditorProps>(({
           )}
       </div>
 
-      {/* Footer for Modal usage */}
+      {/* chân trang khi sử dụng hộp thoại */}
       {!isInline && (
         <div className="p-6 border-t border-white/10 bg-zinc-900/50 backdrop-blur-xl flex justify-center">
             <button 

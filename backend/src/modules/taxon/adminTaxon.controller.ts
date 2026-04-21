@@ -12,7 +12,7 @@ export const listTaxa = asyncHandler(async (req: Request, res: Response, _next: 
 });
 
 export const createTaxon = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
-  // Multipart form-data thường gửi JSON qua trường "data"
+  // multipart form-data thường gửi json qua trường "data"
   const bodyData = typeof req.body.data === "string" ? JSON.parse(req.body.data) : req.body;
   const data = createTaxonSchema.parse(bodyData);
   const files = req.files as Express.Multer.File[];
@@ -23,7 +23,7 @@ export const createTaxon = asyncHandler(async (req: Request, res: Response, _nex
 
 export const updateTaxon = asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
   const id = Number(req.params["id"]);
-  // Multipart form-data thường gửi JSON qua trường "data"
+  // multipart form-data thường gửi json qua trường "data"
   const bodyData = typeof req.body.data === "string" ? JSON.parse(req.body.data) : req.body;
   const data = updateTaxonSchema.parse(bodyData);
   const files = req.files as Express.Multer.File[];

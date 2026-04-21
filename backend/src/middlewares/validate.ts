@@ -22,7 +22,7 @@ export function validate(schema: {
       }
       next();
     } catch (error) {
-      next(error); // errorHandler middleware sẽ tự động catch ZodError
+      next(error); // middleware errorHandler sẽ tự động bắt lỗi zoderror
     }
   };
 }

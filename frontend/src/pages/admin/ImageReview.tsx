@@ -31,14 +31,12 @@ import { Input } from "@/components/ui/input";
 import { adminService } from "@/services/admin.service";
 import { toast } from "sonner";
 
-/**
- * AdminImageReview - Trang duyệt ảnh đóng góp từ người dùng
- */
+// adminimagereview - trang duyệt ảnh đóng góp từ người dùng
 export function AdminImageReview() {
   const [data, setData] = useState<PaginatedResponse<TaxonImage> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Khôi phục bộ lọc từ localStorage nếu có
+  // khôi phục bộ lọc từ localstorage nếu có
   const [activeTab, setActiveTab] = useState<string>(() => {
     return localStorage.getItem("admin_image_review_filter") || "pending";
   });
@@ -49,12 +47,12 @@ export function AdminImageReview() {
   const [rejectReason, setRejectReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Lưu bộ lọc khi thay đổi
+  // lưu bộ lọc khi thay đổi
   useEffect(() => {
     localStorage.setItem("admin_image_review_filter", activeTab);
   }, [activeTab]);
 
-  // Fetch dữ liệu
+  // lấy dữ liệu
   const fetchImages = async (page = 1) => {
     try {
       setIsLoading(true);
@@ -75,7 +73,7 @@ export function AdminImageReview() {
   const handleApprove = async (id: number) => {
     try {
       setIsProcessing(true);
-      // Optimistic update: Xóa khỏi giao diện ngay để cảm giác nhanh hơn
+      // cập nhật lạc quan (optimistic update): xóa khỏi giao diện ngay để tăng trải nghiệm người dùng
       if (data && activeTab === 'pending') {
         setData(prev => prev ? {
           ...prev,
@@ -86,11 +84,11 @@ export function AdminImageReview() {
       await adminService.reviewImage(id, 'approved');
       toast.success("Đã phê duyệt hình ảnh");
       
-      // Load lại để đồng bộ chính xác với DB
+      // tải lại để đồng bộ chính xác với cơ sở dữ liệu
       fetchImages(data?.meta?.page);
     } catch (error) {
       toast.error("Phê duyệt thất bại");
-      fetchImages(data?.meta?.page); // Rollback nếu lỗi
+      fetchImages(data?.meta?.page); // hoàn tác nếu lỗi
     } finally {
       setIsProcessing(false);
     }
@@ -103,7 +101,7 @@ export function AdminImageReview() {
     try {
       setIsProcessing(true);
       
-      // Optimistic update: Xóa khỏi giao diện ngay
+      // cập nhật lạc quan (optimistic update): xóa khỏi giao diện ngay
       if (data && activeTab === 'pending') {
         setData(prev => prev ? {
           ...prev,
@@ -145,14 +143,14 @@ export function AdminImageReview() {
 
   return (
     <div className="space-y-6">
-      {/* Header Section */}
+      {/* phần tiêu đề */}
       <div className="h-14 flex items-center justify-between gap-4 mt-2">
         <div>
           <p className="text-3xl font-sans font-normal uppercase tracking-tight text-zinc-700">Quản lý hình ảnh</p>
         </div>
       </div>
 
-      {/* Filters Select - Clean & Minimal */}
+      {/* bộ lọc - tinh gọn */}
       <div className="flex items-center justify-end -mt-8 mb-4">
         <div className="relative min-w-[160px]">
           <select 
@@ -170,7 +168,7 @@ export function AdminImageReview() {
         </div>
       </div>
 
-      {/* Table Section */}
+      {/* phần bảng */}
       <div className="bg-white rounded-sm border border-zinc-100 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-zinc-50/50">
@@ -300,7 +298,7 @@ export function AdminImageReview() {
           </TableBody>
         </Table>
         
-        {/* Pagination Info */}
+        {/* thông tin phân trang */}
         {!isLoading && (data?.meta?.totalPages || 0) > 1 && (
           <div className="p-4 bg-zinc-50/30 border-t border-zinc-100 flex items-center justify-between">
             <span className="text-[11px] font-normal text-zinc-400 uppercase tracking-widest">
@@ -330,9 +328,9 @@ export function AdminImageReview() {
         )}
       </div>
 
-      {/* DIALOGS */}
+      {/* các hộp thoại */}
       
-      {/* 1. Hình ảnh phóng to (Lightbox Custom) */}
+      {/* 1. hình ảnh phóng to (lightbox custom) */}
       <AnimatePresence>
         {isZoomOpen && selectedImage && (
           <motion.div
@@ -342,7 +340,7 @@ export function AdminImageReview() {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-10 cursor-default"
             onClick={() => setIsZoomOpen(false)}
           >
-            {/* Close Button */}
+            {/* nút đóng */}
             <motion.button
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -352,7 +350,7 @@ export function AdminImageReview() {
               <X size={32} />
             </motion.button>
 
-            {/* Content Container */}
+            {/* vùng nội dung */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -366,7 +364,7 @@ export function AdminImageReview() {
                 className="max-w-full max-h-[82vh] object-contain shadow-2xl rounded-sm"
               />
 
-              {/* Metadata row below image */}
+              {/* thông tin metadata bên dưới ảnh */}
               <div className="flex flex-col items-center text-center space-y-2">
                 <div className="flex flex-wrap items-center justify-center gap-3 text-white/40 text-[10px] font-sans font-bold uppercase tracking-widest">
                   {selectedImage.caption && (
@@ -398,8 +396,17 @@ export function AdminImageReview() {
         )}
       </AnimatePresence>
 
-      {/* 2. Modal Từ chối kèm lý do */}
-      <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+      {/* 2. hộp thoại từ chối kèm lý do */}
+      <Dialog 
+        open={isRejectDialogOpen} 
+        onOpenChange={(open) => {
+          setIsRejectDialogOpen(open);
+          if (!open) {
+            setRejectReason("");   // cài lại lý do từ chối
+            setSelectedImage(null); // cài lại ảnh đang chọn
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Từ chối hình ảnh</DialogTitle>

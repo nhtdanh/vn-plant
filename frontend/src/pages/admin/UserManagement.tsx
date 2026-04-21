@@ -55,9 +55,7 @@ const createUserSchema = z.object({
 
 type CreateUserForm = z.infer<typeof createUserSchema>;
 
-/**
- * AdminUserManagement - Quản trị người dùng toàn diện (Clean & Minimalist version)
- */
+// adminusermanagement - quản trị người dùng toàn diện (clean & minimalist version)
 export function AdminUserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,7 +65,7 @@ export function AdminUserManagement() {
   const [totalItems, setTotalItems] = useState(0);
   const [isProcessing, setIsProcessing] = useState<string | null>(null);
 
-  // State cho Modals
+  // trạng thái cho các hộp thoại (modal)
   const [confirmUser, setConfirmUser] = useState<{ id: string, status: UserStatus } | null>(null);
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -98,7 +96,7 @@ export function AdminUserManagement() {
 
   useEffect(() => {
     fetchUsers(currentPage);
-  }, [currentPage]);
+  }, [currentPage]); // searchquery không cần vì handlesearch gọi fetchusers(1) thủ công
 
   const handleUpdateStatus = async () => {
     if (!confirmUser) return;
@@ -133,7 +131,7 @@ export function AdminUserManagement() {
   const handleCreateUser = async (data: CreateUserForm) => {
     try {
       setIsCreating(true);
-      // Chuẩn hóa email về chữ thường để đồng bộ logic auth
+      // chuẩn hóa email về chữ thường để đồng bộ logic auth
       const normalizedData = { 
         ...data, 
         email: data.email.toLowerCase().trim() 
@@ -164,7 +162,7 @@ export function AdminUserManagement() {
 
   return (
     <div className="space-y-6 pb-10">
-      {/* Header Section */}
+      {/* phần tiêu đề */}
       <div className="h-14 flex items-center justify-between gap-4 mt-2">
         <div className="flex flex-col">
           <h1 className="text-3xl font-sans font-normal uppercase tracking-tight text-zinc-700">
@@ -179,7 +177,7 @@ export function AdminUserManagement() {
         </Button>
       </div>
 
-      {/* Search & Filter Bar */}
+      {/* thanh tìm kiếm và bộ lọc */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <form className="md:col-span-12 relative group" onSubmit={(e) => { e.preventDefault(); setCurrentPage(1); fetchUsers(1); }}>
           <Search
@@ -195,7 +193,7 @@ export function AdminUserManagement() {
         </form>
       </div>
 
-      {/* User Table Card */}
+      {/* phần bảng người dùng */}
       <div className="bg-white rounded-sm border border-zinc-100 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-zinc-50/50">
@@ -304,7 +302,7 @@ export function AdminUserManagement() {
           </TableBody>
         </Table>
 
-        {/* Pagination bar */}
+        {/* thanh phân trang */}
         {!isLoading && totalItems > 0 && (
           <div className="p-6 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
             <p className="text-[11px] text-zinc-400 uppercase tracking-widest font-bold">
@@ -337,8 +335,14 @@ export function AdminUserManagement() {
         )}
       </div>
 
-      {/* ADD USER DIALOG */}
-      <Dialog open={isAddUserOpen} onOpenChange={setIsAddUserOpen}>
+      {/* hộp thoại thêm người dùng */}
+      <Dialog 
+        open={isAddUserOpen} 
+        onOpenChange={(open) => {
+          setIsAddUserOpen(open);
+          if (!open) reset(); // cài lại form khi đóng hộp thoại
+        }}
+      >
         <DialogContent className="sm:max-w-[440px] p-0 overflow-hidden border-none rounded-sm shadow-2xl">
           <div className="p-8 space-y-8">
             <DialogHeader className="p-0 space-y-2">
