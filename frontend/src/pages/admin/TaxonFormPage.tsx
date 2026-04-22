@@ -711,14 +711,7 @@ export function TaxonFormPage() {
                                        className="h-10 italic font-medium text-sm rounded-sm bg-white focus:border-amber-400 focus-visible:ring-0"
                                     />
                                   </div>
-                                  <div className="w-1/4">
-                                    <Input 
-                                       {...register(`synonyms.${index}.author` as const)} 
-                                       placeholder="Tác giả"
-                                       className="h-10 text-xs rounded-sm bg-white"
-                                    />
-                                  </div>
-                                  <div className="w-1/4">
+                                  <div className="w-1/3">
                                     <Input 
                                        {...register(`synonyms.${index}.sourceName` as const)} 
                                        placeholder="Nguồn"

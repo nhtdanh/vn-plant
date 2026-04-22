@@ -645,6 +645,10 @@ export function PlantDetail() {
                               { label: "Sinh sản", value: plant.reproduction },
                               { label: "Mùa hoa quả", value: plant.phenology },
                               { label: "Phân bố", value: plant.distributionText },
+                              { 
+                                label: "Tỉnh thành", 
+                                value: plant.provinces?.map(p => p.province.name).join(", ") 
+                              },
                               { label: "Giá trị", value: plant.value },
                               {
                                 label: "Ghi chú",

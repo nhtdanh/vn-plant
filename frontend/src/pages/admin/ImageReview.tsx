@@ -101,7 +101,7 @@ export function AdminImageReview() {
     try {
       setIsProcessing(true);
       
-      // cập nhật lạc quan (optimistic update): xóa khỏi giao diện ngay
+      //optimistic update: xóa khỏi giao diện ngay
       if (data && activeTab === 'pending') {
         setData(prev => prev ? {
           ...prev,

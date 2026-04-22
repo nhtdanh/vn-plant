@@ -118,7 +118,6 @@ export interface TaxonImage {
 export interface TaxonSynonym {
   id: number;
   scientificName: string;
-  author: string | null;
   sourceName: string | null;
 }
 
