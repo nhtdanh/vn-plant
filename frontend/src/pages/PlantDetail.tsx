@@ -654,6 +654,10 @@ export function PlantDetail() {
                                 label: "Ghi chú",
                                 value: plant.note,
                               },
+                              { 
+                                label: "Tỉnh thành", 
+                                value: plant.provinces?.map(p => p.province.name).join(", ") 
+                              },
                             ] as { label: string; value: string | null | undefined; isItalic?: boolean }[]
                           )
                             .filter((item) => item.value)
