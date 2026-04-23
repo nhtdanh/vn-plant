@@ -19,9 +19,6 @@ docker-compose up --build
 Mở một terminal mới và chạy lệnh sau để khởi tạo các bảng trong Database:
 ```bash
 docker exec -it efloravn-backend npx prisma migrate dev --name init
-```
-
-*Lưu ý: Sau bước này bạn đã có thể đăng nhập vào hệ thống (nếu đã seed admin) hoặc bắt đầu phát triển giao diện.*
 
 ## Địa chỉ truy cập
 - **Frontend**: http://localhost:5173
