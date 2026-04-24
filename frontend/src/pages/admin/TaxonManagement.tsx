@@ -128,22 +128,18 @@ export function TaxonManagement() {
   return (
     <div className="space-y-6 pb-10">
       {/* tiêu đề */}
-      <div className="h-14 flex items-center justify-between gap-4 mt-2">
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-sans font-normal uppercase tracking-tight text-zinc-700">
-            Quản lý thực vật
-          </h1>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link to="/admin/taxons/new">
-            <Button className="bg-emerald-50 text-emerald-800 font-normal uppercase tracking-widest text-[10px] h-10 px-6 rounded-sm hover:bg-emerald-100 transition-all">
-              Thêm mới
-            </Button>
-          </Link>
-        </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
+        <h1 className="text-2xl sm:text-3xl font-sans font-normal uppercase tracking-tight text-zinc-700">
+          Quản lý thực vật
+        </h1>
+        <Link to="/admin/taxons/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto bg-emerald-50 text-emerald-800 font-normal uppercase tracking-widest text-[10px] h-10 px-6 rounded-sm hover:bg-emerald-100 transition-all">
+            Thêm mới
+          </Button>
+        </Link>
       </div>
 
-      {/* bộ lọc và thanh tìm kiếm */}
+      {/* thanh tìm kiếm */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <form onSubmit={handleSearch} className="md:col-span-9 relative group">
           <Search
@@ -175,7 +171,7 @@ export function TaxonManagement() {
         </div>
       </div>
 
-      {/* thanh bộ lọc nâng cao (ngang) */}
+      {/* bộ lọc nâng cao */}
       <AnimatePresence>
         {isFilterOpen && (
           <motion.div
@@ -250,7 +246,7 @@ export function TaxonManagement() {
                     </div>
                 </div>
 
-                {/* hàng nút cài lại */}
+                {/* nút cài lại */}
                 {(filterGroup !== "all" || filterStatus !== "all" || filterQuality !== "all" || filterRank !== "all") && (
                    <div className="flex justify-end pt-2 border-t border-zinc-100">
                      <Button 
@@ -274,15 +270,15 @@ export function TaxonManagement() {
         )}
       </AnimatePresence>
 
-      {/* nội dung chính: bảng taxon */}
-      <div className="bg-white rounded-sm border border-zinc-100 shadow-sm overflow-hidden">
+      {/* danh sách loài */}
+      <div className="bg-white rounded-sm border border-zinc-100 shadow-sm overflow-x-auto no-scrollbar">
         <Table>
           <TableHeader className="bg-zinc-50/50">
             <TableRow className="hover:bg-transparent border-zinc-100">
               <TableHead className="text-xs font-medium uppercase tracking-wider pl-6 py-4 text-zinc-500 w-[80px]">Ảnh</TableHead>
               <TableHead className="text-xs font-medium uppercase tracking-wider py-4 text-zinc-500">Tên loài</TableHead>
-              <TableHead className="text-xs font-medium uppercase tracking-wider py-4 text-zinc-500">Phân loại</TableHead>
-              <TableHead className="text-xs font-medium uppercase tracking-wider py-4 text-zinc-500">Trạng thái</TableHead>
+              <TableHead className="hidden md:table-cell text-xs font-medium uppercase tracking-wider py-4 text-zinc-500">Phân loại</TableHead>
+              <TableHead className="hidden sm:table-cell text-xs font-medium uppercase tracking-wider py-4 text-zinc-500">Trạng thái</TableHead>
               <TableHead className="text-xs font-medium uppercase tracking-wider text-right pr-6 py-4 text-zinc-500">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
@@ -299,13 +295,13 @@ export function TaxonManagement() {
                        <div className="h-3 w-24 bg-zinc-50 rounded" />
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="hidden md:table-cell py-4">
                     <div className="flex flex-col gap-1.5">
                        <div className="h-4 w-16 bg-zinc-100 rounded" />
                        <div className="h-3 w-20 bg-zinc-50 rounded" />
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="hidden sm:table-cell py-4">
                     <div className="h-5 w-20 bg-zinc-100 rounded" />
                   </TableCell>
                   <TableCell className="text-right pr-6 py-2.5">
@@ -359,7 +355,7 @@ export function TaxonManagement() {
                       </p>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="hidden md:table-cell py-4">
                     <div className="flex flex-col gap-1.5 items-start">
                       <Badge
                         variant="outline"
@@ -376,7 +372,7 @@ export function TaxonManagement() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4">
+                  <TableCell className="hidden sm:table-cell py-4">
                     <div className="flex flex-wrap items-center gap-3">
                        {taxon.status === "published" ? (
                          <div className="flex items-center gap-1.5">

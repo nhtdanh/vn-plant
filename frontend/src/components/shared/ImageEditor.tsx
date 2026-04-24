@@ -4,7 +4,7 @@ import { X, Check } from "lucide-react";
 
 export interface ImageEditorRef {
   getCroppedBlob: () => Promise<Blob | null>;
-  getCroppedData?: () => Promise<string | null>; // giữ lại để hỗ trợ phiên bản cũ nếu cần
+  getCroppedData?: () => Promise<string | null>; // hỗ trợ phiên bản cũ nếu cần
 }
 
 interface ImageEditorProps {

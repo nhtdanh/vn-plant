@@ -49,7 +49,7 @@ function Dropdown({
 }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  // Use custom hook for cleaner logic
+  // sử dụng hook tùy chỉnh để làm logic gọn hơn
   useClickOutside(dropdownRef, onClose);
 
   if (!isOpen) return null;
@@ -59,7 +59,7 @@ function Dropdown({
   return (
     <div
       ref={dropdownRef}
-      className="absolute top-full left-0 mt-1 bg-background border border-foreground/20 rounded shadow-lg z-50 min-w-56"
+      className="absolute top-full left-0 md:left-auto md:right-0 mt-1 bg-background border border-foreground/20 rounded shadow-lg z-50 min-w-56 max-w-[calc(100vw-2rem)] sm:max-w-none"
     >
       <div className="p-3 space-y-2">
         <div
@@ -102,7 +102,7 @@ export function FilterButtons({
   
   const [provinces, setProvinces] = useState<Province[]>([]);
 
-  // 1. Fetch provinces from API
+  // 1. lấy danh sách tỉnh thành từ api
   useEffect(() => {
     async function loadProvinces() {
       try {
@@ -126,7 +126,7 @@ export function FilterButtons({
   const activeFilterCount =
     activeGroups.length + activeRanks.length + activeProvinces.length;
 
-  // 2. Button configuration for DRY rendering
+  // 2. cấu hình nút để render ngắn gọn (dry)
   const categories = [
     {
       id: "groups" as const,
@@ -157,7 +157,7 @@ export function FilterButtons({
     },
   ];
 
-  // 3. Active Chips configuration
+  // 3. cấu hình các thẻ (chip) đang hoạt động
   const activeChips = [
     ...activeGroups.map(g => ({ key: `g-${g}`, label: getGroupDisplayName(g), color: "bg-emerald-50 text-emerald-700 border-emerald-100 hover:bg-emerald-100", onRemove: () => onGroupChange(g, false) })),
     ...activeRanks.map(r => ({ key: `r-${r}`, label: getRankDisplayName(r), color: "bg-blue-300/20 border-blue-300/50 hover:bg-blue-300/30", onRemove: () => onRankChange(r, false) })),
@@ -166,7 +166,7 @@ export function FilterButtons({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {/* Category Dropdowns */}
+      {/* danh mục thả xuống */}
       {categories.map((cat) => (
         <div key={cat.id} className="relative">
           <button
@@ -201,7 +201,7 @@ export function FilterButtons({
         </div>
       ))}
 
-      {/* Active Filter Chips */}
+      {/* các nhãn bộ lọc đang chọn */}
       {activeChips.map((chip) => (
         <button
           key={chip.key}
@@ -213,7 +213,7 @@ export function FilterButtons({
         </button>
       ))}
 
-      {/* Clear All Button */}
+      {/* nút xóa tất cả */}
       {activeFilterCount > 0 && (
         <button
           onClick={onClearAll}

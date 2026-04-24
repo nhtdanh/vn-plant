@@ -161,8 +161,9 @@ export function SearchBar({
       >
         <form
           onSubmit={handleSubmit}
-          className="w-full flex items-center gap-2"
+          className="w-full flex items-center gap-3"
         >
+          <Search size={16} className="text-white/40 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -171,7 +172,7 @@ export function SearchBar({
             onFocus={() => setIsFocused(true)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            className="w-full bg-transparent outline-none text-sm font-sans text-white placeholder:text-white/60"
+            className="flex-1 bg-transparent outline-none text-sm font-sans text-white placeholder:text-white/60"
           />
           {isLoadingSuggestions && (
             <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0" />

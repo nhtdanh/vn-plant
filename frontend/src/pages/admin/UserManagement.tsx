@@ -162,7 +162,7 @@ export function AdminUserManagement() {
 
   return (
     <div className="space-y-6 pb-10">
-      {/* phần tiêu đề */}
+      {/* tiêu đề */}
       <div className="h-14 flex items-center justify-between gap-4 mt-2">
         <div className="flex flex-col">
           <h1 className="text-3xl font-sans font-normal uppercase tracking-tight text-zinc-700">
@@ -177,7 +177,7 @@ export function AdminUserManagement() {
         </Button>
       </div>
 
-      {/* thanh tìm kiếm và bộ lọc */}
+      {/* thanh tìm kiếm */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         <form className="md:col-span-12 relative group" onSubmit={(e) => { e.preventDefault(); setCurrentPage(1); fetchUsers(1); }}>
           <Search
@@ -193,7 +193,7 @@ export function AdminUserManagement() {
         </form>
       </div>
 
-      {/* phần bảng người dùng */}
+      {/* bảng người dùng */}
       <div className="bg-white rounded-sm border border-zinc-100 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-zinc-50/50">
@@ -302,7 +302,7 @@ export function AdminUserManagement() {
           </TableBody>
         </Table>
 
-        {/* thanh phân trang */}
+        {/* phân trang */}
         {!isLoading && totalItems > 0 && (
           <div className="p-6 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between">
             <p className="text-[11px] text-zinc-400 uppercase tracking-widest font-bold">
@@ -335,7 +335,7 @@ export function AdminUserManagement() {
         )}
       </div>
 
-      {/* hộp thoại thêm người dùng */}
+      {/* hộp thoại thêm thành viên */}
       <Dialog 
         open={isAddUserOpen} 
         onOpenChange={(open) => {

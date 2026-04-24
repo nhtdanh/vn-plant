@@ -36,7 +36,7 @@ const GROUP_LABELS: Record<string, string> = {
   "Chưa phân loại": "Khác",
 };
 
-// Tăng nhẹ sắc độ bằng cách mix màu nhạt với màu đậm (25%)
+// tăng nhẹ sắc độ bằng cách mix màu nhạt với màu đậm (25%)
 const CHART_COLORS = [
   "color-mix(in srgb, var(--chart-1), var(--chart-1-fg) 25%)",
   "color-mix(in srgb, var(--chart-2), var(--chart-2-fg) 25%)",
@@ -46,7 +46,7 @@ const CHART_COLORS = [
 ];
 
 export function DashboardCharts({ distribution, audit }: DashboardChartsProps) {
-  // Logic gộp nhóm bậc phân loại infraspecific
+  // logic gộp nhóm bậc phân loại infraspecific
   const rankData = (() => {
     const rawRanks = distribution?.ranks || [];
     const aggregated: Record<string, number> = {};
@@ -69,7 +69,7 @@ export function DashboardCharts({ distribution, audit }: DashboardChartsProps) {
   })();
 
   const groupData = distribution?.groups
-    ?.filter(g => g.name !== "Chưa phân loại") // Loại bỏ nhóm "Khác"
+    ?.filter(g => g.name !== "Chưa phân loại") // loại bỏ nhóm "khác"
     ?.map(g => ({
       ...g,
       displayName: GROUP_LABELS[g.name] || g.name

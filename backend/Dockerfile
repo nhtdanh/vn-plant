@@ -1,27 +1,20 @@
-# Use Node.js LTS version
 FROM node:18-alpine
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# Copy package files
+# Cài đặt các thư viện cần thiết cho Prisma và Sharp
+RUN apk add --no-cache libc6-compat
+
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
 RUN npm install
 
-# Copy app source
 COPY . .
 
-# Generate Prisma client
 RUN npx prisma generate
 
-# Build the app
-RUN npm run build
-
-# Expose port
 EXPOSE 3000
 
-# Start the server
-CMD [ "npm", "start" ]
+# Chạy chế độ dev để tự động cập nhật khi sửa code
+CMD [ "npm", "run", "dev" ]

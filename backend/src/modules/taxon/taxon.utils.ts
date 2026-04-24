@@ -1,9 +1,7 @@
 import { TaxonomyRank, Prisma } from "../../../generated/prisma/index.js";
 import { ApiError } from "../../utils/apiError.js";
 
-/**
- * Thứ tự phân bậc từ cao xuống thấp
- */
+// Thứ tự phân bậc từ cao xuống thấp
 export const RANK_ORDER: TaxonomyRank[] = [
   "kingdom",
   "phylum",
@@ -17,9 +15,7 @@ export const RANK_ORDER: TaxonomyRank[] = [
   "forma",
 ];
 
-/**
- * Kiểm tra xem cha có bậc cao hơn con không
- */
+// Kiểm tra xem cha có bậc cao hơn con không
 export function validateRankHierarchy(parentRank: TaxonomyRank, childRank: TaxonomyRank) {
   const parentIdx = RANK_ORDER.indexOf(parentRank);
   const childIdx = RANK_ORDER.indexOf(childRank);
@@ -31,19 +27,15 @@ export function validateRankHierarchy(parentRank: TaxonomyRank, childRank: Taxon
   }
 }
 
-/**
- * Chuyển đổi Rank String sang Rank Order Index (để sort hoặc filter)
- */
+// Chuyển đổi Rank String sang Rank Order Index (để sort hoặc filter)
 export function getRankLevel(rank: TaxonomyRank): number {
   return RANK_ORDER.indexOf(rank);
 }
 
-/**
- * Tính toán và cập nhật ảnh chính cho Taxon dựa trên độ ưu tiên:
- * 1. Ảnh được đánh dấu isPrimary: true
- * 2. Ảnh có sortOrder thấp nhất
- * 3. Ảnh được tạo sớm nhất
- */
+// Tính toán và cập nhật ảnh chính cho Taxon dựa trên độ ưu tiên:
+// 1. Ảnh được đánh dấu isPrimary: true
+// 2. Ảnh có sortOrder thấp nhất
+// 3. Ảnh được tạo sớm nhất
 export async function recalculatePrimaryImageUrl(
   tx: Prisma.TransactionClient, 
   taxonId: number,

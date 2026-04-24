@@ -59,7 +59,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-primary border-b-2 border-white/20 text-white">
-      <div className="max-w-360 mx-auto border-x-2 border-white/10">
+      <div className="max-w-[1440px] mx-auto border-x-2 border-white/10">
         <div className="flex h-13 items-center">
           {/* 1. ô chứa logo */}
           <div className="flex items-center h-full px-4 sm:px-6 md:px-10 border-r-2 border-white/20 shrink-0">
@@ -249,10 +249,19 @@ export function Navbar() {
             )}
           </div>
 
-          {/* 5. ô chuyển đổi trên di động */}
+          {/* 5. ô chuyển đổi và tìm kiếm trên di động */}
           <div className="md:hidden flex items-center h-full border-l-2 border-white/20 shrink-0">
             <button
-              className="flex items-center justify-center h-full px-5 text-white cursor-pointer"
+              className="flex items-center justify-center h-full px-4 text-white/80 hover:text-white transition-colors cursor-pointer"
+              onClick={() => {
+                setIsMobileMenuOpen(true);
+                // tự động tập trung vào ô tìm kiếm sau khi menu mở
+              }}
+            >
+              <Search size={20} />
+            </button>
+            <button
+              className="flex items-center justify-center h-full px-4 border-l-2 border-white/20 text-white cursor-pointer"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -275,6 +284,7 @@ export function Navbar() {
               <SearchBar
                 variant="navbar"
                 placeholder="Tìm kiếm thực vật..."
+                autoFocus={true}
                 initialValue={currentQuery}
                 onSearch={(q) => {
                   const p = new URLSearchParams(location.search);

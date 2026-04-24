@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,7 +36,7 @@ import type {
 } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 
-// schema validation chuyên sâu cho taxon - đồng bộ với backend dto
+// schema validation cho taxon - đồng bộ với backend dto
 const taxonSchema = z.object({
   scientificName: z.string().min(1, "Tên khoa học là bắt buộc"),
   author: z.string().nullish(),
@@ -58,7 +58,7 @@ const taxonSchema = z.object({
   sourceName: z.string().nullish(),
   orderInBook: z.string().nullish(),
   provinceIds: z.array(z.number()).default([]),
-  // lưu ý: deleteimageids được quản lý bằng state riêng (không thuộc form schema)
+  // deleteImageIds được quản lý bằng state riêng
   synonyms: z.array(z.object({
     id: z.number().optional(),
     scientificName: z.string().min(1),
@@ -74,7 +74,7 @@ const taxonSchema = z.object({
 });
 
 
-// taxonformpage - trình soạn thảo dữ liệu thực vật thực tế
+// taxonformpage - trình soạn thảo dữ liệu thực vật
 export function TaxonFormPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -88,7 +88,7 @@ export function TaxonFormPage() {
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
   
-  // các trạng thái quản lý hình ảnh
+  // quản lý hình ảnh
   const [existingImages, setExistingImages] = useState<TaxonImage[]>([]);
   const [newImageFiles, setNewImageFiles] = useState<{ 
     id: string; 
@@ -100,7 +100,7 @@ export function TaxonFormPage() {
   }[]>([]);
   const [deleteImageIds, setDeleteImageIds] = useState<number[]>([]);
 
-  // các trạng thái cho tìm kiếm phân cấp
+  // tìm kiếm phân cấp
   const [parentSearch, setParentSearch] = useState("");
   const [parentSuggestions, setParentSuggestions] = useState<TaxonSuggestion[]>([]);
   const [selectedParent, setSelectedParent] = useState<TaxonSuggestion | null>(null);
@@ -140,7 +140,7 @@ export function TaxonFormPage() {
   const watchVietnameseName = watch("vietnameseName") || "";
   const watchCommonNames = watch("commonNames") || [];
   
-  // cảnh báo khi rời trang nếu có thay đổi chưa lưu
+  // cảnh báo khi rời trang
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isDirty && !isSaving) {
@@ -152,38 +152,20 @@ export function TaxonFormPage() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isDirty, isSaving]);
 
-  const isSyncingRef = useRef(false);
-
-  // đồng bộ tên tiếng việt sang tên thường gọi chính
+  // đồng bộ tên thường gọi sang tên tiếng việt (Nguồn sự thật duy nhất)
   useEffect(() => {
-    if (isSyncingRef.current) return;
-    
-    const primaryIndex = watchCommonNames.findIndex((cn: any) => cn.isPrimary === true);
-    
-    if (watchVietnameseName) {
-      isSyncingRef.current = true;
-      if (primaryIndex === -1) {
-        // tạo mới nếu chưa tồn tại
-        appendCommonName({ name: watchVietnameseName, language: "vi", isPrimary: true });
-      } else if (watchCommonNames[primaryIndex].name !== watchVietnameseName) {
-        // cập nhật nếu đã tồn tại
-        setValue(`commonNames.${primaryIndex}.name`, watchVietnameseName);
-      }
-      setTimeout(() => { isSyncingRef.current = false; }, 50);
-    }
-  }, [watchVietnameseName]);
-
-  // đồng bộ tên thường gọi chính sang tên tiếng việt
-  useEffect(() => {
-    if (isSyncingRef.current) return;
-    
     const primary = watchCommonNames.find((cn: any) => cn.isPrimary === true);
-    if (primary && primary.name !== watchVietnameseName) {
-      isSyncingRef.current = true;
-      setValue("vietnameseName", primary.name);
-      setTimeout(() => { isSyncingRef.current = false; }, 50);
+    if (primary) {
+      if (primary.name !== watchVietnameseName) {
+        setValue("vietnameseName", primary.name);
+      }
+    } else if (watchCommonNames.length > 0) {
+      // Chỉ xóa tên Việt nếu danh sách tên gọi có dữ liệu nhưng không cái nào là chính
+      if (watchVietnameseName) {
+        setValue("vietnameseName", "");
+      }
     }
-  }, [watchCommonNames]);
+  }, [watchCommonNames, watchVietnameseName, setValue]);
 
   // tải dữ liệu ban đầu
   useEffect(() => {
@@ -247,14 +229,14 @@ export function TaxonFormPage() {
     loadData();
   }, [id, reset, isEditMode]);
 
-  // dọn dẹp các đường dẫn (url) của đối tượng
+  // giải phóng url ảnh
   useEffect(() => {
     return () => {
       newImageFiles.forEach(img => URL.revokeObjectURL(img.preview));
     };
   }, [newImageFiles]);
 
-  // xử lý tìm kiếm gợi ý
+  // tìm kiếm gợi ý
   useEffect(() => {
     if (parentSearch.length < 2) {
       setParentSuggestions([]);
@@ -276,7 +258,7 @@ export function TaxonFormPage() {
     try {
       const formData = new FormData();
 
-      // đảm bảo tên thường gọi chính luôn tồn tại nếu có tên tiếng việt
+      // đảm bảo tên thường gọi chính
       const finalCommonNames = [...(values.commonNames ?? [])];
       if (values.vietnameseName?.trim() && !finalCommonNames.some((c: any) => c.isPrimary)) {
         finalCommonNames.push({
@@ -286,7 +268,7 @@ export function TaxonFormPage() {
         });
       }
 
-      // xử lý thông tin metadata hình ảnh (tất cả ảnh: cũ và mới)
+      // xử lý metadata hình ảnh
       const imageMetadata = [
         ...existingImages.map(img => ({
           url: img.url,
@@ -302,9 +284,7 @@ export function TaxonFormPage() {
         })),
       ];
 
-      // gom tất cả dữ liệu thành một chuỗi json trong trường "data"
-      // Giúp giữ nguyên kiểu dữ liệu (boolean, number, array) qua network.
-      // backend đã hỗ trợ xử lý dữ liệu dạng chuỗi json
+      // đóng gói dữ liệu json
       const payload = {
         // các trường dữ liệu lõi
         scientificName: values.scientificName?.trim(),
@@ -342,10 +322,10 @@ export function TaxonFormPage() {
         images: imageMetadata,
       };
 
-      // thêm toàn bộ dữ liệu dưới dạng chuỗi json - giữ nguyên kiểu dữ liệu
+      // đính kèm dữ liệu json
       formData.append("data", JSON.stringify(payload));
 
-      // thêm file ảnh riêng lẻ
+      // đính kèm file ảnh
       newImageFiles.forEach(img => {
         formData.append("files", img.file);
       });
@@ -360,7 +340,7 @@ export function TaxonFormPage() {
       }
     } catch (error: any) {
       console.error("[TaxonForm] Submit error:", error);
-      // hiển thị thông báo từ máy chủ hoặc thông báo mặc định
+      // thông báo lỗi
       const serverMessage = error?.response?.data?.message;
       const serverErrors = error?.response?.data?.errors;
       if (serverErrors?.length) {
@@ -402,7 +382,7 @@ export function TaxonFormPage() {
 
   return (
     <div className="max-w-6xl mx-auto pb-32">
-       {/* thanh điều hướng trên cùng */}
+       {/* thanh điều hướng */}
        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <Button type="button" onClick={() => navigate("/admin/taxons")} className="bg-white hover:bg-zinc-100 text-zinc-600 hover:text-zinc-900 rounded-sm border border-zinc-200 shadow-sm w-9 h-9 p-0 flex items-center justify-center transition-colors">
@@ -433,7 +413,7 @@ export function TaxonFormPage() {
           </div>
        </div>
 
-       {/* các tab điều hướng ngang */}
+       {/* các tab điều hướng */}
        <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-zinc-100 mb-10 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div className="flex items-center overflow-x-auto no-scrollbar gap-1 py-1">
              {sections.map((s) => {
@@ -463,11 +443,11 @@ export function TaxonFormPage() {
           </div>
        </div>
 
-       {/* khu vực nội dung biểu mẫu */}
+       {/* nội dung biểu mẫu */}
        <div className="max-w-4xl mx-auto">
           <form className="space-y-12">
                 
-                {/* phần: định danh (tab 1) */}
+                {/* định danh */}
                 {activeSection === "identity" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -491,12 +471,16 @@ export function TaxonFormPage() {
                             />
                          </div>
                          <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Tên tiếng Việt</label>
-                            <Input 
-                               {...register("vietnameseName")}
-                               placeholder="Ví dụ: Hướng Dương"
-                               className="h-11 rounded-sm border-zinc-100 bg-white font-sans text-base focus:border-amber-400 focus-visible:ring-0"
-                            />
+                             <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1 flex justify-between items-center">
+                                <span>Tên tiếng Việt</span>
+                                <span className="text-[9px] normal-case font-medium text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity">Tự động từ Tên gọi chính</span>
+                             </label>
+                             <Input 
+                                {...register("vietnameseName")}
+                                readOnly
+                                placeholder="Tự động cập nhật..."
+                                className="h-11 rounded-sm border-zinc-100 bg-zinc-50/50 font-sans text-base text-zinc-500 cursor-not-allowed focus-visible:ring-0"
+                             />
                          </div>
 
                          <div className="space-y-1.5">
@@ -533,7 +517,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* phần: phân loại (tab 2) */}
+                {/* phân loại */}
                 {activeSection === "classification" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -633,7 +617,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* phần: sinh học (tab 3) */}
+                {/* sinh học */}
                 {activeSection === "biology" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
                       <div className="space-y-8">
@@ -673,8 +657,8 @@ export function TaxonFormPage() {
                                <Input {...register("value")} placeholder="Sử dụng, kinh tế, dược liệu..." className="h-11 rounded-sm border-zinc-100 focus:border-amber-400 focus-visible:ring-0" />
                             </div>
                              <div className="space-y-1.5">
-                                 <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Sinh thái & Phân bố</label>
-                                 <Input {...register("phenology")} placeholder="Mùa hoa, độ cao, khu vực..." className="h-11 rounded-sm border-zinc-100 focus:border-amber-400 focus-visible:ring-0" />
+                                 <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Mùa hoa quả (Phenology)</label>
+                                 <Input {...register("phenology")} placeholder="Ví dụ: Tháng 3-5..." className="h-11 rounded-sm border-zinc-100 focus:border-amber-400 focus-visible:ring-0" />
                               </div>
                               <div className="space-y-1.5">
                                  <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Ghi chú (Note)</label>
@@ -685,7 +669,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* phần: tên gọi (tab 4) */}
+                {/* tên gọi */}
                 {activeSection === "names" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       
@@ -794,10 +778,20 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* phần: phân bố (tab 5) */}
+                {/* phân bố */}
                 {activeSection === "distribution" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
-                      {/* bản đồ / khu vực */}
+                      <div className="space-y-1.5">
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 px-1">Phân bố chi tiết (Distribution Text)</label>
+                          <textarea 
+                             {...register("distributionText")}
+                             rows={4}
+                             className="w-full p-4 rounded-sm border border-zinc-100 bg-white font-sans text-sm focus:border-amber-400 focus:outline-none transition-all shadow-sm leading-relaxed"
+                             placeholder="Mô tả chi tiết về vùng phân bố, độ cao, sinh cảnh..."
+                          />
+                       </div>
+
+                      {/* khu vực */}
                       <div className="space-y-4">
                          <div className="flex flex-wrap gap-2 p-4 bg-zinc-50/50 border border-zinc-100 rounded-sm">
                              {provinces.map((p) => (
@@ -820,7 +814,7 @@ export function TaxonFormPage() {
                    </div>
                 )}
 
-                {/* phần: hình ảnh (tab 6) */}
+                {/* hình ảnh */}
                 {activeSection === "media" && (
                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-10">
                       <div className="p-10 border-2 border-dashed border-zinc-200 rounded-sm flex flex-col items-center justify-center text-center space-y-4 bg-zinc-50/50 hover:bg-emerald-50 transition-all group cursor-pointer relative">
@@ -857,7 +851,7 @@ export function TaxonFormPage() {
                          </h3>
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             
-                            {/* hình ảnh hiện có */}
+                            {/* ảnh hiện có */}
                             {existingImages.map((img) => (
                                <div key={img.id} className={cn(
                                    "flex flex-col rounded-sm border overflow-hidden bg-white group transition-all",
@@ -919,7 +913,7 @@ export function TaxonFormPage() {
                                </div>
                             ))}
 
-                            {/* hình ảnh tải lên mới */}
+                            {/* ảnh tải lên mới */}
                             {newImageFiles.map((img) => (
                                <div key={img.id} className={cn(
                                    "flex flex-col rounded-sm border-2 border-dashed bg-emerald-50/30 overflow-hidden group transition-all",
@@ -986,7 +980,7 @@ export function TaxonFormPage() {
           </form>
        </div>
 
-       {/* thanh nổi chân trang (chủ yếu cho di động) */}
+       {/* thanh nổi chân trang */}
        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-40 lg:hidden pointer-events-none">
           <div className="bg-zinc-900/90 backdrop-blur-md p-3 rounded-sm shadow-2xl flex items-center justify-between gap-4 pointer-events-auto border border-zinc-700">
              <div className="flex flex-col">
@@ -999,7 +993,7 @@ export function TaxonFormPage() {
           </div>
        </div>
 
-       {/* --- hộp thoại biên tập ảnh --- */}
+       {/* hộp thoại biên tập ảnh */}
        {isEditorOpen && editingBlob && (
           <ImageEditor 
              image={editingBlob.url}

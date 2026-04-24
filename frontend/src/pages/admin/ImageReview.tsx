@@ -101,7 +101,7 @@ export function AdminImageReview() {
     try {
       setIsProcessing(true);
       
-      //optimistic update: xóa khỏi giao diện ngay
+      // cập nhật lạc quan: xóa khỏi giao diện ngay
       if (data && activeTab === 'pending') {
         setData(prev => prev ? {
           ...prev,
@@ -118,7 +118,7 @@ export function AdminImageReview() {
       fetchImages(data?.meta?.page);
     } catch (error) {
       toast.error("Từ chối thất bại");
-      fetchImages(data?.meta?.page); // Rollback
+      fetchImages(data?.meta?.page); // hoàn tác
     } finally {
       setIsProcessing(false);
     }

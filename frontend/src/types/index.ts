@@ -1,7 +1,7 @@
-// VN-Plant Shared TypeScript Types
-// Các type này được đồng bộ từ Backend
+// vn-plant shared typescript types
+// các type này được đồng bộ từ backend
 
-// --- API RESPONSES ---
+// api responses
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -38,7 +38,7 @@ export type ImageStatus = "pending" | "approved" | "rejected";
 
 export type UserStatus = "active" | "inactive";
 
-// --- PAGINATION ---
+// pagination
 
 export interface PaginationMeta {
   total: number;
@@ -52,7 +52,7 @@ export interface PaginatedResponse<T> {
   meta: PaginationMeta;
 }
 
-// --- CORE MODELS ---
+// core models
 
 export interface Taxon {
   id: number;
@@ -102,7 +102,7 @@ export interface TaxonImage {
   recordNote: string | null;
   createdAt: string;
 
-  // Relations (Optional based on query)
+  // quan hệ (tùy chọn)
   taxon?: {
     scientificName: string;
     vietnameseName: string | null;
@@ -140,21 +140,21 @@ export interface TaxonProvince {
   province: Province;
 }
 
-// --- SPECIALIZED DATA STRUCTURES ---
+// specialized data structures
 
-// Chi tiết Taxon cho trang Profile
+// chi tiết taxon cho trang profile
 export interface TaxonDetail extends Taxon {
   synonyms: TaxonSynonym[];
   commonNames: TaxonCommonName[];
   images: TaxonImage[];
   provinces: TaxonProvince[];
-  children: TaxonChild[]; // Immediate children list
-  parent?: { id: number; scientificName: string }; // Optional parent for edit mode
+  children: TaxonChild[]; // danh sách con trực tiếp
+  parent?: { id: number; scientificName: string }; // cha (cho chế độ sửa)
   isBookmarked: boolean;
   contributions?: TaxonImage[];
 }
 
-// Dữ liệu Taxon con rút gọn cho danh sách
+// dữ liệu taxon con rút gọn cho danh sách
 export interface TaxonChild {
   id: number;
   scientificName: string;
@@ -165,7 +165,7 @@ export interface TaxonChild {
   author: string | null;
 }
 
-// Taxon tổ tiên cho Breadcrumb
+// taxon tổ tiên cho breadcrumb
 export interface TaxonAncestor {
   id: number;
   scientificName: string;
@@ -175,7 +175,7 @@ export interface TaxonAncestor {
   displayName: string;
 }
 
-// Gợi ý tìm kiếm (Autocomplete)
+// gợi ý tìm kiếm (autocomplete)
 export interface TaxonSuggestion {
   id: number;
   scientificName: string;
@@ -187,7 +187,7 @@ export interface TaxonSuggestion {
   score?: number;
 }
 
-// --- USER & AUTHENTICATION ---
+// user & authentication
 
 export interface User {
   id: string;
@@ -204,7 +204,7 @@ export interface AuthResponse {
   accessToken: string;
 }
 
-// --- AUTH INPUTS ---
+// auth inputs
 
 export interface LoginInput {
   email: string;
@@ -217,7 +217,7 @@ export interface RegisterInput {
   displayName?: string;
 }
 
-// --- ADMIN & TAXON INPUTS ---
+// admin & taxon inputs
 
 export interface CreateTaxonInput {
   scientificName: string;

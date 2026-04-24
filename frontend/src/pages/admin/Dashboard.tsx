@@ -9,9 +9,7 @@ import { useEffect, useState } from "react";
 import { adminService } from "@/services/admin.service";
 import { DashboardCharts } from "@/components/admin/DashboardCharts";
 
-/**
- * AdminDashboard - Trang tổng quan dành cho quản trị viên
- */
+// admindashboard - trang tổng quan dành cho quản trị viên
 export function AdminDashboard() {
   const [data, setData] = useState<any>(null);
 
@@ -70,7 +68,7 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-2 pb-10 mt-1">
-      {/* Stats Grid */}
+      {/* thống kê dạng lưới */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -98,7 +96,7 @@ export function AdminDashboard() {
         ))}
       </motion.div>
 
-      {/* Distribution & Audit Charts */}
+      {/* biểu đồ phân bổ */}
       {data?.distribution && data?.audit && (
         <DashboardCharts 
           distribution={data.distribution} 

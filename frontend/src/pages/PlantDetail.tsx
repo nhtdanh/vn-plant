@@ -530,12 +530,12 @@ export function PlantDetail() {
             }
 
             // cập nhật trạng thái nếu cần (xử lý logic hiển thị)
-            // For simplicity in this render block, we'll use displayTab for rendering
+            // để đơn giản trong khối render này, sử dụng displaytab để hiển thị
 
             return (
               <section className="pt-4 md:pt-6 pb-0" ref={tabsRef}>
-                {/* thanh điều hướng tab */}
-                <div className="flex items-end ml-0 overflow-visible">
+                {/* thanh điều hướng tab - hỗ trợ cuộn trên di động */}
+                <div className="flex items-end ml-0 overflow-x-auto no-scrollbar whitespace-nowrap">
                   {hasDescription && (
                     <button
                       onClick={() => setActiveTab("description")}
@@ -624,7 +624,7 @@ export function PlantDetail() {
                             ? "rgba(236, 253, 245, 0.95)"
                             : "rgba(244, 244, 245, 0.95)",
                   }}
-                  className="relative px-5 md:px-10 py-2 md:py-4 z-10 rounded-xl rounded-tl-none w-full"
+                  className="relative px-5 md:px-10 py-2 md:py-4 z-10 rounded-b-xl w-full"
                 >
                   <AnimatePresence mode="wait">
                     {displayTab === "description" && hasDescription && (

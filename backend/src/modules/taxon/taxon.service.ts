@@ -15,14 +15,7 @@ import {
   formatPaginatedResponse,
 } from "../../utils/pagination.js";
 import { normalizeUrl } from "../../utils/url.js";
-import { R2_PUBLIC_DOMAIN } from "../../config/s3.config.js";
-
-
-
-
-
-
-// Lấy danh sách Taxa hỗ trợ lọc và phân trang
+import { R2_PUBLIC_DOMAIN } from "../../config/s3.config.js";// Lấy danh sách Taxa hỗ trợ lọc và phân trang
 export async function findAll(query: GetTaxaQuery) {
   const { rank, group, parentId, q, province } = query;
   const pagination = getPaginationParams(query);
@@ -44,9 +37,7 @@ export async function findAll(query: GetTaxaQuery) {
       WITH search_stats AS (
         SELECT 
           t.id,
-          -- FTS Rank
           ts_rank_cd(t.search_vector, websearch_to_tsquery('simple', ${q})) as fts_score,
-          -- Trigram Score
           GREATEST(
             similarity(t.vietnamese_name, ${q}) * 1.5,
             similarity(t.scientific_name, ${q}),
@@ -54,7 +45,6 @@ export async function findAll(query: GetTaxaQuery) {
             COALESCE((SELECT MAX(similarity(s.scientific_name, ${q})) FROM taxon_synonym s WHERE s.taxon_id = t.id), 0)
           ) as trgm_score
         FROM taxon t
-        ${provinceIds.length > 0 ? Prisma.sql`JOIN taxon_province tp ON t.id = tp.taxon_id` : Prisma.empty}
         WHERE 
           (
             t.search_vector @@ websearch_to_tsquery('simple', ${q})
@@ -67,8 +57,7 @@ export async function findAll(query: GetTaxaQuery) {
           ${rank && rank.length > 0 ? Prisma.sql`AND t.rank = ANY(${rank}::"TaxonomyRank"[])` : Prisma.empty}
           ${group && group.length > 0 ? Prisma.sql`AND t.plant_group = ANY(${group}::"PlantGroup"[])` : Prisma.empty}
           ${parentId ? Prisma.sql`AND t.parent_id = ${parentId}` : Prisma.empty}
-          ${provinceIds.length > 0 ? Prisma.sql`AND tp.province_id = ANY(${provinceIds}::integer[])` : Prisma.empty}
-        GROUP BY t.id  -- Sửa lỗi trùng lặp khi một loài ở nhiều tỉnh thành
+          ${provinceIds.length > 0 ? Prisma.sql`AND EXISTS (SELECT 1 FROM taxon_province tp WHERE tp.taxon_id = t.id AND tp.province_id = ANY(${provinceIds}::integer[]))` : Prisma.empty}
       )
       SELECT 
         t.id, t.slug, t.canonical_name as "canonicalName", 
@@ -87,23 +76,20 @@ export async function findAll(query: GetTaxaQuery) {
     // Đếm tổng số
     const countResult: any[] = await prisma.$queryRaw`
       SELECT COUNT(*)::int as total
-      FROM (
-        SELECT t.id
-        FROM taxon t
-        WHERE 
-          (
-            t.search_vector @@ websearch_to_tsquery('simple', ${q})
-            OR t.scientific_name % ${q}
-            OR t.vietnamese_name % ${q}
-            OR EXISTS (SELECT 1 FROM taxon_common_name cn WHERE cn.taxon_id = t.id AND cn.name % ${q})
-            OR EXISTS (SELECT 1 FROM taxon_synonym s WHERE s.taxon_id = t.id AND s.scientific_name % ${q})
-          )
-          AND t.status = 'published'
-          ${rank && rank.length > 0 ? Prisma.sql`AND t.rank = ANY(${rank}::"TaxonomyRank"[])` : Prisma.empty}
-          ${group && group.length > 0 ? Prisma.sql`AND t.plant_group = ANY(${group}::"PlantGroup"[])` : Prisma.empty}
-          ${parentId ? Prisma.sql`AND t.parent_id = ${parentId}` : Prisma.empty}
-          ${provinceIds.length > 0 ? Prisma.sql`AND EXISTS (SELECT 1 FROM taxon_province tp WHERE tp.taxon_id = t.id AND tp.province_id = ANY(${provinceIds}::integer[]))` : Prisma.empty}
-      ) as subquery
+      FROM taxon t
+      WHERE 
+        (
+          t.search_vector @@ websearch_to_tsquery('simple', ${q})
+          OR t.scientific_name % ${q}
+          OR t.vietnamese_name % ${q}
+          OR EXISTS (SELECT 1 FROM taxon_common_name cn WHERE cn.taxon_id = t.id AND cn.name % ${q})
+          OR EXISTS (SELECT 1 FROM taxon_synonym s WHERE s.taxon_id = t.id AND s.scientific_name % ${q})
+        )
+        AND t.status = 'published'
+        ${rank && rank.length > 0 ? Prisma.sql`AND t.rank = ANY(${rank}::"TaxonomyRank"[])` : Prisma.empty}
+        ${group && group.length > 0 ? Prisma.sql`AND t.plant_group = ANY(${group}::"PlantGroup"[])` : Prisma.empty}
+        ${parentId ? Prisma.sql`AND t.parent_id = ${parentId}` : Prisma.empty}
+        ${provinceIds.length > 0 ? Prisma.sql`AND EXISTS (SELECT 1 FROM taxon_province tp WHERE tp.taxon_id = t.id AND tp.province_id = ANY(${provinceIds}::integer[]))` : Prisma.empty}
     `;
 
     const total = countResult[0]?.total || 0;
@@ -135,13 +121,8 @@ export async function findAll(query: GetTaxaQuery) {
 
   return formatPaginatedResponse(items, total, pagination);
 }
-// === UTILITY METHODS FOR FRONTEND ===
 
-// === UTILITY METHODS FOR FRONTEND ===
-
-/**
- * Láy các hằng số hệ thống (Enum)
- */
+// Lấy các hằng số hệ thống (Enum)
 export async function getMetadata() {
   return {
     ranks: [
@@ -161,18 +142,14 @@ export async function getMetadata() {
   };
 }
 
-/**
- * Lấy danh sách toàn bộ các tỉnh thành
- */
+// Lấy danh sách toàn bộ các tỉnh thành
 export async function getProvinces() {
   return prisma.province.findMany({
     orderBy: { name: "asc" },
   });
 }
 
-/**
- * Lấy các loài tương tự (Cùng chi/Genus hoặc cùng cấp)
- */
+// Lấy các loài tương tự (Cùng chi/Genus hoặc cùng cấp)
 export async function getRelatedTaxa(id: number, limit = 5) {
   const current = await prisma.taxon.findUnique({
     where: { id },
@@ -192,10 +169,8 @@ export async function getRelatedTaxa(id: number, limit = 5) {
   });
 }
 
-/**
- * Gợi ý tìm kiếm nhanh (Autocomplete)
- * Chỉ dùng Trigram trên Tên khoa học, Tên Việt và Tên thường gọi để đạt tốc độ tối đa.
- */
+// Gợi ý tìm kiếm nhanh (Autocomplete)
+// Chỉ dùng Trigram trên Tên khoa học, Tên Việt và Tên thường gọi để đạt tốc độ tối đa.
 export async function suggestTaxa(q: string, limit = 10) {
   // Thuật toán Smart Autocomplete:
   // 1. Prefix Boost: Khớp từ đầu tiên (e.g. "Lan...") -> +2.0 điểm
@@ -232,10 +207,8 @@ export async function suggestTaxa(q: string, limit = 10) {
   return items;
 }
 
-/**
- * Lấy danh sách tổ tiên (Breadcrumbs)
- * Sử dụng ltree toán tử @> (ancestor of)
- */
+// Lấy danh sách tổ tiên (Breadcrumbs)
+// Sử dụng ltree toán tử @> (ancestor of)
 export async function getAncestors(id: number) {
   // 1. Lấy path của bản ghi hiện tại bằng SQL raw (vì ltree là Unsupported type)
   const taxonResult: any[] = await prisma.$queryRaw`
@@ -285,7 +258,6 @@ export async function getAncestors(id: number) {
   });
 }
 
-// === ADMIN METHODS ===
 
 export async function countStats() {
   const [total, published, draft] = await Promise.all([
@@ -296,9 +268,7 @@ export async function countStats() {
   return { total, published, draft };
 }
 
-/**
- * Lấy dữ liệu phân bổ theo rank và plant group cho biểu đồ
- */
+// Lấy dữ liệu phân bổ theo rank và plant group cho biểu đồ
 export async function getDistributionStats() {
   const [ranks, groups] = await Promise.all([
     prisma.taxon.groupBy({
@@ -321,9 +291,7 @@ export async function getDistributionStats() {
   };
 }
 
-/**
- * Thực hiện kiểm toán toàn bộ hệ thống để tìm các bản ghi thiếu thông tin
- */
+// Thực hiện kiểm toán toàn bộ hệ thống để tìm các bản ghi thiếu thông tin
 export async function getSystemAudit() {
   const [noImages, noVietName, noDescription] = await Promise.all([
     // 1. Không có ảnh đại diện (Chỉ tính cho loài)

@@ -1,8 +1,5 @@
 import { z } from "zod";
 
-/**
- * Base pagination schema - can be extended
- */
 const basePaginationQuerySchema = z.object({
   limit: z
     .preprocess((val) => Number(val), z.number().int().min(1).max(100))
@@ -13,9 +10,6 @@ const basePaginationQuerySchema = z.object({
     .optional(),
 });
 
-/**
- * Helper function to convert page to offset
- */
 export function toPaginationQuery(
   data: z.infer<typeof basePaginationQuerySchema>,
 ) {
@@ -34,11 +28,7 @@ export function toPaginationQuery(
   };
 }
 
-/**
- * Shared schema for paginated queries.
- * Use this in controllers to parse limit and offset from query parameters.
- * Supports both "offset" and "page" (page is converted to offset: offset = (page - 1) * limit)
- */
+
 export const paginationQuerySchema = basePaginationQuerySchema;
 
 export type PaginationQuery = ReturnType<typeof toPaginationQuery>;

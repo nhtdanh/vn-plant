@@ -4,6 +4,7 @@ node_modules
 *.js
 *.js.map
 *.d.ts.map
+generated
 # Keep manual typings
 !src/types/express/index.d.ts
 

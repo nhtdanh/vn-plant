@@ -1,13 +1,13 @@
 import { useEffect, type RefObject } from "react";
 
-// Hook that alerts clicks outside of the passed ref
+// hook phát hiện cú nhấp chuột bên ngoài thành phần (ref) được chỉ định
 export function useClickOutside(
   ref: RefObject<HTMLElement | null>,
   handler: (event: MouseEvent | TouchEvent) => void
 ) {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
-      // Do nothing if clicking ref's element or descendent elements
+      // không làm gì nếu nhấp vào chính phần tử đó hoặc các phần tử con của nó
       if (!ref.current || ref.current.contains(event.target as Node)) {
         return;
       }

@@ -14,11 +14,11 @@ export function Hero() {
             className="w-full"
           >
             <h1 className="mb-6 leading-tight">
-              <span className="font-script text-foreground/90 text-4xl md:text-5xl lg:text-6xl xl:text-7xl block whitespace-nowrap normal-case mb-1">
+              <span className="font-script text-foreground/90 text-[32px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl block normal-case mb-1">
                 Khám phá
               </span>
-              <span className="font-script text-primary text-4xl md:text-5xl lg:text-6xl xl:text-7xl block whitespace-nowrap normal-case leading-[1.1]">
-                Cây Cỏ Việt Nam
+              <span className="font-script text-primary text-[32px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl block normal-case leading-[1.1]">
+                Cây cỏ Việt Nam
               </span>
             </h1>
 

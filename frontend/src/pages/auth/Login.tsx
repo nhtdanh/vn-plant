@@ -29,9 +29,10 @@ export function Login() {
       login(data.user, data.accessToken);
       toast.success("Đăng nhập thành công");
 
-      // logic điều hướng sau khi đăng nhập: admin vào dashboard, thành viên vào trang cũ
+      // Điều hướng: Admin luôn về trang quản trị (trừ khi đang làm dở ở một trang admin cụ thể), User về trang cũ
       if (data.user.role === "admin") {
-        navigate("/admin", { replace: true });
+        const isAdminPath = from.startsWith("/admin");
+        navigate(isAdminPath ? from : "/admin", { replace: true });
       } else {
         navigate(from, { replace: true });
       }

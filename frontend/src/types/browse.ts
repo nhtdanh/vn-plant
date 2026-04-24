@@ -1,6 +1,6 @@
 import type { TaxonomyRank, PlantGroup } from "./index";
 
-// Tham số truy vấn cho tìm kiếm và phân loại
+// tham số truy vấn cho tìm kiếm và phân loại
 export interface BrowseQuery {
   q?: string; // query tìm kiếm
   group?: PlantGroup[]; // lọc theo nhóm thực vật

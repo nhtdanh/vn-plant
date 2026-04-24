@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getCategoryGroup } from "../../utils/taxon.utils";
+import { cn } from "@/lib/utils";
 
 interface DiscoveryCardProps {
   category: string;
@@ -38,23 +39,25 @@ function DiscoveryCard({
         transition={{ duration: 0.3 }}
       />
 
-      {/* lớp phủ gradient - hiện lên khi di chuột */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
-        animate={{ opacity: isHovered ? 0.95 : 0 }}
-        transition={{ duration: 0.3 }}
+      {/* lớp phủ gradient - hiện lên khi di chuột, luôn hiện trên mobile */}
+      <div
+        className={cn(
+          "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500",
+          "opacity-70 md:opacity-0 md:group-hover:opacity-90"
+        )}
       />
 
-      {/* lớp phủ văn bản - nằm giữa, hiện lên khi di chuột */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center"
-        animate={{ opacity: isHovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
+      {/* lớp phủ văn bản - nằm giữa, hiện lên khi di chuột, luôn hiện trên mobile */}
+      <div
+        className={cn(
+          "absolute inset-0 flex items-center justify-center transition-all duration-500",
+          "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:translate-y-4"
+        )}
       >
-        <span className="text-[24px] md:text-[28px] font-sans font-bold uppercase tracking-[0.2em] text-white/95 text-center leading-tight">
+        <span className="text-[20px] sm:text-[24px] md:text-[28px] font-sans font-bold uppercase tracking-[0.2em] text-white/95 text-center leading-tight px-4">
           {category}
         </span>
-      </motion.div>
+      </div>
     </motion.div>
   );
 

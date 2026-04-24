@@ -2,9 +2,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { TaxonomyRank } from "../../generated/prisma";
 
-/**
- * Ghi log dữ liệu lỗi hoặc bị loại bỏ vào file jsonl
- */
 export function writeLog(fileName: string, data: any, reason: string) {
   const logDir = path.join(process.cwd(), "data", "logs");
   if (!fs.existsSync(logDir)) {
@@ -24,9 +21,7 @@ export function writeLog(fileName: string, data: any, reason: string) {
   fs.appendFileSync(logPath, JSON.stringify(logEntry) + "\n");
 }
 
-/**
- * Chuẩn hóa Rank từ JSONL sang Prisma Enum
- */
+// rank -> enum
 export function normalizeRank(rank: string | undefined | null): TaxonomyRank {
   if (!rank) return "species" as TaxonomyRank; // Fallback mặc định
 
@@ -39,10 +34,7 @@ export function normalizeRank(rank: string | undefined | null): TaxonomyRank {
   return normalized as TaxonomyRank;
 }
 
-/**
- * Chuẩn hóa tên thông thường: capitalize từng từ
- * VD: "thông đất" → "Thông Đất"
- */
+// capitalize
 export function formatCommonName(name: string): string {
   if (!name) return "";
   return name.trim().split(/\s+/).map(word =>
@@ -50,10 +42,7 @@ export function formatCommonName(name: string): string {
   ).join(" ");
 }
 
-/**
- * Tạo slug từ tên khoa học (Latin), xử lý dấu tiếng Việt và ký tự đặc biệt
- * VD: "Psilotum complanatum Sw." → "psilotum-complanatum-sw"
- */
+//tạo slug
 export function generateSlug(name: string): string {
   if (!name) return "";
   return name

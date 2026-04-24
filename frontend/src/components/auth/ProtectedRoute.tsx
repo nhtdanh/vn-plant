@@ -17,7 +17,7 @@ export function ProtectedRoute({
   }
 
   if (!isAuthenticated) {
-    // Redirect explicitly to login, saving the location they were trying to go to
+    // chuyển hướng đến trang đăng nhập và lưu lại vị trí hiện tại
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
 

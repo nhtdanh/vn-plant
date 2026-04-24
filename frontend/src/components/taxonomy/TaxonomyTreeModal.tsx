@@ -107,7 +107,7 @@ export function TaxonomyTreeModal({
           current = newNode;
         });
 
-        // Nốt đặc biệt: Nếu cha là nốt đầu tiên (root)
+        // nốt đặc biệt: nếu cha là nốt đầu tiên (root)
         if (filtered[0].id === plant.parentId) targetParentInSpine = rootNode;
 
         const targetNode: TreeNode = {
@@ -160,7 +160,7 @@ export function TaxonomyTreeModal({
     if (isOpen) {
       if (!treeData && !isInitialLoading) initSpine();
     } else {
-      // Reset khi đóng
+      // reset khi đóng
       setTreeData(null);
       setLoadingNodes(new Set());
       scrollInitial.current = true;
@@ -196,7 +196,7 @@ export function TaxonomyTreeModal({
     return node;
   };
 
-  // Helper dùng được cả trong functional update (không phụ thuộc closure nodeId)
+  // helper dùng được cả trong functional update (không phụ thuộc closure nodeid)
   const findInTree = (root: TreeNode, id: string): TreeNode | null => {
     if (root.id === id) return root;
     for (const child of root.children || []) {
@@ -211,7 +211,7 @@ export function TaxonomyTreeModal({
 
     const targetNode = findInTree(treeData, nodeId);
 
-    // Rule 1: Đã load siblings → chỉ toggle collapse/expand, không fetch lại
+    // rule 1: đã load siblings -> chỉ toggle collapse/expand, không fetch lại
     if (targetNode?.isSiblingLoaded) {
       setTreeData((prev) => {
         if (!prev) return prev;
@@ -221,7 +221,7 @@ export function TaxonomyTreeModal({
       return;
     }
 
-    // Rule 2: Chưa load siblings → fetch từ API
+    // rule 2: chưa load siblings -> fetch từ api
     setLoadingNodes((prev) => new Set(prev).add(nodeId));
     try {
       const result = await fetchTaxonTreeNodes(Number(nodeId));
@@ -234,7 +234,7 @@ export function TaxonomyTreeModal({
           const currentNode = findInTree(prev, nodeId);
           const currentChildren = currentNode?.children || [];
 
-          // Merge: ưu tiên giữ existing node (preserve toàn bộ isExpanded/isSiblingLoaded/children)
+          // merge: ưu tiên giữ existing node (preserve toàn bộ isexpanded/issiblingloaded/children)
           const mergedChildren: TreeNode[] = apiItems.map((item) => {
             const existing = currentChildren.find((c) => c.id === item.id.toString());
             return existing ?? {
@@ -248,7 +248,7 @@ export function TaxonomyTreeModal({
             };
           });
 
-          // Orphan protection: giữ lại existing children KHÔNG nằm trong API response
+          // orphan protection: giữ lại existing children không nằm trong api response
           const apiIds = new Set(apiItems.map((i) => i.id.toString()));
           const orphaned = currentChildren.filter((c) => !apiIds.has(c.id));
 
@@ -272,14 +272,14 @@ export function TaxonomyTreeModal({
     
     const rootNode = hierarchy(treeData, d => d.isExpanded ? d.children : null);
     
-    // Sử dụng nodeSize để khoảng cách nốt là cố định, nốt gốc bắt đầu từ 0
+    // sử dụng nodesize để khoảng cách nốt là cố định, nốt gốc bắt đầu từ 0
     const treeLayout = tree<TreeNode>().nodeSize([70, 260]);
     const result = treeLayout(rootNode);
 
-    // Tính toán vùng bao thực tế của các nốt
+    // tính toán vùng bao thực tế của các nốt
     let minX = 0, maxX = 0, minY = 0, maxY = 0;
     result.descendants().forEach(d => {
-      // Trong hướng ngang: d.x là tọa độ dọc, d.y là tọa độ ngang
+      // trong hướng ngang: d.x là tọa độ dọc, d.y là tọa độ ngang
       if (d.x < minX) minX = d.x;
       if (d.x > maxX) maxX = d.x;
       if (d.y < minY) minY = d.y;
@@ -297,7 +297,7 @@ export function TaxonomyTreeModal({
     };
   }, [treeData]);
 
-  // Logic Auto-focus vào nốt chính - Đặt sau useMemo
+  // logic auto-focus vào nốt chính - đặt sau usememo
   useEffect(() => {
     if (isOpen && treeResult && containerRef.current && scrollInitial.current) {
       const target = treeResult.descendants().find(d => d.data.isTarget);
@@ -316,7 +316,7 @@ export function TaxonomyTreeModal({
     }
   }, [isOpen, !!treeResult, zoom, minX]);
 
-  // Logic tự động mở nhánh cha đã được xử lý trong initSpine bằng cách nạp sẵn siblings
+  // logic tự động mở nhánh cha đã được xử lý trong initspine bằng cách nạp sẵn siblings
 
   if (!treeData || !treeResult) return null;
 
@@ -342,7 +342,7 @@ export function TaxonomyTreeModal({
                 style={{ backgroundColor: '#ffffff', color: '#0f172a' }}
                 className="fixed inset-4 md:inset-10 rounded-2xl shadow-2xl z-[101] overflow-hidden flex flex-col border border-slate-200"
               >
-                {/* Header Tối giản */}
+                {/* tiêu đề */}
                 <div style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #f1f5f9' }} className="flex items-center justify-between px-6 py-1.5 shrink-0">
                   <div className="flex-1 flex items-center gap-5 overflow-hidden">
                     <div className="flex items-center gap-4 overflow-x-auto no-scrollbar">
@@ -381,7 +381,7 @@ export function TaxonomyTreeModal({
                   </div>
                 </div>
 
-                {/* Canvas */}
+                {/* sơ đồ */}
                 <div ref={containerRef} style={{ backgroundColor: '#ffffff' }} className="flex-1 relative overflow-auto no-scrollbar active:cursor-grabbing">
                   {isInitialLoading && (
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
@@ -396,7 +396,7 @@ export function TaxonomyTreeModal({
                     <div className="absolute inset-0 p-12 flex items-start justify-start" style={{ transform: `scale(${zoom})`, transformOrigin: "0 0", transition: "transform 0.1s ease-out" }}>
                     <svg width={dynamicBounds.width} height={dynamicBounds.height} className="overflow-visible">
                       <g transform={`translate(100, ${Math.abs(minX) + 100})`}>
-                        {/* Links */}
+                        {/* liên kết */}
                         <AnimatePresence>
                           {(() => {
                             const targetNode = treeResult.descendants().find(d => d.data.isTarget);
@@ -437,7 +437,7 @@ export function TaxonomyTreeModal({
                           })()}
                         </AnimatePresence>
 
-                        {/* Nodes */}
+                        {/* các nút (node) */}
                         {treeResult.descendants().map((node) => {
                           const style = RANK_COLORS[node.data.rank] || RANK_COLORS.default;
                           const isExpanded = node.data.isExpanded;

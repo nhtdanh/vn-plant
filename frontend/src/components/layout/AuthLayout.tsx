@@ -30,7 +30,7 @@ export function AuthLayout() {
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-[20000ms] scale-105 hover:scale-100"
         style={{
-          backgroundImage: "url('/images/auth-hero.png')",
+          backgroundImage: "url('/images/auth-hero.jpg')",
           filter: "brightness(0.6) contrast(1.1)",
         }}
       />

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
-// confirmdialog - hộp thoại xác nhận chung cho các hành động nguy hiểm
+// confirmdialog - hộp thoại xác nhận cho các hành động quan trọng
 interface ConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;

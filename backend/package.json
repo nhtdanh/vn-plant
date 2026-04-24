@@ -7,6 +7,10 @@
     "dev": "tsx watch src/server.ts",
     "build": "rimraf dist && tsc && tsc-alias",
     "start": "ls -R dist && node ./dist/server.js",
+    "setup-search": "tsx scripts/setup-search.ts",
+    "re-sync-search": "tsx scripts/re-sync-search-vectors.ts",
+    "export-data": "tsx scripts/export-data.ts",
+    "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
