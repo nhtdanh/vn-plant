@@ -39,19 +39,16 @@ docker exec -it efloravn-backend npm run setup-search
 
 ---
 
-## Các script hỗ trợ (Backend)
+## Các script hỗ trợ (Backend, ít khi dùng)
 
 Sử dụng lệnh: `docker exec -it efloravn-backend [script]`
 
-- `npm run setup-search`: Cài đặt search triggers và tạo admin.
+- `npm run setup-search`: Cài đặt search triggers và tạo admin. (chỉ dùng một lần - đã có sử dụng trên phần thiết lập)
 - `npm run re-sync-search`: Chạy lại chỉ mục tìm kiếm khi cần.
 - `npm run export-data`: Xuất dữ liệu hiện tại ra file SQL dự phòng.
 
 ## Lưu ý kỹ thuật
 
 - Dự án dùng **Prisma 7**. Không thêm `url` vào `schema.prisma`, hãy chỉnh sửa trong `prisma.config.ts`.
-- Để VS Code nhận diện được thư viện (IntelliSense), bạn vẫn nên chạy `npm install` một lần ở máy thật.
-- Xem log: `docker-compose logs -f backend`.
+- VS Code không nhận diện được thư viện (IntelliSense) do không chạy npm install, nếu chỉ dùng docker thì có warning cũng không sao
 
----
-*nhtdanh - Luận văn tốt nghiệp*
