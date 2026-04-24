@@ -32,7 +32,7 @@ async function setup() {
 
     // 3. Sync Sequences & Search Vectors
     console.log('Syncing database sequences and vectors...');
-    const tables = ['taxon', 'taxon_common_name', 'taxon_synonym', 'province', 'user'];
+    const tables = ['taxon', 'taxon_common_name', 'taxon_synonym', 'province'];
     
     for (const table of tables) {
       await prisma.$executeRawUnsafe(`
