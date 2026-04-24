@@ -1,14 +1,14 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 WORKDIR /usr/src/app
 
-# Cài đặt các thư viện cần thiết cho Prisma và Sharp
-RUN apk add --no-cache libc6-compat
+# Cài đặt các thư viện cần thiết cho Prisma, Bcrypt và Sharp
+RUN apk add --no-cache libc6-compat python3 make g++
 
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
