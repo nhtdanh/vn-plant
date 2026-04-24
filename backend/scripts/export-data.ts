@@ -48,7 +48,10 @@ async function exportTableInChunks(tableName: string, model: any, cursorField: s
         return val;
       });
 
-      chunkSql += `INSERT INTO "${tableName}" (${columns.map(c => `"${c}"`).join(", ")}) VALUES (${values.join(", ")}) ON CONFLICT DO NOTHING;\n`;
+      // Chuyển đổi tên cột từ camelCase sang snake_case (VD: taxonId -> taxon_id)
+      const dbColumns = columns.map(c => c.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`));
+
+      chunkSql += `INSERT INTO "${tableName}" (${dbColumns.map(c => `"${c}"`).join(", ")}) VALUES (${values.join(", ")}) ON CONFLICT DO NOTHING;\n`;
     }
     
     fs.appendFileSync(OUTPUT_PATH, chunkSql);

@@ -52,12 +52,6 @@ services:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
 
-  adminer:
-    image: adminer
-    container_name: efloravn-adminer
-    restart: always
-    ports:
-      - "8888:8080"
 
 volumes:
   postgres_data:
