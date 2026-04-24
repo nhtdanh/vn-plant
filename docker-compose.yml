@@ -35,6 +35,7 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+      - /usr/src/app/generated
       - ./backend/public/uploads:/usr/src/app/public/uploads
 
   frontend:
