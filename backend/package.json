@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "rimraf dist && tsc && tsc-alias",
+    "build": "npx rimraf dist && tsc && tsc-alias",
     "start": "ls -R dist && node ./dist/server.js",
     "setup-search": "tsx scripts/setup-search.ts",
     "re-sync-search": "tsx scripts/re-sync-search-vectors.ts",

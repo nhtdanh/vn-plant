@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as taxonImageController from "./taxonImage.controller.js";
-import { requireAuth, authorize } from "../auth/auth.middleware.js";
+import { requireAuth } from "../auth/auth.middleware.js";
 import { memoryUpload } from "../../middlewares/upload.js";
 
 const router = Router();
