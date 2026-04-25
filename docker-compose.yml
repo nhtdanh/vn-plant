@@ -25,7 +25,6 @@ services:
     restart: always
     ports:
       - "3000:3000"
-      - "5555:5555"
     environment:
       DATABASE_URL: "postgresql://postgres:password@db:5432/vn_plant?schema=public"
       JWT_SECRET: "secret-key-change-in-prod"
