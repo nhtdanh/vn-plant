@@ -69,6 +69,16 @@ npm run dev
 
 ---
 
+## Quản lý Database (Tùy chọn)
+
+Nếu bạn muốn xem hoặc sửa dữ liệu trực tiếp bằng giao diện web (thay vì dùng SQL), hãy chạy lệnh:
+```bash
+docker exec -it efloravn-backend npx prisma studio
+```
+Sau đó truy cập: http://localhost:5555
+
+---
+
 ## Các script hỗ trợ (Backend)
 
 Sử dụng lệnh: docker exec -it efloravn-backend [script]
