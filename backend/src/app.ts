@@ -15,9 +15,12 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 // 2. bảo mật và cors (cross-origin resource sharing)
+const clientUrl = process.env["CLIENT_URL"] || "http://localhost:5173";
+const allowedOrigins = clientUrl.split(",").map((url) => url.trim());
+
 app.use(
   cors({
-    origin: process.env["CLIENT_URL"] || "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
