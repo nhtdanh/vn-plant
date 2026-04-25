@@ -12,6 +12,10 @@ router.get("/health", (_req: any, res: any) => {
   res.json({ success: true, message: "OK" });
 });
 
+router.get("/", (_req, res) => {
+  res.json({ message: "Backend EfloraVN v1 is running" });
+});
+
 // mount routes
 router.use("/auth", authRoutes);
 router.use("/taxa", taxonRoutes);

@@ -2,18 +2,18 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 
-// giao diện khung (layouts)
+// layouts
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthLayout } from "@/components/layout/AuthLayout";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 
-// bảo vệ tuyến đường (guards)
+// guards
 import { AdminGuard } from "@/components/auth/AdminGuard";
 
-// thành phần giao diện (ui)
+// ui
 import { Toaster } from "@/components/ui/Toaster";
 
-// trang (pages)
+// pages
 import { Home } from "@/pages/Home";
 import { Browse } from "@/pages/Browse";
 import { PlantDetail } from "@/pages/PlantDetail";
@@ -27,7 +27,7 @@ import { AdminUserManagement } from "@/pages/admin/UserManagement";
 
 import { Profile } from "@/pages/user/Profile";
 
-// thành phần chung (common)
+// common
 import { ScrollToTop } from "@/components/shared/ScrollToTop";
 
 function App() {
@@ -37,8 +37,6 @@ function App() {
     // khởi tạo trạng thái xác thực
     checkAuth();
   }, [checkAuth]);
-
-  // ngăn chặn việc hiển thị tuyến đường khi đang kiểm tra mã truy cập để tránh gây giật giao diện (flickering)
   if (isLoading) {
     return <div className="min-h-screen bg-background" />;
   }
@@ -48,7 +46,6 @@ function App() {
       <ScrollToTop />
       <Toaster />
       <Routes>
-        {/* tuyến đường xác thực (chỉ cho người chưa đăng nhập) */}
         <Route
           element={
             !isAuthenticated ? (
@@ -61,8 +58,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
-
-        {/* tuyến đường ứng dụng (truy cập công khai) */}
         <Route element={<AppLayout />}>
           <Route index element={<Home />} />
           <Route path="/browse" element={<Browse />} />
@@ -74,8 +69,6 @@ function App() {
             }
           />
         </Route>
-
-        {/* tuyến đường admin (bảo vệ bằng adminguard) */}
         <Route
           path="/admin"
           element={

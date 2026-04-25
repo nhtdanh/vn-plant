@@ -1,9 +1,6 @@
 import { prisma } from '../src/config/prisma';
 
 async function main() {
-  console.log('--- Starting Search Vector Re-sync ---');
-  console.log('This will trigger the SQL focus on Vietnamese names for all taxa.');
-
   try {
     // Kích hoạt lại trigger bằng cách touch trường scientificName
     // Sử dụng executeRaw để đạt tốc độ tối đa cho toàn bộ bảng

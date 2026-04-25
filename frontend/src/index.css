@@ -202,7 +202,6 @@
   }
 }
 
-/* --- Tinh giản Thanh cuộn (Custom Modern Scrollbar) --- */
 ::-webkit-scrollbar {
   width: 8px; /* Mảnh hơn mặc định */
 }
@@ -270,7 +269,6 @@
 }
 
 @layer components {
-  /* Editorial Section Label Pattern - Adjusted for Centered Full Width */
   .section-label {
     @apply flex items-center gap-6 text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-zinc-500 w-full;
   }
@@ -281,12 +279,10 @@
   }
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */

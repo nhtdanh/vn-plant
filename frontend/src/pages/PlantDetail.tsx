@@ -456,11 +456,11 @@ export function PlantDetail() {
 
                     {/* 3. Badges */}
                     <div className="flex flex-wrap gap-2 pt-2">
-                      {plant.orderInBook && (
+                      {/* {plant.orderInBook && (
                         <div className="flex items-center gap-1.5 text-[10px] font-sans font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border bg-blue-50/40 text-blue-900 border-blue-200/50">
                           STT: {plant.orderInBook}
                         </div>
-                      )}
+                      )} */}
                       <div className="flex items-center gap-1.5 text-[10px] font-sans font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border bg-amber-50/40 text-black border-amber-200/50">
                         {getRankDisplayName(plant.rank)}
                       </div>

@@ -9,12 +9,10 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
-// 1. các trung gian cốt lõi (parse dữ liệu sớm nhất có thể)
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-// 2. bảo mật và cors (cross-origin resource sharing)
 const clientUrl = process.env["CLIENT_URL"] || "http://localhost:5173";
 const allowedOrigins = clientUrl.split(",").map((url) => url.trim());
 
@@ -26,13 +24,15 @@ app.use(
 );
 app.use(helmet({ crossOriginResourcePolicy: false }));
 
-// 3. giới hạn lưu lượng (rate limiting - đã tắt theo yêu cầu người dùng)
-
 // static files
 app.use(
   "/uploads",
   express.static(path.join(process.cwd(), "public", "uploads")),
 );
+
+app.get("/", (_req, res) => {
+  res.json({ message: "Backend EfloraVN is running"});
+});
 
 // routes
 app.use("/api/v1", router);

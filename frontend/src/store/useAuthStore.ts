@@ -18,7 +18,7 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: true, // bắt đầu ở trạng thái tải (loading) để kiểm tra mã truy cập hiện có
+  isLoading: true, // bắt đầu ở trạng thái loading để kiểm tra mã truy cập hiện có
 
   login: (user, token) => {
     localStorage.setItem("accessToken", token);
@@ -52,7 +52,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     try {
-      // gọi đúng điểm cuối /users/me thay vì /auth/me
       const response = await api.get("/users/me");
       const user = response.data.data;
       set({ user, isAuthenticated: true, isLoading: false });

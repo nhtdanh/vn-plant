@@ -6,13 +6,13 @@ const CHUNK_SIZE = 500;
 const OUTPUT_PATH = path.join(process.cwd(), "prisma", "seed_data.sql");
 
 async function exportTableInChunks(tableName: string, model: any, cursorField: string | null = "id") {
-  console.log(`⏳ Exporting table: ${tableName}...`);
+  console.log(`Exporting: ${tableName}`);
   
   const totalCount = await model.count();
   fs.appendFileSync(OUTPUT_PATH, `-- Data for ${tableName}\n`);
   
   if (totalCount === 0) {
-    fs.appendFileSync(OUTPUT_PATH, `-- No data found.\n\n`);
+    fs.appendFileSync(OUTPUT_PATH, `-- No data\n\n`);
     return;
   }
 
@@ -48,32 +48,22 @@ async function exportTableInChunks(tableName: string, model: any, cursorField: s
         return val;
       });
 
-      // Chuyển đổi tên cột từ camelCase sang snake_case (VD: taxonId -> taxon_id)
       const dbColumns = columns.map(c => c.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`));
-
       chunkSql += `INSERT INTO "${tableName}" (${dbColumns.map(c => `"${c}"`).join(", ")}) VALUES (${values.join(", ")}) ON CONFLICT DO NOTHING;\n`;
     }
     
     fs.appendFileSync(OUTPUT_PATH, chunkSql);
     processedCount += data.length;
     
-    if (cursorField) {
-      lastId = data[data.length - 1][cursorField];
-    }
-    
-    console.log(`   ... Progress: ${processedCount}/${totalCount}`);
+    if (cursorField) lastId = data[data.length - 1][cursorField];
+    console.log(`   Progress: ${processedCount}/${totalCount}`);
   }
   fs.appendFileSync(OUTPUT_PATH, "\n");
-  console.log(`✅ Finished ${tableName}.`);
 }
 
 async function main() {
-  console.log("🚀 Starting memory-efficient data export...");
-  
   try {
-    // Khởi tạo file mới (xóa file cũ nếu có)
-    fs.writeFileSync(OUTPUT_PATH, `-- Generated Seed Data (Streamed)\n\n`);
-    fs.appendFileSync(OUTPUT_PATH, `SET session_replication_role = 'replica';\n\n`);
+    fs.writeFileSync(OUTPUT_PATH, "SET session_replication_role = 'replica';\n\n");
     
     await exportTableInChunks("province", prisma.province);
     await exportTableInChunks("taxon", prisma.taxon);
@@ -83,10 +73,9 @@ async function main() {
     await exportTableInChunks("taxon_province", prisma.taxonProvince, null);
 
     fs.appendFileSync(OUTPUT_PATH, `SET session_replication_role = 'origin';\n`);
-
-    console.log(`\n🎉 ALL DONE! File saved at: ${OUTPUT_PATH}`);
+    console.log(`Export complete: ${OUTPUT_PATH}`);
   } catch (error) {
-    console.error("\n❌ Export failed:", error);
+    console.error("Export failed:", error);
   } finally {
     await prisma.$disconnect();
   }

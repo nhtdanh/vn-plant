@@ -1,11 +1,3 @@
-/**
- * VN-Plant Shared TypeScript Types
- * These types are intended to be shared between Backend and Frontend (React/TS).
- * Sync these whenever the Prisma schema or API responses change.
- */
-
-// --- ENUMS (Mirrored from Prisma) ---
-
 export type TaxonomyRank = 
   | 'kingdom' 
   | 'phylum' 
@@ -28,8 +20,6 @@ export type ImageStatus = 'pending' | 'approved' | 'rejected';
 
 export type UserStatus = 'active' | 'inactive';
 
-// --- PAGINATION ---
-
 export interface PaginationMeta {
   total: number;
   page: number;
@@ -41,8 +31,6 @@ export interface PaginatedResponse<T> {
   items: T[];
   meta: PaginationMeta;
 }
-
-// --- CORE MODELS ---
 
 export interface Taxon {
   id: number;
@@ -114,23 +102,15 @@ export interface TaxonProvince {
   province: Province;
 }
 
-// --- SPECIALIZED DATA STRUCTURES ---
-
-/**
- * Detailed Taxon data for the profile page
- */
 export interface TaxonDetail extends Taxon {
   synonyms: TaxonSynonym[];
   commonNames: TaxonCommonName[];
   images: TaxonImage[];
   provinces: TaxonProvince[];
-  children: TaxonChild[]; // Immediate children list
+  children: TaxonChild[]; 
   isBookmarked: boolean;
 }
 
-/**
- * Lightweight child taxon for lists inside detail pages
- */
 export interface TaxonChild {
   id: number;
   scientificName: string;
@@ -141,9 +121,6 @@ export interface TaxonChild {
   author: string | null;
 }
 
-/**
- * Search suggestion (Autocomplete)
- */
 export interface TaxonSuggestion {
   id: number;
   scientificName: string;
@@ -153,8 +130,6 @@ export interface TaxonSuggestion {
   primaryImageUrl: string | null;
   score?: number;
 }
-
-// --- USER & AUTHENTICATION ---
 
 export interface User {
   id: string;
