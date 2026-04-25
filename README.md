@@ -35,7 +35,7 @@ docker exec -it efloravn-backend npx prisma migrate dev
 # Cách 1: Dùng CMD (Command Prompt)
 docker exec -i efloravn-db psql -U postgres -d vn_plant < backend/prisma/seed_data.sql
 # Cách 2: Dùng PowerShell
-Get-Content backend/prisma/seed_data.sql | docker exec -i efloravn-db psql -U postgres -d vn_plant
+Get-Content -Encoding UTF8 backend/prisma/seed_data.sql | docker exec -i efloravn-db psql -U postgres -d vn_plant
 
 # C. Đồng bộ Breadcrumb (Cập nhật đường dẫn phân cấp)
 docker exec -i efloravn-db psql -U postgres -d vn_plant -c "UPDATE taxon t SET path = subpath.new_path FROM (WITH RECURSIVE taxon_path AS (SELECT id, CAST(id AS text)::ltree AS new_path FROM taxon WHERE parent_id IS NULL UNION ALL SELECT t.id, tp.new_path || CAST(t.id AS text)::ltree FROM taxon t JOIN taxon_path tp ON t.parent_id = tp.id) SELECT id, new_path FROM taxon_path) AS subpath WHERE t.id = subpath.id;"
@@ -73,8 +73,8 @@ npm run dev
 
 ## Thông tin truy cập
 
-- Frontend: [http://localhost:5173](http://localhost:5173)
-- Backend API: [http://localhost:3000/api/v1](http://localhost:3000/api/v1)
+- Frontend: [http://localhost:5050](http://localhost:5050)
+- Backend API: [http://localhost:3030/api/v1](http://localhost:3030/api/v1)
 - Tài khoản Admin: `admin123@gmail.com` / `admin123`
 
 ---
