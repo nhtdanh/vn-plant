@@ -29,11 +29,15 @@ Mở terminal và chạy lần lượt các lệnh sau:
 # A. Tạo cấu trúc bảng
 docker exec -it efloravn-backend npx prisma migrate dev
 
-# B. Import dữ liệu mẫu
-# Cách 1: Dùng CMD (Command Prompt)
-docker exec -i efloravn-db psql -U postgres -d vn_plant < backend/prisma/seed_data.sql
-# Cách 2: Dùng PowerShell
-Get-Content -Encoding UTF8 backend/prisma/seed_data.sql | docker exec -i efloravn-db psql -U postgres -d vn_plant
+# B. Import dữ liệu mẫu (Sử dụng cách copy file vào container để tránh lỗi bảng mã)
+# B1: Copy file SQL vào thư mục /tmp của container Database
+docker cp backend/prisma/seed_data.sql efloravn-db:/tmp/seed.sql
+
+# B2: Chạy file SQL trực tiếp bên trong container
+docker exec -i efloravn-db psql -U postgres -d vn_plant -c "SET client_encoding TO 'UTF8';" -f /tmp/seed.sql
+
+# B3: Xóa file tmp trong container
+docker exec efloravn-db rm /tmp/seed.sql
 
 # C. Đồng bộ path (Cập nhật đường dẫn phân cấp)
 docker exec -i efloravn-db psql -U postgres -d vn_plant -c "UPDATE taxon t SET path = subpath.new_path FROM (WITH RECURSIVE taxon_path AS (SELECT id, CAST(id AS text)::ltree AS new_path FROM taxon WHERE parent_id IS NULL UNION ALL SELECT t.id, tp.new_path || CAST(t.id AS text)::ltree FROM taxon t JOIN taxon_path tp ON t.parent_id = tp.id) SELECT id, new_path FROM taxon_path) AS subpath WHERE t.id = subpath.id;"
@@ -87,18 +91,13 @@ Sau khi cài đặt, bạn có thể truy cập các đường dẫn sau để k
 - **Chi tiết loài (VD: Sen):** [http://localhost:3000/api/v1/taxa/nelumbo-nucifera-gaertn](http://localhost:3000/api/v1/taxa/nelumbo-nucifera-gaertn)
 
 ---
-
-## Xử lý sự cố
-
-### 1. Lỗi xung đột cổng (Port already allocated)
+## Lỗi xung đột cổng (Port already allocated)
 Nếu máy bạn đã cài sẵn Postgres hoặc đang chạy ứng dụng khác ở cổng 3000, 5173, hãy mở `docker-compose.yml` và sửa số bên trái dấu `:`:
 - **Đổi cổng Database:** `5432:5432` -> `5433:5432`
 - **Đổi cổng Backend:** `3000:3000` -> `3030:3000`
 - **Đổi cổng Frontend:** `5173:5173` -> `5050:5173`
-*(Lưu ý: Nếu đổi cổng, hãy cập nhật lại các biến environment trong docker-compose.yml tương ứng. Chỉ sửa file .env nếu chạy ở máy thật).*
 
-### 2. Lỗi tiếng Việt 
-Hãy chắc chắn dùng lệnh nạp dữ liệu có `-Encoding UTF8` như hướng dẫn ở bước 2B.
+*(Lưu ý: Nếu đổi cổng, hãy cập nhật lại các biến environment trong docker-compose.yml tương ứng. Chỉ sửa file .env nếu chạy ở máy thật).*
 
 ---
 
