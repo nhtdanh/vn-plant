@@ -905,12 +905,13 @@ export async function deleteTaxon(id: number) {
   return result;
 }
 
-// Lấy chi tiết một Taxon theo slug cùng tất cả quan hệ
-export async function findBySlug(slug: string, userId?: string) {
-  const taxon = await prisma.taxon.findUnique({
+// Lấy chi tiết một Taxon theo slug (hoặc ID) cùng tất cả quan hệ
+export async function findBySlug(slugOrId: string, userId?: string) {
+  const isId = /^\d+$/.test(slugOrId);
+  const taxon = await prisma.taxon.findFirst({
     where: {
-      slug,
       status: "published", // Bảo mật: Không cho phép xem dữ liệu nháp
+      ...(isId ? { id: parseInt(slugOrId, 10) } : { slug: slugOrId }),
     },
     include: {
       synonyms: true,
