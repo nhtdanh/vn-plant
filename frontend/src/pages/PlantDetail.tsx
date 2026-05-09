@@ -461,7 +461,7 @@ export function PlantDetail() {
                           STT: {plant.orderInBook}
                         </div>
                       )} */}
-                      <div className="flex items-center gap-1.5 text-[10px] font-sans font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border bg-zinc-50/80 text-zinc-600 border-zinc-200/80">
+                      <div className="flex items-center gap-1.5 text-[10px] font-sans font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border bg-zinc-50/80 text-black border-zinc-200/80">
                         ID: {plant.id}
                       </div>
                       <div className="flex items-center gap-1.5 text-[10px] font-sans font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full border bg-amber-50/40 text-black border-amber-200/50">
